@@ -1,9 +1,9 @@
 /* ============================================================
    estilos.css — Global theme for Running la Safor
-   All views inherit these rules via MainLayout.fxml
+   All should inherit from this
    ============================================================ */
 
-/* ── Colour palette (edit these variables to retheme the whole app) ── */
+/* ── Colour palette  ── */
 .root {
     /* Backgrounds */
     -color-bg-primary:   #1a1a2e;   /* deep navy — app background        */

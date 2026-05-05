@@ -6,12 +6,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-/**
- * RunningClubApp — Main entry point.
- *
- * Loads MainLayout.fxml as the root scene.
- * MainLayoutController then handles all view swapping from here on.
- */
 public class TempNameApp extends Application {
 
     @Override
