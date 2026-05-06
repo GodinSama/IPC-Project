@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
+
+<BorderPane
+        fx:id="rootPane"
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="tempname.auth.LoginController"
+        stylesheets="@/resources/estilos.css">
+
+    <top>
+    </top>
+
+    <center>
+    </center>
+
+    <bottom>
+        <HBox styleClass="nav-bar" spacing="8" alignment="BOTTOM_RIGHT">
+            <Button text="Sign In" styleClass="nav-login-btn" onAction="#handleLogin"/>
+        </HBox>
+    </bottom>
+</BorderPane>
