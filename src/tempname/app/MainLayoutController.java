@@ -5,16 +5,28 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
+import upv.ipc.sportlib.SportActivityApp;
+
 
 
 public class MainLayoutController {
 
     @FXML private BorderPane rootPane;
-    @FXML private Label      lblUserNick;
+    @FXML private Label lblUserNick;
 
     @FXML
     public void initialize() {
         rootPane.setUserData(this);
+
+        // SportActivityApp instance
+        SportActivityApp app = (SportActivityApp) SportActivityApp.getInstance();
+
+        // TO-DO : Check if already signed in
+
+        // if ( not signed in)
+        // loadView("/tempname/auth/LoginView.fxml");
+
+        // else
         loadView("/tempname/activities/DashboardView.fxml");
     }
 

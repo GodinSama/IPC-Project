@@ -13,7 +13,7 @@
     fx:controller="tempname.app.MainLayoutController"
     stylesheets="@/resources/estilos.css">
 
-    <!-- ═══ TOP — Navigation bar ═══════════════════════════════════════ -->
+    <!-- TOP - Navigation bar -->
     <top>
         <HBox styleClass="nav-bar" spacing="8" alignment="CENTER_LEFT">
 
@@ -24,7 +24,6 @@
             <Button text="Session History"  styleClass="nav-btn" onAction="#showSessionHistory"/>
             <Button text="Manage Maps"      styleClass="nav-btn" onAction="#showMapManagement"/>
 
-            <!-- pushes logout to the far right -->
             <Region HBox.hgrow="ALWAYS"/>
 
             <Label fx:id="lblUserNick" styleClass="nav-user" text=""/>
@@ -33,10 +32,10 @@
         </HBox>
     </top>
 
-    <!-- ═══ CENTER — swapped at runtime by MainLayoutController ════════ -->
-    <!-- Leave empty. loadView() injects content here. -->
+    <!-- CENTER - MainLayoutController  -->
+    <!-- Leave empty -->
     <center>
-        <!-- intentionally empty -->
+        <!-- Leave empty -->
     </center>
 
 </BorderPane>
