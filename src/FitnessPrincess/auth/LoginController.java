@@ -49,7 +49,7 @@ public class LoginController {
             }
 
         } catch (Exception e) {
-            System.err.println("Could not load main application page."); // ERROR PANEL
+            System.err.println("Could not load main application page.t"); // ERROR PANEL
         }
     }
 
