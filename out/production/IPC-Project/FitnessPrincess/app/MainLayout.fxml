@@ -10,7 +10,7 @@
     fx:id="rootPane"
     xmlns="http://javafx.com/javafx/21"
     xmlns:fx="http://javafx.com/fxml/1"
-    fx:controller="tempname.app.MainLayoutController"
+    fx:controller="FitnessPrincess.app.MainLayoutController"
     stylesheets="@/resources/estilos.css">
 
     <!-- TOP - Navigation bar -->

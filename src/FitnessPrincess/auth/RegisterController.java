@@ -1,4 +1,4 @@
-package tempname.auth;
+package FitnessPrincess.auth;
 
 public class RegisterController {
     // TO-DO : You guessed it! To add all Registration logic

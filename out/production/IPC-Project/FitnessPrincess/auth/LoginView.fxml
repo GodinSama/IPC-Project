@@ -12,18 +12,30 @@
         fx:id="rootPane"
         xmlns="http://javafx.com/javafx/21"
         xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="tempname.auth.LoginController"
+        fx:controller="FitnessPrincess.auth.LoginController"
         stylesheets="@/resources/estilos.css">
 
     <top>
+        <!-- PlaceHolder -->
     </top>
 
     <center>
+        <VBox styleClass="auth-container" spacing="8" alignment="CENTER_LEFT">
+
+            <Label text="Username"/>
+            <TextField fx:id="txtUsername" promptText="Enter Username"/>
+
+            <Label text="Password"/>
+            <PasswordField fx:id="txtPassword" promptText="Enter Password"/>
+
+        </VBox>
     </center>
 
     <bottom>
         <HBox styleClass="nav-bar" spacing="8" alignment="BOTTOM_RIGHT">
-            <Button text="Sign In" styleClass="nav-login-btn" onAction="#handleLogin"/>
+            <Button text="Sign Up" styleClass="signup-btn" onAction="#handleSignUp"/>
+            <Button text="Login" styleClass="login-btn" onAction="#handleLogin"/>
+
         </HBox>
     </bottom>
 </BorderPane>

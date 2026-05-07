@@ -1,4 +1,4 @@
-package tempname.app;
+package FitnessPrincess.app;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -6,11 +6,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class TempNameApp extends Application {
+public class FitnessPrincessApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/tempname/auth/LoginView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml"));
 
         Scene scene = new Scene(root, 1200, 720);
         primaryStage.setTitle("Running la Safor");

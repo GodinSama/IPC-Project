@@ -1,14 +1,12 @@
-package tempname.app;
+package FitnessPrincess.app;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import upv.ipc.sportlib.SportActivityApp;
 
 import java.util.Objects;
 
@@ -21,7 +19,7 @@ public class MainLayoutController {
         rootPane.setUserData(this);
 
         // Load the default view upon entering
-        loadView("/tempname/activities/DashboardView.fxml");
+        loadView("/FitnessPrincess/activities/DashboardView.fxml");
     }
 
     // Core method - call this to swap any view into the center
@@ -40,22 +38,22 @@ public class MainLayoutController {
 
     @FXML
     private void showActivities() {
-        loadView("/tempname/activities/DashboardView.fxml");
+        loadView("/FitnessPrincess/activities/DashboardView.fxml");
     }
 
     @FXML
     private void showProfile() {
-        loadView("/tempname/user/ProfileView.fxml");
+        loadView("/FitnessPrincess/user/ProfileView.fxml");
     }
 
     @FXML
     private void showSessionHistory() {
-        loadView("/tempname/user/SessionHistoryView.fxml");
+        loadView("/FitnessPrincess/user/SessionHistoryView.fxml");
     }
 
     @FXML
     private void showMapManagement() {
-        loadView("/tempname/maps/MapManagementView.fxml");
+        loadView("/FitnessPrincess/maps/MapManagementView.fxml");
     }
 
     @FXML
@@ -66,7 +64,7 @@ public class MainLayoutController {
 
             // Swap the scene root back to the Login View
             Stage stage = (Stage) rootPane.getScene().getWindow();
-            Parent loginRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/tempname/auth/LoginView.fxml")));
+            Parent loginRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml")));
             stage.setScene(new Scene(loginRoot));
 
         } catch (Exception e) {
