@@ -9,7 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import upv.ipc.sportlib.SportActivityApp;
-import upv.ipc.sportlib.User;
+
+import java.util.Objects;
 
 public class LoginController {
 
@@ -28,8 +29,8 @@ public class LoginController {
             // Log in logic
             String inUsername = txtUsername.getText();
             String inPassword = txtPassword.getText();
-            System.out.println("USERNAME: " + inUsername);
-            System.out.println("PASSWORD: " + inPassword);
+            // System.out.println("USERNAME: " + inUsername);
+            // System.out.println("PASSWORD: " + inPassword);
 
             // Get the app instance
             SportActivityApp app = SportActivityApp.getInstance();
@@ -40,7 +41,7 @@ public class LoginController {
 
                 // Swap the scene to root
                 Stage stage = (Stage) rootPane.getScene().getWindow();
-                Parent loginRoot = FXMLLoader.load(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml"));
+                Parent loginRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml")));
                 stage.setScene(new Scene(loginRoot));
             } else {
                 System.out.println("Invalid credentials."); // ERROR MESSAGE - INVALID PASSWORD OR USERNAME
@@ -48,8 +49,7 @@ public class LoginController {
             }
 
         } catch (Exception e) {
-            System.err.println("Could not log in.");
-            e.printStackTrace();
+            System.err.println("Could not load main application page."); // ERROR PANEL
         }
     }
 
@@ -58,12 +58,11 @@ public class LoginController {
         try {
             // Swap the scene to the Registration view
             Stage stage = (Stage) rootPane.getScene().getWindow();
-            Parent registerRoot = FXMLLoader.load(getClass().getResource("/FitnessPrincess/auth/RegisterView.fxml"));
+            Parent registerRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/auth/RegisterView.fxml")));
             stage.setScene(new Scene(registerRoot));
 
         } catch (Exception e) {
-            System.err.println("Could not load registration page.");
-            e.printStackTrace();
+            System.err.println("Could not load registration page."); // ERROR PANEL
         }
     }
 }
