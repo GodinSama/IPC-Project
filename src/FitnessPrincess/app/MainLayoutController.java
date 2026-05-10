@@ -14,7 +14,7 @@ import java.util.Objects;
 
 public class MainLayoutController {
 
-    private static final double MOBILE_BREAKPOINT = 900;
+    private static final double MOBILE_BREAKPOINT = 850;
 
     @FXML private BorderPane rootPane;
     @FXML private HBox desktopNav;
