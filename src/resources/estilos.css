@@ -236,6 +236,12 @@
     -fx-max-width:        420;
 }
 
+.auth-background {
+    -fx-background-color: -color-bg-surface;
+    -fx-padding:          48;
+    -fx-max-width:        420;
+}
+
 .auth-title {
     -fx-text-fill:   -color-text-primary;
     -fx-font-size:   26px;
