@@ -13,40 +13,36 @@
         fx:controller="FitnessPrincess.app.MainLayoutController"
         stylesheets="@/resources/estilos.css">
 
-    <!-- TOP - Desktop navigation bar (hidden on mobile) -->
     <top>
         <HBox fx:id="desktopNav" styleClass="nav-bar" spacing="8" alignment="CENTER_LEFT">
 
             <Label text="🏃 Running la Safor" styleClass="nav-brand"/>
 
-            <Button text="Activities"       styleClass="nav-btn" onAction="#showActivities"/>
-            <Button text="Profile"          styleClass="nav-btn" onAction="#showProfile"/>
-            <Button text="Session History"  styleClass="nav-btn" onAction="#showSessionHistory"/>
-            <Button text="Manage Maps"      styleClass="nav-btn" onAction="#showMapManagement"/>
+            <Button fx:id="navActivities" text="Activities" styleClass="nav-btn" onAction="#showActivities"/>
+            <Button fx:id="navProfile" text="Profile" styleClass="nav-btn" onAction="#showProfile"/>
+            <Button fx:id="navHistory" text="Session History" styleClass="nav-btn" onAction="#showSessionHistory"/>
+            <Button fx:id="navMaps" text="Manage Maps" styleClass="nav-btn" onAction="#showMapManagement"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
             <Label fx:id="lblUserNick" styleClass="nav-user" text=""/>
-            <Button text="Sign Out" styleClass="nav-logout-btn" onAction="#handleLogout"/>
+            <Button fx:id="navSignOut" text="Sign Out" styleClass="nav-logout-btn" onAction="#handleLogout"/>
 
         </HBox>
     </top>
 
-    <!-- CENTER - swapped views go here -->
     <center>
-        <!-- Leave empty -->
     </center>
 
-    <!-- BOTTOM - Mobile tab bar (hidden on desktop) -->
     <bottom>
         <HBox fx:id="mobileNav" styleClass="tab-bar" spacing="0" alignment="CENTER"
               managed="false" visible="false">
 
-            <Button fx:id="tabActivities"     text="A"  styleClass="tab-btn" onAction="#showActivities"      HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Button fx:id="tabProfile"        text="P"     styleClass="tab-btn" onAction="#showProfile"         HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Button fx:id="tabHistory"        text="H"     styleClass="tab-btn" onAction="#showSessionHistory"  HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Button fx:id="tabMaps"           text="M"        styleClass="tab-btn" onAction="#showMapManagement"   HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Button fx:id="tabSignOut"        text="S"    styleClass="tab-btn" onAction="#handleLogout"        HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button fx:id="tabActivities" text="A" styleClass="tab-btn" onAction="#showActivities" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button fx:id="tabProfile" text="P" styleClass="tab-btn" onAction="#showProfile" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button fx:id="tabHistory" text="H" styleClass="tab-btn" onAction="#showSessionHistory" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button fx:id="tabMaps" text="M" styleClass="tab-btn" onAction="#showMapManagement" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button fx:id="tabSignOut" text="S" styleClass="tab-btn" onAction="#handleLogout" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
 
         </HBox>
     </bottom>

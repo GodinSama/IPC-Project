@@ -20,6 +20,13 @@ public class MainLayoutController {
     @FXML private HBox desktopNav;
     @FXML private HBox mobileNav;
 
+    // Desktop nav buttons
+    @FXML private Button navActivities;
+    @FXML private Button navProfile;
+    @FXML private Button navHistory;
+    @FXML private Button navMaps;
+    @FXML private Button navSignOut;
+
     // Mobile tab buttons
     @FXML private Button tabActivities;
     @FXML private Button tabProfile;
@@ -37,11 +44,13 @@ public class MainLayoutController {
                 applyLayout(newScene.getWidth());
 
                 // Update layout whenever window is resized
-                newScene.widthProperty().addListener((o, oldW, newW) -> applyLayout(newW.doubleValue())
-                );
+                newScene.widthProperty().addListener((o, oldW, newW) -> applyLayout(newW.doubleValue()));
             }
         });
 
+        // Initialize active states for the default view
+        setActiveTab(tabActivities);
+        setActiveNav(navActivities);
         loadView("/FitnessPrincess/activities/DashboardView.fxml");
     }
 
@@ -60,12 +69,36 @@ public class MainLayoutController {
 
     // Active tab highlight (mobile)
     private void setActiveTab(Button active) {
+        if (tabActivities == null) return; // Safeguard if FXML injection is incomplete
         for (Button tab : new Button[]{tabActivities, tabProfile, tabHistory, tabMaps, tabSignOut}) {
-            tab.getStyleClass().removeAll("tab-btn-active");
-            tab.getStyleClass().add("tab-btn");
+            if (tab != null) {
+                tab.getStyleClass().removeAll("tab-btn-active");
+                if (!tab.getStyleClass().contains("tab-btn")) {
+                    tab.getStyleClass().add("tab-btn");
+                }
+            }
         }
-        active.getStyleClass().removeAll("tab-btn");
-        active.getStyleClass().add("tab-btn-active");
+        if (active != null) {
+            active.getStyleClass().removeAll("tab-btn");
+            active.getStyleClass().add("tab-btn-active");
+        }
+    }
+
+    // Active nav highlight (desktop)
+    private void setActiveNav(Button active) {
+        if (navActivities == null) return; // Safeguard if FXML injection is incomplete
+        for (Button nav : new Button[]{navActivities, navProfile, navHistory, navMaps, navSignOut}) {
+            if (nav != null) {
+                nav.getStyleClass().removeAll("nav-btn-active");
+                if (!nav.getStyleClass().contains("nav-btn")) {
+                    nav.getStyleClass().add("nav-btn");
+                }
+            }
+        }
+        if (active != null) {
+            active.getStyleClass().removeAll("nav-btn");
+            active.getStyleClass().add("nav-btn-active");
+        }
     }
 
     // Core view loader
@@ -83,24 +116,28 @@ public class MainLayoutController {
     @FXML
     private void showActivities() {
         setActiveTab(tabActivities);
+        setActiveNav(navActivities);
         loadView("/FitnessPrincess/activities/DashboardView.fxml");
     }
 
     @FXML
     private void showProfile() {
         setActiveTab(tabProfile);
+        setActiveNav(navProfile);
         loadView("/FitnessPrincess/user/ProfileView.fxml");
     }
 
     @FXML
     private void showSessionHistory() {
         setActiveTab(tabHistory);
+        setActiveNav(navHistory);
         loadView("/FitnessPrincess/user/SessionHistoryView.fxml");
     }
 
     @FXML
     private void showMapManagement() {
         setActiveTab(tabMaps);
+        setActiveNav(navMaps);
         loadView("/FitnessPrincess/maps/MapManagementView.fxml");
     }
 
