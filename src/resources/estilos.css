@@ -5,33 +5,20 @@
 
 /* ── Colour palette  ── */
 .root {
-    /* Backgrounds */
-    -color-bg-primary:   #ffffff;   /* white */
-    -color-bg-secondary: #f0f7f0;   /* light mint */
-    -color-bg-surface:   #e8f3e8;   /* mint */
-
-    /* Accent */
-    -color-accent:       #2eb84b;   /* bright green */
-    -color-accent-hover: #25a040;   /* darker green on hover */
-
-    /* Text */
-    -color-text-primary:   #1a1a1a; /* main text */
-    -color-text-secondary: #4a4a4a; /* labels, hints */
-    -color-text-muted:     #a0a8a0; /* placeholders */
-
-    /* Card / dark surfaces */
-    -color-card-dark:    #2d5a3d;   /* dark green — activity cards */
-    -color-card-darker:  #1e3d2a;   /* deeper green — selected card */
-
-    /* Feedback */
+    -color-bg-primary:   #ffffff;
+    -color-bg-secondary: #f0f7f0;
+    -color-bg-surface:   #e8f3e8;
+    -color-accent:       #2eb84b;
+    -color-accent-hover: #25a040;
+    -color-text-primary:   #1a1a1a;
+    -color-text-secondary: #4a4a4a;
+    -color-text-muted:     #a0a8a0;
+    -color-card-dark:    #2d5a3d;
+    -color-card-darker:  #1e3d2a;
     -color-error:   #e74c3c;
     -color-success: #2eb84b;
-
-    /* Typography */
     -fx-font-family: "Courier New", "Courier", monospace;
     -fx-font-size:   14px;
-
-    /* Apply base colours*/
     -fx-background-color: -color-bg-primary;
     -fx-text-fill:        -color-text-primary;
 }
@@ -181,7 +168,7 @@
 /* ── View containers ─────────────────────────────────────────────────── */
 .view-container {
     -fx-background-color: -color-bg-primary;
-    -fx-padding:          32;
+    -fx-padding:          0;
 }
 
 .view-title {
@@ -294,4 +281,99 @@
     -fx-text-fill:   -color-accent;
     -fx-font-size:   12px;
     -fx-font-weight: bold;
+}
+
+/* ── Map management screen ───────────────────────────────────────────── */
+.maps-top-bar {
+    -fx-background-color: -color-bg-primary;
+    -fx-padding:          16 16 8 16;
+}
+
+.maps-title {
+    -fx-font-size:   22px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-primary;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-padding:     2 6 2 2;
+}
+
+.add-map-btn {
+    -fx-background-color:  -color-accent;
+    -fx-text-fill:         white;
+    -fx-font-size:         20px;
+    -fx-font-weight:       bold;
+    -fx-background-radius: 50;
+    -fx-min-width:         38;
+    -fx-min-height:        38;
+    -fx-max-width:         38;
+    -fx-max-height:        38;
+    -fx-cursor:            hand;
+    -fx-padding:           0;
+}
+
+.search-bar {
+    -fx-background-color:  white;
+    -fx-border-color:      #cccccc;
+    -fx-border-radius:     20;
+    -fx-background-radius: 20;
+    -fx-padding:           6 14 6 14;
+}
+
+.search-icon {
+    -fx-font-size:  13px;
+    -fx-text-fill:  -color-text-muted;
+}
+
+.search-field {
+    -fx-background-color: transparent;
+    -fx-border-color:     transparent;
+    -fx-padding:          0;
+    -fx-font-size:        13px;
+    -fx-text-fill:        -color-text-primary;
+    -fx-prompt-text-fill: -color-text-muted;
+    -fx-pref-width:       0;
+}
+
+.maps-scroll {
+    -fx-background:       transparent;
+    -fx-background-color: transparent;
+    -fx-border-color:     transparent;
+}
+
+.maps-container {
+    -fx-background-color: transparent;
+    -fx-padding:          4 16 16 16;
+}
+
+.map-card {
+    -fx-background-color:  -color-card-dark;
+    -fx-background-radius: 12;
+    -fx-padding:           12;
+}
+
+.map-thumbnail {
+    -fx-background-color:  #c8dfc8;
+    -fx-background-radius: 8;
+    -fx-min-width:         90;
+    -fx-min-height:        80;
+    -fx-max-width:         90;
+    -fx-max-height:        80;
+}
+
+.map-thumbnail-icon {
+    -fx-font-size: 30px;
+}
+
+.map-card-name {
+    -fx-text-fill:   white;
+    -fx-font-size:   14px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-wrap-text:   true;
+}
+
+.map-coord {
+    -fx-text-fill:   #a8d8a8;
+    -fx-font-size:   10px;
+    -fx-font-family: 'Courier New', monospace;
 }
