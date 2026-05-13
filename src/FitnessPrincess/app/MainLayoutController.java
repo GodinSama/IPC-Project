@@ -38,7 +38,7 @@ public class MainLayoutController {
     public void initialize() {
         rootPane.setUserData(this);
 
-        // Listen for scene attachment, then watch width
+        // Listener
         rootPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 applyLayout(newScene.getWidth());
@@ -69,7 +69,7 @@ public class MainLayoutController {
 
     // Active tab highlight (mobile)
     private void setActiveTab(Button active) {
-        if (tabActivities == null) return; // Safeguard if FXML injection is incomplete
+        if (tabActivities == null) return; // Safeguard
         for (Button tab : new Button[]{tabActivities, tabProfile, tabHistory, tabMaps, tabSignOut}) {
             if (tab != null) {
                 tab.getStyleClass().removeAll("tab-btn-active");
@@ -86,7 +86,7 @@ public class MainLayoutController {
 
     // Active nav highlight (desktop)
     private void setActiveNav(Button active) {
-        if (navActivities == null) return; // Safeguard if FXML injection is incomplete
+        if (navActivities == null) return; // Safeguard
         for (Button nav : new Button[]{navActivities, navProfile, navHistory, navMaps, navSignOut}) {
             if (nav != null) {
                 nav.getStyleClass().removeAll("nav-btn-active");
