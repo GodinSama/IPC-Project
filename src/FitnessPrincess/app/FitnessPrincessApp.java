@@ -13,7 +13,7 @@ public class FitnessPrincessApp extends Application {
         Parent root = FXMLLoader.load(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml"));
 
         Scene scene = new Scene(root, 1200, 720);
-        primaryStage.setTitle("Running la Safor");
+        primaryStage.setTitle("Fitness Princess");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
