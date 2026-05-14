@@ -16,7 +16,7 @@
     <top>
         <HBox fx:id="desktopNav" styleClass="nav-bar" spacing="8" alignment="CENTER_LEFT">
 
-            <Label text="🏃 Running la Safor" styleClass="nav-brand"/>
+            <Label text="🏃 Fitness Princess" styleClass="nav-brand"/>
 
             <Button fx:id="navActivities" text="Activities" styleClass="nav-btn" onAction="#showActivities"/>
             <Button fx:id="navProfile" text="Profile" styleClass="nav-btn" onAction="#showProfile"/>
