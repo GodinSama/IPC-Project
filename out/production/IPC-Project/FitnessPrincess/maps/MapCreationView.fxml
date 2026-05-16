@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="FitnessPrincess.maps.MapCreationController"
+            styleClass="view-container"
+            stylesheets="@../estilos.css">
+
+    <!-- ── Top navigation bar ── -->
+    <top>
+        <HBox styleClass="nav-bar" alignment="CENTER_LEFT" spacing="12">
+            <Button text="← Back" onAction="#goBack" styleClass="nav-btn"/>
+            <Label text="Create Map" styleClass="maps-title"/>
+        </HBox>
+    </top>
+
+    <center>
+    </center>
+
+</BorderPane>

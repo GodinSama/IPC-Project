@@ -327,11 +327,30 @@
 .search-field {
     -fx-background-color: transparent;
     -fx-border-color:     transparent;
-    -fx-padding:          0;
+    -fx-padding:           0;
     -fx-font-size:        13px;
     -fx-text-fill:        -color-text-primary;
     -fx-prompt-text-fill: -color-text-muted;
     -fx-pref-width:       0;
+}
+
+.delete-btn {
+    -fx-background-color: transparent;
+    -fx-border-color:     transparent;
+    -fx-background-radius: 100px;
+    -fx-border-radius:     100px;
+    -fx-padding:          0px;
+    -fx-font-size:        13px;
+    -fx-text-fill:  -color-text-muted;
+    -fx-min-width:        30px;
+    -fx-min-height:       30px;
+    -fx-max-width:        30px;
+    -fx-max-height:       30px;
+}
+
+.delete-btn:hover {
+    -fx-background-color: -color-bg-secondary;
+    -fx-border-color:     -color-bg-secondary;
 }
 
 .search-field:focused {

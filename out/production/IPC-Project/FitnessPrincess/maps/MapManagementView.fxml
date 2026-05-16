@@ -7,7 +7,7 @@
         xmlns="http://javafx.com/javafx/21"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="FitnessPrincess.maps.MapManagementController"
-        stylesheets="@/resources/estilos.css"
+        stylesheets="@../../resources/estilos.css"
         styleClass="view-container">
 
     <top>
@@ -23,6 +23,7 @@
                 <HBox alignment="CENTER_LEFT" spacing="6" styleClass="search-bar" HBox.hgrow="ALWAYS">
                     <Label text="🔍" styleClass="search-icon"/>
                     <TextField fx:id="searchField" promptText="Search maps…" styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="deleteButton" text="❌" styleClass="delete-btn" onAction="#deleteField" visible="false" />
                 </HBox>
             </HBox>
 
@@ -42,66 +43,6 @@
                         <Label text="Offline coverage for city and surroundings" styleClass="card-dark card-subtitle"/>
                         <Label text="Latitude:  39.3500 (S) to 39.5500 (N)" styleClass="map-coord"/>
                         <Label text="Longitude: -0.4500 (W) to -0.2500 (E)" styleClass="map-coord"/>
-                    </VBox>
-                </HBox>
-
-                <HBox styleClass="map-card" spacing="12" alignment="CENTER_LEFT">
-                    <StackPane styleClass="map-thumbnail">
-                        <Label text="" styleClass="map-thumbnail-icon"/>
-                    </StackPane>
-                    <VBox spacing="3" HBox.hgrow="ALWAYS">
-                        <Label text="Sierra Calderona Loop - Trail" styleClass="card-dark card-title map-card-name"/>
-                        <Label text="Trails and detailed terrain" styleClass="card-dark card-subtitle"/>
-                        <Label text="Latitude:  39.6300 (S) to 39.7800 (N)" styleClass="map-coord"/>
-                        <Label text="Longitude: -0.5800 (W) to -0.3600 (E)" styleClass="map-coord"/>
-                    </VBox>
-                </HBox>
-
-                <HBox styleClass="map-card" spacing="12" alignment="CENTER_LEFT">
-                    <StackPane styleClass="map-thumbnail">
-                        <Label text="" styleClass="map-thumbnail-icon"/>
-                    </StackPane>
-                    <VBox spacing="3" HBox.hgrow="ALWAYS">
-                        <Label text="Pirineos - Trail Running" styleClass="card-dark card-title map-card-name"/>
-                        <Label text="High mountain maps" styleClass="card-dark card-subtitle"/>
-                        <Label text="Latitude:  42.5800 (S) to 42.7200 (N)" styleClass="map-coord"/>
-                        <Label text="Longitude: -1.0000 (W) to 0.0800 (E)" styleClass="map-coord"/>
-                    </VBox>
-                </HBox>
-
-                <HBox styleClass="map-card" spacing="12" alignment="CENTER_LEFT">
-                    <StackPane styleClass="map-thumbnail">
-                        <Label text="" styleClass="map-thumbnail-icon"/>
-                    </StackPane>
-                    <VBox spacing="3" HBox.hgrow="ALWAYS">
-                        <Label text="Pirineos - Trail Running" styleClass="card-dark card-title map-card-name"/>
-                        <Label text="High mountain maps" styleClass="card-dark card-subtitle"/>
-                        <Label text="Latitude:  42.5800 (S) to 42.7200 (N)" styleClass="map-coord"/>
-                        <Label text="Longitude: -1.0000 (W) to 0.0800 (E)" styleClass="map-coord"/>
-                    </VBox>
-                </HBox>
-
-                <HBox styleClass="map-card" spacing="12" alignment="CENTER_LEFT">
-                    <StackPane styleClass="map-thumbnail">
-                        <Label text="" styleClass="map-thumbnail-icon"/>
-                    </StackPane>
-                    <VBox spacing="3" HBox.hgrow="ALWAYS">
-                        <Label text="Pirineos - Trail Running" styleClass="card-dark card-title map-card-name"/>
-                        <Label text="High mountain maps" styleClass="card-dark card-subtitle"/>
-                        <Label text="Latitude:  42.5800 (S) to 42.7200 (N)" styleClass="map-coord"/>
-                        <Label text="Longitude: -1.0000 (W) to 0.0800 (E)" styleClass="map-coord"/>
-                    </VBox>
-                </HBox>
-
-                <HBox styleClass="map-card" spacing="12" alignment="CENTER_LEFT">
-                    <StackPane styleClass="map-thumbnail">
-                        <Label text="" styleClass="map-thumbnail-icon"/>
-                    </StackPane>
-                    <VBox spacing="3" HBox.hgrow="ALWAYS">
-                        <Label text="Pirineos - Trail Running" styleClass="card-dark card-title map-card-name"/>
-                        <Label text="High mountain maps" styleClass="card-dark card-subtitle"/>
-                        <Label text="Latitude:  42.5800 (S) to 42.7200 (N)" styleClass="map-coord"/>
-                        <Label text="Longitude: -1.0000 (W) to 0.0800 (E)" styleClass="map-coord"/>
                     </VBox>
                 </HBox>
 

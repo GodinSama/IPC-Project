@@ -1,5 +1,6 @@
 package FitnessPrincess.app;
 
+import FitnessPrincess.maps.MapCreationController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -20,14 +21,12 @@ public class MainLayoutController {
     @FXML private HBox desktopNav;
     @FXML private HBox mobileNav;
 
-    // Desktop nav buttons
     @FXML private Button navActivities;
     @FXML private Button navProfile;
     @FXML private Button navHistory;
     @FXML private Button navMaps;
     @FXML private Button navSignOut;
 
-    // Mobile tab buttons
     @FXML private Button tabActivities;
     @FXML private Button tabProfile;
     @FXML private Button tabHistory;
@@ -38,38 +37,29 @@ public class MainLayoutController {
     public void initialize() {
         rootPane.setUserData(this);
 
-        // Listen for scene attachment, then watch width
         rootPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 applyLayout(newScene.getWidth());
-
-                // Update layout whenever window is resized
-                newScene.widthProperty().addListener((o, oldW, newW) -> applyLayout(newW.doubleValue()));
+                newScene.widthProperty().addListener((o, oldW, newW) ->
+                        applyLayout(newW.doubleValue()));
             }
         });
 
-        // Initialize active states for the default view
         setActiveTab(tabActivities);
         setActiveNav(navActivities);
         loadView("/FitnessPrincess/activities/DashboardView.fxml");
     }
 
-    // Responsive switch
     private void applyLayout(double width) {
         boolean isMobile = width < MOBILE_BREAKPOINT;
-
-        // Desktop nav: top bar
         desktopNav.setVisible(!isMobile);
         desktopNav.setManaged(!isMobile);
-
-        // Mobile nav: bottom tab bar
         mobileNav.setVisible(isMobile);
         mobileNav.setManaged(isMobile);
     }
 
-    // Active tab highlight (mobile)
     private void setActiveTab(Button active) {
-        if (tabActivities == null) return; // Safeguard if FXML injection is incomplete
+        if (tabActivities == null) return; // Safeguard
         for (Button tab : new Button[]{tabActivities, tabProfile, tabHistory, tabMaps, tabSignOut}) {
             if (tab != null) {
                 tab.getStyleClass().removeAll("tab-btn-active");
@@ -84,9 +74,8 @@ public class MainLayoutController {
         }
     }
 
-    // Active nav highlight (desktop)
     private void setActiveNav(Button active) {
-        if (navActivities == null) return; // Safeguard if FXML injection is incomplete
+        if (navActivities == null) return; // Safeguard
         for (Button nav : new Button[]{navActivities, navProfile, navHistory, navMaps, navSignOut}) {
             if (nav != null) {
                 nav.getStyleClass().removeAll("nav-btn-active");
@@ -101,7 +90,6 @@ public class MainLayoutController {
         }
     }
 
-    // Core view loader
     public void loadView(String fxmlPath) {
         try {
             Node view = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
@@ -112,7 +100,6 @@ public class MainLayoutController {
         }
     }
 
-    // Navigation handlers
     @FXML
     private void showActivities() {
         setActiveTab(tabActivities);
@@ -135,7 +122,7 @@ public class MainLayoutController {
     }
 
     @FXML
-    private void showMapManagement() {
+    public void showMapManagement() {
         setActiveTab(tabMaps);
         setActiveNav(navMaps);
         loadView("/FitnessPrincess/maps/MapManagementView.fxml");
@@ -152,4 +139,5 @@ public class MainLayoutController {
             e.printStackTrace();
         }
     }
+
 }
