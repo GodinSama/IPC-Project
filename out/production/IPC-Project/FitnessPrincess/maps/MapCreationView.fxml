@@ -35,6 +35,7 @@
 
                             <StackPane styleClass="drop-zone"
                                        fx:id="dropZone"
+                                       onMouseClicked="#handleDropZone"
                                        minHeight="90">
                                 <VBox alignment="CENTER" spacing="8">
                                     <Label fx:id="dropZoneIcon" text="⬆" styleClass="drop-zone-icon"/>
@@ -95,8 +96,7 @@
 
                         <!-- Save button -->
                         <HBox alignment="CENTER_RIGHT">
-                            <Button text="Save"
-                                    styleClass="save-btn" defaultButton="true"/>
+                            <Button text="Save" styleClass="save-btn" defaultButton="true" onAction="#handleSave"/>
                         </HBox>
 
                     </VBox>
