@@ -2,73 +2,149 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
+<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
 <?import javafx.scene.shape.SVGPath?>
 
-<ScrollPane fitToWidth="true" prefHeight="600.0" prefWidth="900.0" stylesheets="@../../resources/estilos.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.activities.DashboardController">
-   <content>
-      <VBox prefWidth="880.0" spacing="15.0">
+<BorderPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../../resources/estilos.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.activities.DashboardController">
+   
+   <top>
+      <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <padding>
-            <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+            <Insets bottom="15.0" left="45.0" right="45.0" top="15.0" />
          </padding>
          <children>
+            <VBox prefHeight="97.0" prefWidth="186.0" spacing="10.0">
+               <children>
+                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="186.0" text=" Monthly summary">
+                     <graphic>
+                        <Group>
+                           <children>
+                              <SVGPath content="M208,32H184V24a8,8,0,0,0-16,0v8H88V24a8,8,0,0,0-16,0v8H48A16,16,0,0,0,32,48V208a16,16,0,0,0,16,16H208a16,16,0,0,0,16-16V48A16,16,0,0,0,208,32ZM72,48v8a8,8,0,0,0,16,0V48h80v8a8,8,0,0,0,16,0V48h24V80H48V48ZM208,208H48V96H208V208Zm-68-76a12,12,0,1,1-12-12A12,12,0,0,1,140,132Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,132ZM96,172a12,12,0,1,1-12-12A12,12,0,0,1,96,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,140,172Zm44,0a12,12,0,1,1-12-12A12,12,0,0,1,184,172Z" scaleX="0.1" scaleY="0.1" strokeWidth="10.0" />
+                           </children>
+                        </Group>
+                     </graphic>
+                  </Button>
+                  <Button mnemonicParsing="false" prefHeight="30.0" prefWidth="186.0" text=" Session history">
+                     <graphic>
+                        <Group>
+                           <children>
+                              <SVGPath content="M253.66,133.66l-24,24a8,8,0,0,1-11.32,0l-24-24a8,8,0,0,1,11.32-11.32L216,132.69V128A88,88,0,0,0,56.49,76.67a8,8,0,0,1-13-9.34A104,104,0,0,1,232,128v4.69l10.34-10.35a8,8,0,0,1,11.32,11.32Zm-41.18,55A104,104,0,0,1,24,128v-4.69L13.66,133.66A8,8,0,0,1,2.34,122.34l24-24a8,8,0,0,1,11.32,0l24,24a8,8,0,0,1-11.32,11.32L40,123.31V128a87.62,87.62,0,0,0,22.24,58.41A79.66,79.66,0,0,1,98.3,157.66a48,48,0,1,1,59.4,0,79.59,79.59,0,0,1,36.08,28.78,89.68,89.68,0,0,0,5.71-7.11,8,8,0,0,1,13,9.34ZM128,152a32,32,0,1,0-32-32A32,32,0,0,0,128,152Zm0,64a88.2,88.2,0,0,0,53.92-18.49,64,64,0,0,0-107.84,0A87.57,87.57,0,0,0,128,216Z" scaleX="0.1" scaleY="0.1" strokeWidth="10.0" />
+                           </children>
+                        </Group>
+                     </graphic>
+                  </Button>
+               </children>
+            </VBox>
             
-            <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: lightgray; -fx-border-radius: 10;">
+            <Region prefHeight="70.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+            
+            <StackPane prefHeight="70.0" prefWidth="70.0">
+               <children>
+                  <Circle fill="#2ecc71" radius="23.0" stroke="TRANSPARENT" strokeType="INSIDE">
+                     <effect>
+                        <DropShadow height="25.68" offsetX="3.0" offsetY="4.0" radius="13.51" spread="0.61" width="30.36">
+                           <color>
+                              <Color red="0.8105263113975525" green="0.8105263113975525" blue="0.8105263113975525" />
+                           </color>
+                        </DropShadow>
+                     </effect></Circle>
+                  <Group>
+                     <children>
+                        <SVGPath content="M128,24A104,104,0,1,0,232,128,104.11,104.11,0,0,0,128,24Zm0,192a88,88,0,1,1,88-88A88.1,88.1,0,0,1,128,216Zm48-88a8,8,0,0,1-8,8H136v32a8,8,0,0,1-16,0V136H88a8,8,0,0,1,0-16h32V88a8,8,0,0,1,16,0v32h32A8,8,0,0,1,176,128Z" fill="WHITE" scaleX="0.25" scaleY="0.25">
+                           <effect>
+                              <DropShadow height="0.0" offsetX="3.0" offsetY="4.0" radius="6.505" spread="0.25" width="28.02">
+                                 <color>
+                                    <Color red="0.7052631378173828" green="0.6974269151687622" blue="0.6974269151687622" />
+                                 </color>
+                              </DropShadow>
+                           </effect></SVGPath>
+                     </children>
+                  </Group>
+               </children>
+            </StackPane>
+         </children>
+      </HBox>
+   </top>
+   
+   <center>
+      <ScrollPane fitToWidth="true" prefHeight="261.0" prefWidth="870.0" BorderPane.alignment="CENTER">
+         <content>
+            <VBox prefWidth="880.0" spacing="15.0">
                <padding>
                   <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                </padding>
                <children>
-                  <ImageView fitHeight="133.0" fitWidth="192.0" pickOnBounds="true" preserveRatio="true" />
-                  <Region prefHeight="138.0" prefWidth="58.0" />
-                  <VBox prefHeight="166.0" prefWidth="701.0" spacing="5.0">
+                  
+                  <HBox prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: lightgray; -fx-border-radius: 10;">
+                     <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                     </padding>
                      <children>
-                        <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Valencia Running" />
-                        <Label text="05/10/2025" textFill="gray" />
-                        <Region prefHeight="10.0" prefWidth="701.0" />
-                        <GridPane hgap="10" vgap="10">
-                          <columnConstraints>
-                            <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="30.0" />
-                            <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
-                            <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
-                          </columnConstraints>
-                          <rowConstraints>
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                          </rowConstraints>
+                        <ImageView fitHeight="133.0" fitWidth="192.0" pickOnBounds="true" preserveRatio="true" />
+                        <Region prefHeight="134.0" prefWidth="16.0" />
+                        <VBox prefHeight="166.0" prefWidth="701.0" spacing="5.0">
                            <children>
-                              <Group GridPane.columnIndex="0" GridPane.rowIndex="0">
-                                 <children><SVGPath content="M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm88-24a8,8,0,0,0-8,8V82c-6.35-7.36-12.83-14.45-20.12-21.83a96,96,0,1,0-2,137.7,8,8,0,0,0-11-11.64A80,80,0,1,1,184.54,71.4C192.68,79.64,199.81,87.58,207,96H184a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V64A8,8,0,0,0,224,56Z" scaleX="0.1" scaleY="0.1" /></children>
-                              </Group>
-                              <Label text="Time:" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-                              <Label text="1h 15min" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-                              
-                              <Group GridPane.columnIndex="0" GridPane.rowIndex="1">
-                                 <children><SVGPath content="M235.32,73.37,182.63,20.69a16,16,0,0,0-22.63,0L20.68,160a16,16,0,0,0,0,22.63l52.69,52.68a16,16,0,0,0,22.63,0L235.32,96A16,16,0,0,0,235.32,73.37ZM84.68,224,32,171.31l32-32,26.34,26.35a8,8,0,0,0,11.32-11.32L75.31,128,96,107.31l26.34,26.35a8,8,0,0,0,11.32-11.32L107.31,96,128,75.31l26.34,26.35a8,8,0,0,0,11.32-11.32L139.31,64l32-32L224,84.69Z" scaleX="0.1" scaleY="0.1" /></children>
-                              </Group>
-                              <Label text="Distance:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label text="12.5 Km" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                              
-                              <Group GridPane.columnIndex="0" GridPane.rowIndex="2">
-                                 <children><SVGPath content="M231.16,166.63l-28.63-14.31A47.74,47.74,0,0,1,176,109.39V80a8,8,0,0,0-8-8,48.05,48.05,0,0,1-48-48,8,8,0,0,0-12.83-6.37L30.13,76l-.2.16a16,16,0,0,0-1.24,23.75L142.4,213.66a8,8,0,0,0,5.66,2.34H224a16,16,0,0,0,16-16V180.94A15.92,15.92,0,0,0,231.16,166.63ZM224,200H151.37L40,88.63l12.87-9.76,38.79,38.79A8,8,0,0,0,103,106.34L65.74,69.11l40-30.31A64.15,64.15,0,0,0,160,87.5v21.89a63.65,63.65,0,0,0,35.38,57.24L224,180.94ZM70.8,184H32a8,8,0,0,1,0-16H70.8a8,8,0,1,1,0,16Zm40,24a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16h54.8A8,8,0,0,1,110.8,208Z" scaleX="0.1" scaleY="0.1" /></children>
-                              </Group>
-                              <Label text="Running" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label style="-fx-font-weight: bold; -fx-font-size: 16px;" text="Valencia Running" />
+                              <Label text="05/10/2025" textFill="gray" />
+                              <Region prefHeight="10.0" prefWidth="701.0" />
+                              <GridPane hgap="10" vgap="10">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="30.0" />
+                                  <ColumnConstraints hgrow="NEVER" minWidth="10.0" prefWidth="100.0" />
+                                  <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="100.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Group GridPane.columnIndex="0" GridPane.rowIndex="0">
+                                       <children><SVGPath content="M136,80v43.47l36.12,21.67a8,8,0,0,1-8.24,13.72l-40-24A8,8,0,0,1,120,128V80a8,8,0,0,1,16,0Zm88-24a8,8,0,0,0-8,8V82c-6.35-7.36-12.83-14.45-20.12-21.83a96,96,0,1,0-2,137.7,8,8,0,0,0-11-11.64A80,80,0,1,1,184.54,71.4C192.68,79.64,199.81,87.58,207,96H184a8,8,0,0,0,0,16h40a8,8,0,0,0,8-8V64A8,8,0,0,0,224,56Z" scaleX="0.1" scaleY="0.1" /></children>
+                                    </Group>
+                                    <Label text="Time:" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                    <Label text="1h 15min" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+                                    
+                                    <Group GridPane.columnIndex="0" GridPane.rowIndex="1">
+                                       <children><SVGPath content="M235.32,73.37,182.63,20.69a16,16,0,0,0-22.63,0L20.68,160a16,16,0,0,0,0,22.63l52.69,52.68a16,16,0,0,0,22.63,0L235.32,96A16,16,0,0,0,235.32,73.37ZM84.68,224,32,171.31l32-32,26.34,26.35a8,8,0,0,0,11.32-11.32L75.31,128,96,107.31l26.34,26.35a8,8,0,0,0,11.32-11.32L107.31,96,128,75.31l26.34,26.35a8,8,0,0,0,11.32-11.32L139.31,64l32-32L224,84.69Z" scaleX="0.1" scaleY="0.1" /></children>
+                                    </Group>
+                                    <Label text="Distance:" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                    <Label text="12.5 Km" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                                    
+                                    <Group GridPane.columnIndex="0" GridPane.rowIndex="2">
+                                       <children><SVGPath content="M231.16,166.63l-28.63-14.31A47.74,47.74,0,0,1,176,109.39V80a8,8,0,0,0-8-8,48.05,48.05,0,0,1-48-48,8,8,0,0,0-12.83-6.37L30.13,76l-.2.16a16,16,0,0,0-1.24,23.75L142.4,213.66a8,8,0,0,0,5.66,2.34H224a16,16,0,0,0,16-16V180.94A15.92,15.92,0,0,0,231.16,166.63ZM224,200H151.37L40,88.63l12.87-9.76,38.79,38.79A8,8,0,0,0,103,106.34L65.74,69.11l40-30.31A64.15,64.15,0,0,0,160,87.5v21.89a63.65,63.65,0,0,0,35.38,57.24L224,180.94ZM70.8,184H32a8,8,0,0,1,0-16H70.8a8,8,0,1,1,0,16Zm40,24a8,8,0,0,1-8,8H48a8,8,0,0,1,0-16h54.8A8,8,0,0,1,110.8,208Z" scaleX="0.1" scaleY="0.1" /></children>
+                                    </Group>
+                                    <Label text="Running" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                                 </children>
+                              </GridPane>
                            </children>
-                        </GridPane>
+                        </VBox>
                      </children>
-                  </VBox>
-               </children>
-            </HBox>
-            
-         </children>
-      </VBox>
-   </content>
-</ScrollPane>
+                     <effect>
+                        <DropShadow height="23.34" offsetX="3.0" offsetY="3.0" radius="14.254999999999999" width="35.68">
+                           <color>
+                              <Color red="0.7052631378173828" green="0.6634697914123535" blue="0.6634697914123535" />
+                           </color>
+                        </DropShadow>
+                     </effect>
+                  </HBox>
+                  </children>
+            </VBox>
+         </content>
+      </ScrollPane>
+   </center>
+</BorderPane>
