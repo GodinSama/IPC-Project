@@ -10,6 +10,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -19,6 +23,9 @@ import javafx.stage.Stage;
 import upv.ipc.sportlib.MapRegion;
 import upv.ipc.sportlib.SportActivityApp;
 
+import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import java.net.URL;
 import java.util.List;
 import java.util.Objects;
@@ -46,11 +53,37 @@ public class MapManagementController implements Initializable {
         mapCard.getStyleClass().add("map-card");
         mapCard.setAlignment(Pos.CENTER_LEFT);
 
+        // --- Thumbnail using a static map image ---
         StackPane thumbnail = new StackPane();
         thumbnail.getStyleClass().add("map-thumbnail");
-        Label icon = new Label("");
-        icon.getStyleClass().add("map-thumbnail-icon");
-        thumbnail.getChildren().add(icon);
+
+        String imageUrl = new java.io.File(region.getImagePath()).toURI().toString();
+
+        // Load synchronously (false) so ImagePattern doesn't throw "Image not yet loaded"
+        Image img = new Image(imageUrl, false);
+        Rectangle mapImage = new Rectangle(84, 74);
+
+        // Native rounding for the square
+        mapImage.setArcWidth(20);
+        mapImage.setArcHeight(20);
+        mapImage.getStyleClass().add("map-thumbnail-image");
+
+        // Fallback icon in case image fails to load
+        Label fallbackIcon = new Label("🗺");
+        fallbackIcon.getStyleClass().add("map-thumbnail-icon");
+
+        if (img.isError()) {
+            thumbnail.getChildren().setAll(fallbackIcon);
+        } else {
+            // Create a zoomed-in effect using ImagePattern coordinates.
+            // width/height of 2.0 makes the image 2x larger inside the shape.
+            // x/y of -0.5 shifts the starting point to keep the zoom perfectly centered.
+            double zoomFactor = 16.0;
+            double offset = (1.0 - zoomFactor) / 2.0;
+            mapImage.setFill(new ImagePattern(img, offset, offset, zoomFactor, zoomFactor, true));
+
+            thumbnail.getChildren().add(mapImage);
+        }
 
         VBox infoBox = new VBox(3);
         HBox.setHgrow(infoBox, Priority.ALWAYS);

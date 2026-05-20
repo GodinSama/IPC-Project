@@ -390,7 +390,7 @@
 
 .map-thumbnail {
     -fx-background-color:  #c8dfc8;
-    -fx-background-radius: 8;
+    -fx-background-radius: 12;
     -fx-min-width:         90;
     -fx-min-height:        80;
     -fx-max-width:         90;
