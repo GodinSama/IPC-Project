@@ -1,8 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-    <Label text="This page is under construction!" style="-fx-font-size: 24px;"/>
-    <Label text="MapManagement" style="-fx-font-size: 18px;"/>
-</VBox>
+<BorderPane
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="FitnessPrincess.maps.MapManagementController"
+        stylesheets="@../../resources/estilos.css"
+        styleClass="view-container">
+
+    <top>
+        <VBox styleClass="maps-top-bar" spacing="12">
+
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <Label text="My maps and regions" styleClass="maps-title"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button fx:id="addMapBtn" text="+" onAction="#onAddMap" styleClass="add-map-btn"/>
+            </HBox>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <HBox alignment="CENTER_LEFT" spacing="6" styleClass="search-bar" HBox.hgrow="ALWAYS">
+                    <Label text="🔍" styleClass="search-icon"/>
+                    <TextField fx:id="searchField" promptText="Search maps…" styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="deleteButton" text="❌" styleClass="delete-btn" onAction="#deleteField" visible="false" />
+                </HBox>
+            </HBox>
+
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fx:id="mapsScrollPane" fitToWidth="true" styleClass="maps-scroll" hbarPolicy="NEVER" vbarPolicy="NEVER">
+            <VBox fx:id="mapsContainer" spacing="12" styleClass="maps-container"/> <!-- Needs child, Maybe a better way to do this? -->
+        </ScrollPane>
+    </center>
+
+</BorderPane>

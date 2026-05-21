@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="FitnessPrincess.maps.MapCreationController"
+            styleClass="view-container"
+            stylesheets="@../../resources/estilos.css">
+
+    <!-- Top -->
+    <top>
+        <HBox styleClass="nav-bar" alignment="CENTER_LEFT" spacing="12">
+            <Button text="Back" onAction="#goBack" styleClass="nav-btn"/>
+            <Label text="Create Map" styleClass="maps-title"/>
+        </HBox>
+    </top>
+
+    <!-- Center -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="scroll-transparent">
+            <content>
+                <VBox alignment="TOP_CENTER" style="-fx-padding: 32 24 32 24;">
+
+                    <!-- Card -->
+                    <VBox styleClass="map-creation-card" spacing="20"
+                          maxWidth="420" minWidth="320">
+
+                        <!-- ── Upload section ── -->
+                        <VBox spacing="8">
+                            <Label text="Upload" styleClass="field-label"/>
+
+                            <StackPane styleClass="drop-zone"
+                                       fx:id="dropZone"
+                                       onMouseClicked="#handleDropZone"
+                                       minHeight="90">
+                                <VBox alignment="CENTER" spacing="8">
+                                    <Label fx:id="dropZoneIcon" text="⬆" styleClass="drop-zone-icon"/>
+                                    <Label fx:id="dropZoneLabel" text="Upload your file here" styleClass="drop-zone-text"/>
+                                </VBox>
+                            </StackPane>
+                        </VBox>
+
+                        <!-- Map name -->
+                        <VBox spacing="8">
+                            <Label text="Map name" styleClass="field-label"/>
+                            <TextField fx:id="mapNameField"
+                                       promptText="Enter map name"
+                                       styleClass="input-field"/>
+                        </VBox>
+
+                        <!-- Latitude -->
+                        <VBox spacing="8">
+                            <HBox alignment="CENTER">
+                                <Separator HBox.hgrow="ALWAYS"/>
+                                <Label text="  Latitude  " styleClass="coord-section-label"/>
+                                <Separator HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                            <HBox spacing="12">
+                                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                    <Label text="Minimum" styleClass="coord-label"/>
+                                    <TextField fx:id="latMinField" promptText="39.3500" styleClass="input-field"/>
+                                </VBox>
+                                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                    <Label text="Maximum" styleClass="coord-label"/>
+                                    <TextField fx:id="latMaxField" promptText="39.5500" styleClass="input-field"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Longitude -->
+                        <VBox spacing="8">
+                            <HBox alignment="CENTER">
+                                <Separator HBox.hgrow="ALWAYS"/>
+                                <Label text="  Longitude  " styleClass="coord-section-label"/>
+                                <Separator HBox.hgrow="ALWAYS"/>
+                            </HBox>
+                            <HBox spacing="12">
+                                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                    <Label text="Minimum" styleClass="coord-label"/>
+                                    <TextField fx:id="lonMinField" promptText="-0.4500" styleClass="input-field"/>
+                                </VBox>
+                                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                    <Label text="Maximum" styleClass="coord-label"/>
+                                    <TextField fx:id="lonMaxField" promptText="-0.2500" styleClass="input-field"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Error label -->
+                        <Label fx:id="errorLabel" styleClass="error-label"
+                               wrapText="true" visible="false" managed="false"/>
+
+                        <!-- Save button -->
+                        <HBox alignment="CENTER_RIGHT">
+                            <Button text="Save" styleClass="save-btn" defaultButton="true" onAction="#handleSave"/>
+                        </HBox>
+
+                    </VBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
