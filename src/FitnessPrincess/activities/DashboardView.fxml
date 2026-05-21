@@ -5,6 +5,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -21,15 +22,32 @@
    
    <top>
         <VBox spacing="12" styleClass="maps-top-bar">
-            <HBox alignment="CENTER_LEFT" spacing="10">
-                <Label text="My activities" styleClass="maps-title"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                
-                <Button text="Monthly Summary" styleClass="secondary-btn" onAction="#onShowSummary"/>
-                <Button text="Session History" styleClass="secondary-btn" onAction="#onShowHistory"/>
-                
-                <Button text="+" styleClass="add-map-btn" onAction="#onAddActivity"/>
-            </HBox>
+            
+            <BorderPane style="-fx-padding: 0 0 15 0;">
+    
+                <left>
+                    <Label text="My activities" styleClass="view-title" BorderPane.alignment="CENTER"/>
+                </left>
+
+                <center>
+                    <FlowPane hgap="10" vgap="10" alignment="CENTER_RIGHT" style="-fx-padding: 0 20 0 20;">
+                        <Button text="📅 Monthly summary" styleClass="secondary-btn" onAction="#onShowSummary"/>
+                        <Button text="🔄 Session history" styleClass="secondary-btn" onAction="#onShowHistory"/>
+                    </FlowPane>
+                </center>
+
+                <right>
+                    <Button text="+" 
+                            styleClass="primary-btn, add-btn" 
+                            onAction="#onAddActivity" 
+                            BorderPane.alignment="CENTER"
+                            minWidth="40" maxWidth="40" prefWidth="40"
+                            minHeight="40" maxHeight="40" prefHeight="40"
+                            alignment="CENTER" textAlignment="CENTER"
+                            style="-fx-padding: 0; -fx-font-weight: bold;" />
+                </right>
+
+            </BorderPane>
 
             <HBox alignment="CENTER_LEFT" spacing="10">
                 <HBox alignment="CENTER_LEFT" spacing="6" styleClass="search-bar" HBox.hgrow="ALWAYS">

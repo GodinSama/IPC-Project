@@ -101,7 +101,7 @@ public class MainLayoutController {
     }
 
     @FXML
-    private void showActivities() {
+    public void showActivities() {
         setActiveTab(tabActivities);
         setActiveNav(navActivities);
         loadView("/FitnessPrincess/activities/DashboardView.fxml");

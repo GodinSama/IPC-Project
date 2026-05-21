@@ -1,6 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.geometry.*?>
 
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="FitnessPrincess.activities.ActivityMapController"
+           styleClass="view-container, summary-overlay"
+           stylesheets="@../../resources/estilos.css">
 
-<Button mnemonicParsing="false" prefHeight="128.0" prefWidth="220.0" style="-fx-background-color: green;" text="Button" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" />
+    <VBox alignment="TOP_CENTER" spacing="25" maxWidth="500" styleClass="summary-card">
+        
+        <HBox alignment="TOP_RIGHT">
+            <Button text="X" onAction="#goBack" styleClass="summary-close-btn"
+                    minWidth="28" minHeight="28" maxWidth="28" maxHeight="28" alignment="CENTER"/>
+        </HBox>
+
+        <Label text="Create Activity" styleClass="summary-title"/>
+
+        <VBox spacing="20">
+            
+            <VBox spacing="12">
+                <HBox alignment="CENTER_LEFT" spacing="6">
+                    <Label text="📤" styleClass="field-label"/>
+                    <Label text="Upload Route" styleClass="field-label"/>
+                </HBox>
+
+                <StackPane styleClass="drop-zone" fx:id="dropZone" minHeight="120">
+                    <VBox alignment="CENTER" spacing="8">
+                        <Label fx:id="dropZoneLabel" text="Upload your .gpx file here" styleClass="drop-zone-text"/>
+                        <Label text="📦" styleClass="drop-zone-icon"/>
+                    </VBox>
+                </StackPane>
+
+                <HBox alignment="CENTER">
+                    <Button text="Import file" styleClass="primary-btn" onAction="#handleImport"/>
+                </HBox>
+            </VBox>
+
+            <VBox spacing="8">
+                <Label text="Activity Name" styleClass="field-label"/>
+                <TextField fx:id="activityNameField" promptText="e.g. Sunday Morning Run" styleClass="input-field"/>
+            </VBox>
+
+            <Label fx:id="errorLabel" styleClass="error-label" wrapText="true" visible="false" managed="false"/>
+
+            <HBox alignment="CENTER_RIGHT">
+                <Button text="Save Activity" styleClass="save-btn" defaultButton="true" onAction="#handleSave"/>
+            </HBox>
+
+        </VBox>
+        </VBox>
+</StackPane>

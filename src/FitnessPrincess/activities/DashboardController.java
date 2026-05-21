@@ -75,9 +75,71 @@ dist.getStyleClass().add("card-value");
 
     @FXML private void onClearSearch() { searchField.clear(); }
     
-    @FXML private void onAddActivity() { /* Lógica para abrir creación */ }
+    // --- To add a new activity ---
+    @FXML private void onAddActivity() { 
+        try {
+            javafx.stage.Stage mainWindow = (javafx.stage.Stage) searchField.getScene().getWindow();
+
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("/FitnessPrincess/activities/ActivityMapView.fxml")
+            );
+            javafx.scene.Parent root = loader.load();
+
+            javafx.stage.Stage popupStage = new javafx.stage.Stage();
+            popupStage.initOwner(mainWindow);
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
+
+            javafx.scene.Scene scene = new javafx.scene.Scene(root, mainWindow.getWidth(), mainWindow.getHeight());
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+
+            popupStage.setScene(scene);
+
+            popupStage.setX(mainWindow.getX());
+            popupStage.setY(mainWindow.getY());
+
+            popupStage.show();
+
+        } catch (Exception e) {
+            System.err.println("Error al intentar abrir la pantalla de crear actividad.");
+            e.printStackTrace();
+        }
+    }
     
-    @FXML private void onShowSummary() { /* Lógica para abrir resumen */ }
+    // --- To show the monthly summary ---
+    @FXML private void onShowSummary() { 
+        try {
+            javafx.stage.Stage mainWindow = (javafx.stage.Stage) searchField.getScene().getWindow();
+
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                getClass().getResource("/FitnessPrincess/user/MonthlySummaryView.fxml")
+            );
+            javafx.scene.Parent root = loader.load();
+
+            javafx.stage.Stage popupStage = new javafx.stage.Stage();
+
+            popupStage.initOwner(mainWindow); 
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL); 
+            popupStage.initStyle(javafx.stage.StageStyle.TRANSPARENT); 
+
+            javafx.scene.Scene scene = new javafx.scene.Scene(root, mainWindow.getWidth(), mainWindow.getHeight());
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+
+            popupStage.setScene(scene);
+
+            popupStage.setX(mainWindow.getX());
+            popupStage.setY(mainWindow.getY());
+
+            popupStage.show();
+
+        } catch (Exception e) {
+            System.err.println("Error trying to open Monthly Summary.");
+            e.printStackTrace();
+        }
+    }
     
-    @FXML private void onShowHistory() { /* Lógica para abrir historial */ }
+    // --- To show the session history ---
+    @FXML private void onShowHistory() { 
+        
+    }
 }

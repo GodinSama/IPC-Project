@@ -30,23 +30,8 @@ public class ActivityMapController {
 
     @FXML
     private void goBack(ActionEvent event) {
-        try {
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-
-            FXMLLoader loader = new FXMLLoader(
-                    Objects.requireNonNull(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml"))
-            );
-            Parent root = loader.load();
-
-            // MainLayout activates Actividades
-            MainLayoutController mainCtrl = loader.getController();
-            mainCtrl.showActivities();
-
-            stage.setScene(new Scene(root));
-        } catch (Exception e) {
-            System.err.println("Could not return to Dashboard.");
-            e.printStackTrace();
-        }
+        Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        stage.close();
     }
 
     @FXML
@@ -54,14 +39,14 @@ public class ActivityMapController {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Select a GPX File to Upload");
 
-        // Only GPX or XML files
+        // --- Only GPX or XML files ---
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("GPX Files", "*.gpx", "*.xml")
         );
 
         Stage stage = (Stage) dropZoneLabel.getScene().getWindow();
 
-        // Open File Explorer
+        // --- Open File Explorer --- 
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
@@ -84,11 +69,10 @@ public class ActivityMapController {
         }
 
         try {
-            // Add new activity
-            
+            // --- Add new activity ---
             Activity nuevaActividad = app.importActivity(selectedGpxFile);
 
-            // If the user wrote a name
+            // --- If the user wrote a name ---
             if (!activityName.isEmpty()) { 
                 nuevaActividad.setName(activityName);
             }

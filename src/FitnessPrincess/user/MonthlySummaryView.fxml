@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.SVGPath?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="FitnessPrincess.user.MonthlySummaryController"
+           stylesheets="@../../resources/estilos.css"
+           styleClass="view-container, summary-overlay">
+
+    <VBox alignment="TOP_CENTER" spacing="20" maxWidth="500" styleClass="summary-card">
+        
+        <HBox alignment="TOP_RIGHT">
+            <Button text="X" onAction="#goBack" styleClass="summary-close-btn"
+                    minWidth="28" minHeight="28" maxWidth="28" maxHeight="28" alignment="CENTER"/>
+        </HBox>
+
+        <Label text="Monthly summary" styleClass="summary-title"/>
+
+        <BorderPane styleClass="month-selector" maxWidth="Infinity">
+            <left>
+                <Button text="&lt;" onAction="#prevMonth" styleClass="month-nav-btn" BorderPane.alignment="CENTER"/>
+            </left>
+            <center>
+                <Label fx:id="monthLabel" text="May 2026" styleClass="month-label" alignment="CENTER" BorderPane.alignment="CENTER"/>
+            </center>
+            <right>
+                <Button fx:id="nextBtn" text="&gt;" onAction="#nextMonth" styleClass="month-nav-btn" BorderPane.alignment="CENTER"/>
+            </right>
+        </BorderPane>
+
+        <GridPane hgap="15" vgap="15" alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints percentWidth="50.0"/>
+                <ColumnConstraints percentWidth="50.0"/>
+            </columnConstraints>
+            
+            <VBox GridPane.columnIndex="0" GridPane.rowIndex="0" spacing="10" styleClass="stat-card">
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <SVGPath content="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10 10-4.5 10-10S17.5 2 12 2zm4.2 14.2L11 13V7h1.5v5.2l4.5 2.7-.8 1.3z" fill="WHITE" />
+                    <Label text="Total&#10;time" styleClass="stat-title"/>
+                </HBox>
+                <Label fx:id="timeLabel" text="14h 30min" styleClass="stat-value"/>
+            </VBox>
+
+            <VBox GridPane.columnIndex="1" GridPane.rowIndex="0" spacing="10" styleClass="stat-card">
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <SVGPath content="M15 19l-6-2.1-6 2.1V5l6-2.1 6 2.1 5.6-2v14l-5.6 2zm-7-2.6V6.1l-4 1.4v10.3l4-1.4zm6-1.3V4.8l-4-1.4v10.3l4 1.4z" fill="WHITE" />
+                    <Label text="Cumulative&#10;distance" styleClass="stat-title"/>
+                </HBox>
+                <Label fx:id="distanceLabel" text="125.4 Km" styleClass="stat-value"/>
+            </VBox>
+
+            <VBox GridPane.columnIndex="0" GridPane.rowIndex="1" spacing="10" styleClass="stat-card">
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <SVGPath content="M16 6l2.3 2.3-4.9 4.9-4-4-7.4 7.4 1.4 1.4 6-6 4 4 6.3-6.3L22 12V6z" fill="WHITE" />
+                    <Label text="Total&#10;ascent" styleClass="stat-title"/>
+                </HBox>
+                <Label fx:id="ascentLabel" text="+ 1200 m" styleClass="stat-value"/>
+            </VBox>
+
+            <VBox GridPane.columnIndex="1" GridPane.rowIndex="1" spacing="10" styleClass="stat-card">
+                <HBox spacing="8" alignment="CENTER_LEFT">
+                    <SVGPath content="M16 18l2.3-2.3-4.9-4.9-4 4-7.4-7.4 1.4-1.4 6 6 4-4 6.3 6.3L22 12v6z" fill="WHITE" />
+                    <Label text="Total&#10;descent" styleClass="stat-title"/>
+                </HBox>
+                <Label fx:id="descentLabel" text="- 1150 m" styleClass="stat-value"/>
+            </VBox>
+
+        </GridPane>
+    </VBox>
+</StackPane>
