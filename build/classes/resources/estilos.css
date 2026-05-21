@@ -110,6 +110,11 @@
     -fx-background-color: -color-bg-secondary;
 }
 
+.secondary-btn:pressed {
+    -fx-translate-y: 2;
+    -fx-background-color: -color-bg-secondary;
+}
+
 .link-btn {
     -fx-background-color: transparent;
     -fx-text-fill:        -color-accent;
