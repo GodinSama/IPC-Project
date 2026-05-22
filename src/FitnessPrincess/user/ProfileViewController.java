@@ -16,9 +16,11 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 /**
@@ -27,6 +29,9 @@ import javafx.stage.Stage;
  * @author dgimb
  */
 public class ProfileViewController implements Initializable {
+    
+    
+    
 
     @FXML
     private Button botonx;
@@ -48,6 +53,12 @@ public class ProfileViewController implements Initializable {
     private ImageView currentavatar;
     
     private File currentAvatarFile;
+    @FXML
+    private PasswordField passwordhided;
+    
+    private boolean togglepass;
+    
+    
 
     /**
      * Initializes the controller class.
@@ -55,7 +66,14 @@ public class ProfileViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        
         nickname.setDisable(true);
+        
+        
+        password.textProperty().bindBidirectional(passwordhided.textProperty());
+        password.setVisible(false);
+        togglepass = false;
+        
     }    
     public void recibirNuevoAvatar(File nuevaFoto) {
         if (nuevaFoto != null) {
@@ -67,6 +85,7 @@ public class ProfileViewController implements Initializable {
             currentavatar.setImage(image);
         }
     }
+    
     @FXML
     private void darlex(ActionEvent event) {
     }
@@ -84,10 +103,10 @@ public class ProfileViewController implements Initializable {
             //controlador
             AvatarController avatarCtrl = loader.getController();
             
-           
+            
             avatarCtrl.setModoRegistro(false);
             
-            // 3. Si ya teníamos una foto elegida, se la pasamos
+            
             if (this.currentAvatarFile != null) {
                 avatarCtrl.recibirNuevoAvatar(this.currentAvatarFile);
             }
@@ -109,6 +128,26 @@ public class ProfileViewController implements Initializable {
 
     @FXML
     private void darlesignout(ActionEvent event) {
+    }
+
+    @FXML
+    private void passwordHide(MouseEvent event) {
+        
+        if(togglepass){
+          
+         password.setVisible(false);
+         passwordhided.setVisible(true);
+         
+         
+        
+        togglepass = false;
+        }else{
+            
+         password.setVisible(true);
+         passwordhided.setVisible(false);
+         
+        
+         togglepass=true;}
     }
     
 }

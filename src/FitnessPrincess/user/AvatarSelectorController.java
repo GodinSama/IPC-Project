@@ -75,8 +75,10 @@ public void initialize(URL url, ResourceBundle rb) {
     @FXML
     private void darleadd(MouseEvent event) {
         
-        avatarMarcado.setOpacity(1.0);
         
+        if(avatarMarcado!=null){
+        avatarMarcado.setOpacity(1.0);
+        }
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         
         
@@ -99,12 +101,11 @@ public void initialize(URL url, ResourceBundle rb) {
             
         }
          try {
-            // 1. Cargamos Avatar.fxml (Asegúrate de que la mayúscula coincide con tu archivo real)
+            
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AvatarView.fxml"));
             Parent root = loader.load();
             
-            // ¡EL ERROR ESTABA AQUÍ! 
-            // Como cargamos Avatar.fxml, el controlador es AvatarController, no ProfileViewController
+            
             if (this.avatarSeleccionado != null) {
                 AvatarController avatarCtrl = loader.getController();
                 avatarCtrl.recibirNuevoAvatar(this.avatarSeleccionado);
@@ -124,12 +125,10 @@ public void initialize(URL url, ResourceBundle rb) {
     @FXML
     private void darledone(ActionEvent event) {
         try {
-            // 1. Cargamos Avatar.fxml (Asegúrate de que la mayúscula coincide con tu archivo real)
+            
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AvatarView.fxml"));
             Parent root = loader.load();
             
-            // ¡EL ERROR ESTABA AQUÍ! 
-            // Como cargamos Avatar.fxml, el controlador es AvatarController, no ProfileViewController
             if (this.avatarSeleccionado != null) {
                 AvatarController avatarCtrl = loader.getController();
                 avatarCtrl.recibirNuevoAvatar(this.avatarSeleccionado);
@@ -149,7 +148,7 @@ public void initialize(URL url, ResourceBundle rb) {
     @FXML
     private void darlex(ActionEvent event) {
         try {
-            // 1. También ponemos "Avatar.fxml" aquí con la A mayúscula
+            
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AvatarView.fxml"));
             Parent root = loader.load();
             

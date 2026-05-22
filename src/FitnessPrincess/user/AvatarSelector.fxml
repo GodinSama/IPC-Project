@@ -75,10 +75,10 @@
             </image>
           </ImageView>
 
-          <StackPane fx:id="btnAddAvatar" style="-fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+          <StackPane fx:id="btnAddAvatar" onMouseClicked="#darleadd" style="-fx-cursor: hand;" GridPane.columnIndex="2" GridPane.rowIndex="1">
              <children>
                 <Circle fx:id="darleadd" fill="#52d681" onMouseClicked="#darleadd" radius="45.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="3.0" />
-                <Label text="+">
+                <Label onMouseClicked="#darleadd" text="+">
                    <font>
                       <Font size="50.0" />
                    </font>
