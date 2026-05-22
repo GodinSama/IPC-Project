@@ -14,6 +14,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.PasswordField;
@@ -22,6 +23,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
+import upv.ipc.sportlib.SportActivityApp;
+import upv.ipc.sportlib.User;
 
 /**
  * FXML Controller class
@@ -58,6 +61,8 @@ public class ProfileViewController implements Initializable {
     
     private boolean togglepass;
     
+    private User user = null;
+    
     
 
     /**
@@ -66,6 +71,23 @@ public class ProfileViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        
+        try{
+            
+            SportActivityApp app = SportActivityApp.getInstance();
+            
+            user = app.getCurrentUser();
+            nickname.setText(user.getNickName());
+            Email.setText(user.getEmail());
+            passwordhided.setText(user.getPassword());
+            dateOfBirth.setValue(user.getBirthDate());
+            currentavatar.setImage(user.getAvatar());
+            
+        
+        }catch(Exception e){
+           System.out.println("Ocurrio un error al cargar los datos del usuario");
+        
+        }
         
         nickname.setDisable(true);
         
@@ -124,10 +146,39 @@ public class ProfileViewController implements Initializable {
 
     @FXML
     private void darlesave(ActionEvent event) {
+        System.out.println("LE DISTE A SAVE");
+        try{
+            
+        SportActivityApp app = SportActivityApp.getInstance();
+        user = app.getCurrentUser();
+        
+        user.setEmail(Email.getText());
+        user.setPassword(passwordhided.getText());
+        user.setBirthDate(dateOfBirth.getValue());
+        if (currentAvatarFile != null) {
+                user.setAvatarPath(currentAvatarFile.toString());
+                
+        }
+        
+        app.saveUser(user);
+        
+        }catch(Exception e){System.out.println("Error al guardar el perfil:");
+        e.printStackTrace();
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Error Crítico");
+        alert.setHeaderText(null);
+        alert.setContentText("Ha ocurrido un error inesperado al procesar los datos.");
+        alert.showAndWait();
+        }
+        
+        
+        
+        
     }
 
     @FXML
     private void darlesignout(ActionEvent event) {
+        // volver a login
     }
 
     @FXML
