@@ -55,6 +55,7 @@ public class ProfileViewController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
+        nickname.setDisable(true);
     }    
     public void recibirNuevoAvatar(File nuevaFoto) {
         if (nuevaFoto != null) {
@@ -79,6 +80,17 @@ public class ProfileViewController implements Initializable {
             
            
             Stage stage = (Stage) botonedit.getScene().getWindow();
+            
+            //controlador
+            AvatarController avatarCtrl = loader.getController();
+            
+           
+            avatarCtrl.setModoRegistro(false);
+            
+            // 3. Si ya teníamos una foto elegida, se la pasamos
+            if (this.currentAvatarFile != null) {
+                avatarCtrl.recibirNuevoAvatar(this.currentAvatarFile);
+            }
             
             
             Scene scene = new Scene(root);

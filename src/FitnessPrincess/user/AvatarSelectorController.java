@@ -12,12 +12,16 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.scene.input.MouseEvent;
+import java.net.URI;
 /**
  * FXML Controller class
  *
@@ -34,8 +38,27 @@ public class AvatarSelectorController implements Initializable {
     @FXML
     private Button botonDone;
 
-    // variable privada
+    // variables privadas creadas para metodos
+    
     private File avatarSeleccionado;
+    
+    
+    private ImageView avatarMarcado;
+    
+    
+    private final DropShadow efectoSeleccion = new DropShadow(25, Color.valueOf("#00d684"));
+    
+    
+    @FXML
+    private ImageView avatar1;
+    @FXML
+    private ImageView avatar2;
+    @FXML
+    private ImageView avatar3;
+    @FXML
+    private ImageView avatar4;
+    @FXML
+    private ImageView avatar5;
     
     
     
@@ -44,12 +67,15 @@ public class AvatarSelectorController implements Initializable {
      * Initializes the controller class.
      */
     @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // TODO
-    }    
+public void initialize(URL url, ResourceBundle rb) {
+    
+}    
+    
 
     @FXML
     private void darleadd(MouseEvent event) {
+        
+        avatarMarcado.setOpacity(1.0);
         
         Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
         
@@ -72,21 +98,42 @@ public class AvatarSelectorController implements Initializable {
             
             
         }
+         try {
+            // 1. Cargamos Avatar.fxml (Asegúrate de que la mayúscula coincide con tu archivo real)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AvatarView.fxml"));
+            Parent root = loader.load();
+            
+            // ¡EL ERROR ESTABA AQUÍ! 
+            // Como cargamos Avatar.fxml, el controlador es AvatarController, no ProfileViewController
+            if (this.avatarSeleccionado != null) {
+                AvatarController avatarCtrl = loader.getController();
+                avatarCtrl.recibirNuevoAvatar(this.avatarSeleccionado);
+            }
+            
+            stage = (Stage) botonDone.getScene().getWindow();
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("No se ha podido cargar Avatar.fxml");
+        }
     }
 
     @FXML
     private void darledone(ActionEvent event) {
-        try{
-        
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileView.fxml"));
+        try {
+            // 1. Cargamos Avatar.fxml (Asegúrate de que la mayúscula coincide con tu archivo real)
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AvatarView.fxml"));
             Parent root = loader.load();
             
-            
+            // ¡EL ERROR ESTABA AQUÍ! 
+            // Como cargamos Avatar.fxml, el controlador es AvatarController, no ProfileViewController
             if (this.avatarSeleccionado != null) {
-                ProfileViewController profileCtrl = loader.getController();
-                profileCtrl.recibirNuevoAvatar(this.avatarSeleccionado);
+                AvatarController avatarCtrl = loader.getController();
+                avatarCtrl.recibirNuevoAvatar(this.avatarSeleccionado);
             }
-            
             
             Stage stage = (Stage) botonDone.getScene().getWindow();
             Scene scene = new Scene(root);
@@ -95,20 +142,17 @@ public class AvatarSelectorController implements Initializable {
             
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("No se ha podido cargar ProfileView.fxml");
-        
-    }
-        
+            System.out.println("No se ha podido cargar Avatar.fxml");
+        }
     }
 
     @FXML
     private void darlex(ActionEvent event) {
         try {
-            
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileView.fxml"));
+            // 1. También ponemos "Avatar.fxml" aquí con la A mayúscula
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AvatarView.fxml"));
             Parent root = loader.load();
             
-           
             Stage stage = (Stage) btnClose.getScene().getWindow();
             Scene scene = new Scene(root);
             stage.setScene(scene);
@@ -116,7 +160,41 @@ public class AvatarSelectorController implements Initializable {
             
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("No se ha podido cargar ProfileView.fxml");
+            System.out.println("No se ha podido cargar Avatar.fxml");
         }
     }
-}
+
+    @FXML
+    private void seleccionarAvatarDefecto(MouseEvent event) {
+        
+        if (avatarMarcado != null) {
+            avatarMarcado.setEffect(null);
+            avatarMarcado.setOpacity(1.0);
+        }
+
+        
+        
+        ImageView imagenClickeada = (ImageView) event.getSource();
+
+        
+        imagenClickeada.setEffect(efectoSeleccion);
+
+        
+        avatarMarcado = imagenClickeada;
+        
+        
+        try {
+            // Sacamos la ruta 
+            String rutaImagen = imagenClickeada.getImage().getUrl();
+            
+            if (rutaImagen != null) {
+                // Convertimos esa ruta en un File 
+                this.avatarSeleccionado = new File(new URI(rutaImagen));
+                System.out.println("Avatar por defecto seleccionado: " + avatarSeleccionado.getName());
+                avatarMarcado.setOpacity(0.5);
+            }
+        } catch (Exception e) {
+            System.out.println("No se pudo convertir la imagen a File.");
+        }
+    }
+    }
