@@ -29,6 +29,8 @@ public class DashboardController implements Initializable {
 
     // ── Left panel controls ──────────────────────────────────────────
     @FXML private VBox activitiesContainer;
+    @FXML private TextField searchField;
+    @FXML private Button deleteButton;
 
     // ── Map panel controls ───────────────────────────────────────────
     @FXML private ComboBox<MapRegion> mapSelector;
@@ -52,6 +54,7 @@ public class DashboardController implements Initializable {
     private MapProjection currentProjection = null;
     private HBox currentSelectedRow = null;
     private boolean isProgrammaticMapChange = false;
+    private List<Activity> allUserActivities;
 
     // Custom Drag & Zoom control
     private static final double ZOOM_FACTOR = 1.15;
@@ -63,6 +66,16 @@ public class DashboardController implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         markerColorPicker.setValue(Color.web("#E74C3C"));
+
+        // Setup search listener for filtering
+        if (searchField != null) {
+            searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (deleteButton != null) {
+                    deleteButton.setVisible(newVal != null && !newVal.isEmpty());
+                }
+                filterActivities();
+            });
+        }
 
         // Hijack the ScrollPane: Kill scrollbars and default panning
         mapScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -122,6 +135,7 @@ public class DashboardController implements Initializable {
                 isProgrammaticMapChange = true;
                 mapSelector.getSelectionModel().selectFirst();
                 isProgrammaticMapChange = false;
+                filterActivities();
                 renderMap(null, mapSelector.getValue());
             }
         });
@@ -159,10 +173,39 @@ public class DashboardController implements Initializable {
         SportActivityApp app = SportActivityApp.getInstance();
         if (app.getCurrentUser() == null) return;
 
-        List<Activity> activities = app.getUserActivities();
+        allUserActivities = app.getUserActivities();
+        filterActivities();
+    }
+
+    private void filterActivities() {
+        if (allUserActivities == null) return;
         activitiesContainer.getChildren().clear();
-        for (Activity activity : activities) {
-            activitiesContainer.getChildren().add(buildActivityRow(activity));
+
+        MapRegion selectedMap = mapSelector.getValue();
+        String searchText = searchField != null && searchField.getText() != null ? searchField.getText().toLowerCase() : "";
+
+        for (Activity activity : allUserActivities) {
+            // Filter by map
+            boolean mapMatches = false;
+            if (selectedMap != null) {
+                MapRegion suggested = activity.getSuggestedMap();
+                if (suggested != null && suggested.getName().equals(selectedMap.getName())) {
+                    mapMatches = true;
+                }
+            }
+
+            // Filter by search text
+            boolean textMatches = true;
+            if (!searchText.isEmpty()) {
+                String name = activity.getName() == null ? "Unnamed Route" : activity.getName();
+                if (!name.toLowerCase().contains(searchText)) {
+                    textMatches = false;
+                }
+            }
+
+            if (mapMatches && textMatches) {
+                activitiesContainer.getChildren().add(buildActivityRow(activity));
+            }
         }
     }
 
@@ -171,6 +214,19 @@ public class DashboardController implements Initializable {
         row.getStyleClass().add("map-list-row");
         row.setAlignment(Pos.CENTER_LEFT);
         row.setMinHeight(68);
+
+        // Thumbnail stylized identically to MapManagementController
+        StackPane thumb = new StackPane();
+        thumb.getStyleClass().add("map-list-thumb");
+
+        Rectangle rect = new Rectangle(48, 48);
+        rect.setArcWidth(20);
+        rect.setArcHeight(20);
+        rect.setFill(Color.web("#2d5a3d"));
+
+        Label ico = new Label("🏃");
+        ico.setStyle("-fx-font-size:20px;");
+        thumb.getChildren().addAll(rect, ico);
 
         VBox info = new VBox(2);
         HBox.setHgrow(info, Priority.ALWAYS);
@@ -184,7 +240,7 @@ public class DashboardController implements Initializable {
         sub.getStyleClass().add("list-row-sub");
 
         info.getChildren().addAll(name, sub);
-        row.getChildren().add(info);
+        row.getChildren().addAll(thumb, info);
 
         row.setOnMouseClicked(e -> {
             if (currentSelectedRow != null) {
@@ -211,9 +267,28 @@ public class DashboardController implements Initializable {
     private void onMapSelected() {
         if (isProgrammaticMapChange) return;
         MapRegion selectedRegion = mapSelector.getValue();
+
         if (selectedRegion != null) {
+            filterActivities(); // Reload list to only show maps for this region
+
+            // Unset activity if it doesn't belong to the newly selected map
+            if (currentActivity != null) {
+                MapRegion suggested = currentActivity.getSuggestedMap();
+                if (suggested == null || !suggested.getName().equals(selectedRegion.getName())) {
+                    currentActivity = null;
+                    if (currentSelectedRow != null) {
+                        currentSelectedRow.getStyleClass().remove("map-list-row-selected");
+                        currentSelectedRow = null;
+                    }
+                }
+            }
             renderMap(currentActivity, selectedRegion);
         }
+    }
+
+    @FXML
+    private void deleteField() {
+        if (searchField != null) searchField.clear();
     }
 
     private void renderMap(Activity activity, MapRegion region) {
@@ -309,7 +384,6 @@ public class DashboardController implements Initializable {
         }
     }
 
-    // Zoom logic for UI buttons (Zooms into the center of the screen)
     @FXML
     private void onZoomIn() {
         if (currentProjection != null) {
@@ -328,28 +402,21 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /**
-     * Core math function to zoom in/out while keeping a specific screen coordinate (the pivot)
-     * locked in place, exactly like Google Maps.
-     */
     private void zoomAroundPoint(double factor, double pivotX, double pivotY) {
         if (currentProjection == null) return;
 
         double targetZoom = currentZoom * factor;
 
-        // Clamp the zoom to prevent white space
         double minZoom = calculateMinZoom();
         if (targetZoom < minZoom) targetZoom = minZoom;
 
-        if (targetZoom == currentZoom) return; // Zoom is maxed out/minned out
+        if (targetZoom == currentZoom) return;
 
-        // 1. Calculate the exact map pixel underneath the cursor right now
         double mapPixelX = (pivotX - mapTranslateX) / currentZoom;
         double mapPixelY = (pivotY - mapTranslateY) / currentZoom;
 
         currentZoom = targetZoom;
 
-        // 2. Adjust translation so that same map pixel stays exactly under the cursor after scaling
         mapTranslateX = pivotX - (mapPixelX * currentZoom);
         mapTranslateY = pivotY - (mapPixelY * currentZoom);
 

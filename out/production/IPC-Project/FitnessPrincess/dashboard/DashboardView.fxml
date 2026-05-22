@@ -24,7 +24,11 @@
                         <Label text="Dashboard" styleClass="maps-title"/>
                         <Region HBox.hgrow="ALWAYS"/>
                     </HBox>
-                    <Label text="Select an activity to view its interactive map. You can drag to move the map." wrapText="true" styleClass="detail-subtitle"/>
+                    <HBox fx:id="searchBar" styleClass="search-bar" alignment="CENTER_LEFT" spacing="8">
+                        <Label text="🔍" styleClass="search-icon"/>
+                        <TextField fx:id="searchField" promptText="Search activities..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="deleteButton" text="✖" visible="false" onAction="#deleteField" styleClass="delete-btn"/>
+                    </HBox>
                 </VBox>
 
                 <ScrollPane fitToWidth="true" styleClass="maps-scroll" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
@@ -48,8 +52,8 @@
 
                         <ColorPicker fx:id="markerColorPicker" styleClass="secondary-btn" />
                         <ToggleButton fx:id="addMarkerToggle" text="📍 Add Marker" styleClass="secondary-btn"/>
-                        <Button text="➖ Zoom Out" onAction="#onZoomOut" styleClass="secondary-btn"/>
-                        <Button text="➕ Zoom In" onAction="#onZoomIn" styleClass="secondary-btn"/>
+                        <Button text="➖" onAction="#onZoomOut" styleClass="secondary-btn"/>
+                        <Button text="➕" onAction="#onZoomIn" styleClass="secondary-btn"/>
                     </HBox>
                 </top>
 
