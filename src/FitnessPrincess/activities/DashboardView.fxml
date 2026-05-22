@@ -1,8 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-    <Label text="This page is under construction!" style="-fx-font-size: 24px;"/>
-    <Label text="DashBoard" style="-fx-font-size: 18px;"/>
-</VBox>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.paint.Color?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.shape.SVGPath?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" stylesheets="@../../resources/estilos.css" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.activities.DashboardController">
+   
+   <top>
+        <VBox spacing="12" styleClass="maps-top-bar">
+            
+            <BorderPane style="-fx-padding: 0 0 15 0;">
+    
+                <left>
+                    <Label text="My activities" styleClass="view-title" BorderPane.alignment="CENTER"/>
+                </left>
+
+                <center>
+                    <FlowPane hgap="10" vgap="10" alignment="CENTER_RIGHT" style="-fx-padding: 0 20 0 20;">
+                        <Button text="📅 Monthly summary" styleClass="secondary-btn" onAction="#onShowSummary"/>
+                        <Button text="🔄 Session history" styleClass="secondary-btn" onAction="#onShowHistory"/>
+                    </FlowPane>
+                </center>
+
+                <right>
+                    <Button text="+" 
+                            styleClass="primary-btn, add-btn" 
+                            onAction="#onAddActivity" 
+                            BorderPane.alignment="CENTER"
+                            minWidth="40" maxWidth="40" prefWidth="40"
+                            minHeight="40" maxHeight="40" prefHeight="40"
+                            alignment="CENTER" textAlignment="CENTER"
+                            style="-fx-padding: 0; -fx-font-weight: bold;" />
+                </right>
+
+            </BorderPane>
+
+            <HBox alignment="CENTER_LEFT" spacing="10">
+                <HBox alignment="CENTER_LEFT" spacing="6" styleClass="search-bar" HBox.hgrow="ALWAYS">
+                    <Label text="🔍" styleClass="search-icon"/>
+                    <TextField fx:id="searchField" promptText="Search activities…" styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                    <Button fx:id="deleteButton" text="❌" styleClass="delete-btn" onAction="#onClearSearch" visible="false" />
+                </HBox>
+            </HBox>
+        </VBox>
+    </top>
+   
+   <center>
+        <ScrollPane fitToWidth="true" styleClass="maps-scroll" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED">
+            <VBox fx:id="activitiesContainer" spacing="12" styleClass="maps-container"/>
+        </ScrollPane>
+    </center>
+</BorderPane>
