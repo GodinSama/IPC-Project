@@ -37,6 +37,12 @@
     -fx-font-weight: bold;
 }
 
+.nav-brand-2 {
+    -fx-text-fill:   #feacea;
+    -fx-font-size:   18px;
+    -fx-font-weight: bold;
+}
+
 .nav-btn {
     -fx-background-color:  transparent;
     -fx-text-fill:         #c8e6c8;
