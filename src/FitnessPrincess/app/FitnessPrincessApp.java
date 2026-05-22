@@ -10,7 +10,7 @@ public class FitnessPrincessApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        Parent root = FXMLLoader.load(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml"));
+        Parent root = FXMLLoader.load(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml"));
 
         Scene scene = new Scene(root, 1200, 720);
         primaryStage.setTitle("Fitness Princess");
