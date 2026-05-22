@@ -4,14 +4,22 @@
  */
 package FitnessPrincess.user;
 
+import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.stage.Stage;
 
 /**
  * FXML Controller class
@@ -36,6 +44,10 @@ public class ProfileViewController implements Initializable {
     private Button botonsave;
     @FXML
     private Button botonsignout;
+    @FXML
+    private ImageView currentavatar;
+    
+    private File currentAvatarFile;
 
     /**
      * Initializes the controller class.
@@ -44,13 +56,39 @@ public class ProfileViewController implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
-
+    public void recibirNuevoAvatar(File nuevaFoto) {
+        if (nuevaFoto != null) {
+            
+            this.currentAvatarFile = nuevaFoto;
+            
+            
+            Image image = new Image(nuevaFoto.toURI().toString());
+            currentavatar.setImage(image);
+        }
+    }
     @FXML
     private void darlex(ActionEvent event) {
     }
 
     @FXML
     private void darleedit(ActionEvent event) {
+        try {
+            
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("AvatarView.fxml"));
+            Parent root = loader.load();
+            
+           
+            Stage stage = (Stage) botonedit.getScene().getWindow();
+            
+            
+            Scene scene = new Scene(root);
+            stage.setScene(scene);
+            stage.show();
+            
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("No se ha podido cargar la pantalla AvatarView.fxml");
+        }
     }
 
     @FXML

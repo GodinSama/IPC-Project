@@ -12,7 +12,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="450.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.user.ProfileViewController">
+<VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="450.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.user.ProfileViewController">
    <children>
       
       <AnchorPane prefHeight="40.0">
@@ -34,7 +34,7 @@
          </VBox.margin>
       </Label>
 
-      <ImageView fitHeight="110.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="currentavatar" fitHeight="110.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../../resources/images/default_avatar.png" />
          </image>
