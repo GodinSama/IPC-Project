@@ -152,6 +152,18 @@ public class ProfileViewController implements Initializable {
         SportActivityApp app = SportActivityApp.getInstance();
         user = app.getCurrentUser();
         
+        if (!User.checkEmail(Email.getText())) {
+                System.err.println("Invalid email format.");
+                
+        }
+        if (!User.checkPassword(passwordhided.getText())) {
+                System.err.println("Invalid password. Must be 8-20 characters, with upper, lower, digit, and symbol.");
+                
+        }
+        if (dateOfBirth == null || !User.isOlderThan(dateOfBirth.getValue(), 12)) {
+            System.err.println("User must be older than 12 years.");
+               
+        }
         user.setEmail(Email.getText());
         user.setPassword(passwordhided.getText());
         user.setBirthDate(dateOfBirth.getValue());
