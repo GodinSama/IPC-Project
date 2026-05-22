@@ -38,13 +38,12 @@ public class MainLayoutController {
     public void initialize() {
         rootPane.setUserData(this);
 
-        // Listener
+        // Listen for scene attachment, then watch width
         rootPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
                 applyLayout(newScene.getWidth());
-
-                // Update layout whenever window is resized
-                newScene.widthProperty().addListener((o, oldW, newW) -> applyLayout(newW.doubleValue()));
+                newScene.widthProperty().addListener((o, oldW, newW) ->
+                        applyLayout(newW.doubleValue()));
             }
         });
 
@@ -135,7 +134,7 @@ public class MainLayoutController {
     }
 
     @FXML
-    private void showMapManagement() {
+    public void showMapManagement() {
         setActiveTab(tabMaps);
         setActiveNav(navMaps);
         loadView("/FitnessPrincess/maps/MapManagementView.fxml");

@@ -5,33 +5,20 @@
 
 /* ── Colour palette  ── */
 .root {
-    /* Backgrounds */
-    -color-bg-primary:   #ffffff;   /* white */
-    -color-bg-secondary: #f0f7f0;   /* light mint */
-    -color-bg-surface:   #e8f3e8;   /* mint */
-
-    /* Accent */
-    -color-accent:       #2eb84b;   /* bright green */
-    -color-accent-hover: #25a040;   /* darker green on hover */
-
-    /* Text */
-    -color-text-primary:   #1a1a1a; /* main text */
-    -color-text-secondary: #4a4a4a; /* labels, hints */
-    -color-text-muted:     #a0a8a0; /* placeholders */
-
-    /* Card / dark surfaces */
-    -color-card-dark:    #2d5a3d;   /* dark green — activity cards */
-    -color-card-darker:  #1e3d2a;   /* deeper green — selected card */
-
-    /* Feedback */
+    -color-bg-primary:   #ffffff;
+    -color-bg-secondary: #f0f7f0;
+    -color-bg-surface:   #e8f3e8;
+    -color-accent:       #2eb84b;
+    -color-accent-hover: #25a040;
+    -color-text-primary:   #1a1a1a;
+    -color-text-secondary: #4a4a4a;
+    -color-text-muted:     #a0a8a0;
+    -color-card-dark:    #2d5a3d;
+    -color-card-darker:  #1e3d2a;
     -color-error:   #e74c3c;
     -color-success: #2eb84b;
-
-    /* Typography */
     -fx-font-family: "Courier New", "Courier", monospace;
     -fx-font-size:   14px;
-
-    /* Apply base colours*/
     -fx-background-color: -color-bg-primary;
     -fx-text-fill:        -color-text-primary;
 }
@@ -136,6 +123,19 @@
     -fx-underline: true;
 }
 
+.save-btn {
+    -fx-background-color:  -color-accent;
+    -fx-text-fill:         white;
+    -fx-font-size:         13px;
+    -fx-cursor:            hand;
+    -fx-background-radius: 4;
+    -fx-padding:           6 14 6 14;
+}
+
+.save-btn:hover {
+    -fx-background-color: -color-accent-hover;
+}
+
 /* ── Form fields ─────────────────────────────────────────────────────── */
 .auth-field,
 .text-field,
@@ -181,7 +181,7 @@
 /* ── View containers ─────────────────────────────────────────────────── */
 .view-container {
     -fx-background-color: -color-bg-primary;
-    -fx-padding:          32;
+    -fx-padding:          0;
 }
 
 .view-title {
@@ -294,4 +294,320 @@
     -fx-text-fill:   -color-accent;
     -fx-font-size:   12px;
     -fx-font-weight: bold;
+}
+
+/* ── Map management screen ───────────────────────────────────────────── */
+.maps-top-bar {
+    -fx-background-color: -color-bg-primary;
+    -fx-padding:          16 16 8 16;
+}
+
+.maps-title {
+    -fx-font-size:   22px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-primary;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-padding:     2 6 2 2;
+}
+
+.add-map-btn {
+    -fx-background-color:  -color-accent;
+    -fx-text-fill:         white;
+    -fx-font-size:         20px;
+    -fx-font-weight:       bold;
+    -fx-background-radius: 50;
+    -fx-min-width:         38;
+    -fx-min-height:        38;
+    -fx-max-width:         38;
+    -fx-max-height:        38;
+    -fx-cursor:            hand;
+    -fx-padding:           0;
+}
+
+.search-bar {
+    -fx-background-color:  white;
+    -fx-border-color:      #cccccc;
+    -fx-border-radius:     20;
+    -fx-background-radius: 20;
+    -fx-padding:           6 14 6 14;
+}
+
+.search-icon {
+    -fx-font-size:  13px;
+    -fx-text-fill:  -color-text-muted;
+}
+
+.search-field {
+    -fx-background-color: transparent;
+    -fx-border-color:     transparent;
+    -fx-padding:           0;
+    -fx-font-size:        13px;
+    -fx-text-fill:        -color-text-primary;
+    -fx-prompt-text-fill: -color-text-muted;
+    -fx-pref-width:       0;
+}
+
+.delete-btn {
+    -fx-background-color: transparent;
+    -fx-border-color:     transparent;
+    -fx-background-radius: 100px;
+    -fx-border-radius:     100px;
+    -fx-padding:          0px;
+    -fx-font-size:        13px;
+    -fx-text-fill:  -color-text-muted;
+    -fx-min-width:        30px;
+    -fx-min-height:       30px;
+    -fx-max-width:        30px;
+    -fx-max-height:       30px;
+}
+
+.delete-btn:hover {
+    -fx-background-color: -color-bg-secondary;
+    -fx-border-color:     -color-bg-secondary;
+}
+
+.search-field:focused {
+    -fx-border-color: transparent;
+    -fx-background-color: transparent;
+}
+
+.maps-scroll {
+    -fx-background:       transparent;
+    -fx-background-color: transparent;
+    -fx-border-color:     transparent;
+}
+
+.maps-container {
+    -fx-background-color: transparent;
+    -fx-padding:          4 8 16 8;
+}
+
+.map-card {
+    -fx-background-color:  -color-card-dark;
+    -fx-background-radius: 12;
+    -fx-padding:           12;
+    -fx-max-width: 99999;
+}
+
+.map-thumbnail {
+    -fx-background-color:  #c8dfc8;
+    -fx-background-radius: 12;
+    -fx-min-width:         90;
+    -fx-min-height:        80;
+    -fx-max-width:         90;
+    -fx-max-height:        80;
+}
+
+.map-thumbnail-icon {
+    -fx-font-size: 30px;
+}
+
+.map-card-name {
+    -fx-text-fill:   white;
+    -fx-font-size:   14px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-wrap-text:   true;
+    -fx-max-width: 99999;
+}
+
+.map-coord {
+    -fx-text-fill:   #a8d8a8;
+    -fx-font-size:   10px;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-wrap-text:   true;
+    -fx-max-width: 99999;
+}
+
+.map-card-pc {
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
+}
+
+.map-card-pc-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PC TWO-PANEL LAYOUT  (WhatsApp-style)
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Left panel ──────────────────────────────────────────────────── */
+.maps-left-panel {
+    -fx-background-color: -color-bg-primary;
+    -fx-border-color:     -color-bg-surface;
+    -fx-border-width:     0 1 0 0;
+}
+
+.maps-list-container {
+    -fx-background-color: transparent;
+    -fx-padding:          4 8 16 8;
+}
+
+/* ── List row (PC sidebar) ───────────────────────────────────────── */
+.map-list-row {
+    -fx-background-color:  transparent;
+    -fx-padding:           10 16 10 16;
+    -fx-cursor:            hand;
+}
+
+.map-list-row:hover {
+    -fx-background-color: -color-bg-secondary;
+}
+
+.map-list-row-selected {
+    -fx-background-color: -color-bg-surface;
+    -fx-border-color:     -color-accent;
+    -fx-border-width:     0 0 0 3;
+}
+
+.map-list-thumb {
+    -fx-background-color:  -color-card-dark;
+    -fx-background-radius: 10;
+    -fx-min-width:  52;
+    -fx-min-height: 52;
+    -fx-max-width:  52;
+    -fx-max-height: 52;
+}
+
+.list-row-name {
+    -fx-text-fill:   -color-text-primary;
+    -fx-font-size:   14px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.list-row-sub {
+    -fx-text-fill: -color-text-muted;
+    -fx-font-size: 11px;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+/* ── Panel divider ───────────────────────────────────────────────── */
+.panel-divider {
+    -fx-background-color: -color-bg-surface;
+    -fx-pref-width:       1;
+}
+
+/* ── Right detail panel ──────────────────────────────────────────── */
+.maps-detail-panel {
+    -fx-background-color: -color-bg-secondary;
+}
+
+/* Empty state */
+.maps-empty-state {
+    -fx-alignment: center;
+    -fx-padding:   40;
+}
+
+.empty-state-icon {
+    -fx-font-size: 56px;
+    -fx-opacity:   0.4;
+}
+
+.empty-state-title {
+    -fx-font-size:   20px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-secondary;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.empty-state-subtitle {
+    -fx-font-size:  13px;
+    -fx-text-fill:  -color-text-muted;
+    -fx-alignment:  center;
+    -fx-text-alignment: center;
+}
+
+/* Detail content */
+.map-detail-content {
+    -fx-background-color: -color-bg-primary;
+}
+
+.detail-image-pane {
+    -fx-background-color: -color-card-dark;
+    -fx-min-height: 200;
+    -fx-max-height: 240;
+}
+
+.detail-info-section {
+    -fx-background-color: -color-bg-primary;
+}
+
+.detail-name {
+    -fx-font-size:   24px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-primary;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.detail-subtitle {
+    -fx-font-size:  13px;
+    -fx-text-fill:  -color-text-muted;
+}
+
+.detail-divider {
+    -fx-background-color: -color-bg-surface;
+    -fx-pref-height: 1;
+}
+
+.detail-section-header {
+    -fx-font-size:   11px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-muted;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-padding:     4 0 0 0;
+}
+
+.coord-box {
+    -fx-background-color:  -color-bg-surface;
+    -fx-background-radius: 10;
+    -fx-padding:           12 16 12 16;
+    -fx-spacing:           4;
+}
+
+.coord-box-label {
+    -fx-font-size:   10px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-muted;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.coord-box-value {
+    -fx-font-size:   13px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-accent;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+/* Delete map button */
+.delete-map-btn {
+    -fx-background-color:  transparent;
+    -fx-text-fill:         -color-error;
+    -fx-font-size:         16px;
+    -fx-cursor:            hand;
+    -fx-background-radius: 8;
+    -fx-padding:           6 10 6 10;
+    -fx-border-radius:     8;
+    -fx-border-color:      transparent;
+}
+
+.delete-map-btn:hover {
+    -fx-background-color: #fdecea;
+}
+
+.fav-map-btn {
+    -fx-background-color:  transparent;
+    -fx-text-fill:         -color-error;
+    -fx-font-size:         16px;
+    -fx-cursor:            hand;
+    -fx-background-radius: 8;
+    -fx-padding:           6 10 6 10;
+    -fx-border-radius:     8;
+    -fx-border-color:      transparent;
+}
+
+.fav-map-btn:hover {
+    -fx-background-color: #fef2fa;
 }

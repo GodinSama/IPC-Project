@@ -1,8 +1,111 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-    <Label text="This page is under construction!" style="-fx-font-size: 24px;"/>
-    <Label text="MapManagement" style="-fx-font-size: 18px;"/>
-</VBox>
+<BorderPane
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="FitnessPrincess.maps.MapManagementController"
+        stylesheets="@../../resources/estilos.css"
+        styleClass="view-container"
+        maxWidth="Infinity" maxHeight="Infinity"
+        HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+
+    <center>
+        <HBox fx:id="rootContainer" styleClass="view-container" HBox.hgrow="ALWAYS">
+
+            <VBox fx:id="leftPanel" styleClass="maps-left-panel" fillWidth="true">
+
+                <VBox fx:id="topBar" styleClass="maps-top-bar" spacing="10">
+
+                    <HBox fx:id="titleRow" alignment="CENTER_LEFT" spacing="8">
+                        <Label text="Maps" styleClass="maps-title"/>
+                        <Region fx:id="titleSpacer" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="addMapBtn" text="+" onAction="#onAddMap" styleClass="add-map-btn"/>
+                    </HBox>
+
+                    <HBox fx:id="searchRow" alignment="CENTER_LEFT" spacing="10">
+                        <HBox fx:id="searchBar" alignment="CENTER_LEFT" spacing="6"
+                              styleClass="search-bar" HBox.hgrow="ALWAYS">
+                            <Label text="🔍" styleClass="search-icon"/>
+                            <TextField fx:id="searchField" promptText="Search maps…"
+                                       styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                            <Button fx:id="deleteButton" text="✕" styleClass="delete-btn"
+                                    onAction="#deleteField" visible="false"/>
+                        </HBox>
+                    </HBox>
+
+                </VBox>
+
+                <ScrollPane fx:id="mapsScrollPane" fitToWidth="true"
+                            styleClass="maps-scroll" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED"
+                            maxWidth="Infinity"
+                            VBox.vgrow="ALWAYS">
+                    <VBox fx:id="mapsContainer" styleClass="maps-list-container" spacing="1"
+                          fillWidth="true" maxWidth="Infinity"/>
+                </ScrollPane>
+
+            </VBox>
+
+            <Separator fx:id="panelDivider" orientation="VERTICAL" styleClass="panel-divider"
+                       visible="false" managed="false"/>
+
+            <StackPane fx:id="detailPanel" styleClass="maps-detail-panel" HBox.hgrow="ALWAYS"
+                       visible="false" managed="false" minWidth="0">
+
+                <VBox fx:id="emptyState" alignment="CENTER" spacing="16"
+                      styleClass="maps-empty-state" minWidth="0">
+                    <Label text="🗺" styleClass="empty-state-icon"/>
+                    <Label text="Select a map" styleClass="empty-state-title"/>
+                    <Label text="Choose a region from the list to see its details."
+                           styleClass="empty-state-subtitle" wrapText="true"/>
+                </VBox>
+
+                <VBox fx:id="detailContent" styleClass="map-detail-content"
+                      alignment="TOP_LEFT" spacing="0" visible="false" managed="false" minWidth="0">
+
+                    <StackPane fx:id="detailImagePane" styleClass="detail-image-pane"
+                               prefHeight="220" maxHeight="220" minWidth="0"/>
+
+                    <VBox styleClass="detail-info-section" spacing="14" minWidth="0">
+                        <padding><Insets top="24" right="32" bottom="24" left="32"/></padding>
+
+                        <HBox alignment="CENTER_LEFT" spacing="12" minWidth="0">
+                            <Label fx:id="detailName" text="Region Name"
+                                   styleClass="detail-name" HBox.hgrow="ALWAYS" wrapText="true"/>
+                            <Region HBox.hgrow="ALWAYS" />
+                            <HBox alignment="CENTER_RIGHT" spacing="12">
+                                <Button text="❤" styleClass="fav-map-btn" onAction="#onFavMap"/>
+                                <Button text="✎ Edit" styleClass="secondary-btn" onAction="#onEditMap"/>
+                                <Button text="🗑" styleClass="delete-map-btn" onAction="#onDeleteMap"/>
+                            </HBox>
+                        </HBox>
+
+                        <Label fx:id="detailSubtitle" text="Offline coverage for city and surroundings"
+                               styleClass="detail-subtitle" wrapText="true"/>
+
+                        <Separator styleClass="detail-divider"/>
+
+                        <Label text="COORDINATES" styleClass="detail-section-header"/>
+
+                        <HBox spacing="16" minWidth="0">
+                            <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" minWidth="0">
+                                <Label text="LATITUDE" styleClass="coord-box-label"/>
+                                <Label fx:id="detailLat" text="— to —" styleClass="coord-box-value" wrapText="true"/>
+                            </VBox>
+                            <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" minWidth="0">
+                                <Label text="LONGITUDE" styleClass="coord-box-label"/>
+                                <Label fx:id="detailLon" text="— to —" styleClass="coord-box-value" wrapText="true"/>
+                            </VBox>
+                        </HBox>
+
+                    </VBox>
+                </VBox>
+
+            </StackPane>
+
+        </HBox>
+    </center>
+
+</BorderPane>
