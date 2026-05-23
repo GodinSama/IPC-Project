@@ -10,6 +10,8 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 public class MainLayoutController {
@@ -35,6 +37,9 @@ public class MainLayoutController {
     @FXML private Button tabHistory;
     @FXML private Button tabMaps;
     @FXML private Button tabSignOut;
+
+    // Cache to store loaded views so they don't reset when switching tabs
+    private final Map<String, Node> viewCache = new HashMap<>();
 
     @FXML
     public void initialize() {
@@ -102,11 +107,18 @@ public class MainLayoutController {
         }
     }
 
-    // Core view loader
+    // Core view loader with Caching implemented
     public void loadView(String fxmlPath) {
         try {
-            Node view = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
-            rootPane.setCenter(view);
+            if (viewCache.containsKey(fxmlPath)) {
+                // Reuse the already loaded view to preserve state (like the map)
+                rootPane.setCenter(viewCache.get(fxmlPath));
+            } else {
+                // Load and cache the view for the first time
+                Node view = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
+                viewCache.put(fxmlPath, view);
+                rootPane.setCenter(view);
+            }
         } catch (Exception e) {
             System.err.println("Could not load view: " + fxmlPath);
             e.printStackTrace();
@@ -152,6 +164,9 @@ public class MainLayoutController {
     @FXML
     private void handleLogout() {
         try {
+            // Clear the cache so the next user starts fresh
+            viewCache.clear();
+
             Stage stage = (Stage) rootPane.getScene().getWindow();
             Parent loginRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml")));
             stage.setScene(new Scene(loginRoot));

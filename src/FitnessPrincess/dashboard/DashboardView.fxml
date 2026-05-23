@@ -4,6 +4,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.Group?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
 
 <BorderPane
         xmlns="http://javafx.com/javafx/21"
@@ -50,7 +52,6 @@
                         <Label text="Map:" styleClass="field-label" />
                         <ComboBox fx:id="mapSelector" promptText="Select Map..." onAction="#onMapSelected" prefWidth="150" />
 
-                        <ColorPicker fx:id="markerColorPicker" styleClass="secondary-btn" />
                         <ToggleButton fx:id="addMarkerToggle" text="📍 Add Marker" styleClass="secondary-btn"/>
                         <Button text="➖" onAction="#onZoomOut" styleClass="secondary-btn"/>
                         <Button text="➕" onAction="#onZoomIn" styleClass="secondary-btn"/>
@@ -58,43 +59,60 @@
                 </top>
 
                 <center>
-                    <ScrollPane fx:id="mapScrollPane" pannable="true" fitToWidth="true" fitToHeight="true" styleClass="maps-scroll">
-                        <Group fx:id="mapGroup">
-                            <Pane fx:id="mapPane">
-                                <ImageView fx:id="mapImageView" preserveRatio="true"/>
-                            </Pane>
-                        </Group>
-                    </ScrollPane>
-                </center>
+                    <VBox VBox.vgrow="ALWAYS">
 
-                <bottom>
-                    <VBox styleClass="detail-info-section" spacing="0">
-                        <Separator styleClass="detail-divider"/>
-                        <HBox alignment="CENTER" spacing="16">
-                            <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <ScrollPane fx:id="mapScrollPane" pannable="true" fitToWidth="true" fitToHeight="true" styleClass="maps-scroll">
+                                <Group fx:id="mapGroup">
+                                    <Pane fx:id="mapPane">
+                                        <ImageView fx:id="mapImageView" preserveRatio="true"/>
+                                    </Pane>
+                                </Group>
+                            </ScrollPane>
 
-                            <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
-                                <Label text="DISTANCE" styleClass="coord-box-label"/>
-                                <Label fx:id="statDistance" text="-- km" styleClass="coord-box-value"/>
-                            </VBox>
+                            <Button fx:id="toggleMenuBtn" text="⌃" onAction="#onToggleMenu" styleClass="toggle-menu-btn" StackPane.alignment="BOTTOM_CENTER"/>
+                        </StackPane>
 
-                            <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
-                                <Label text="DURATION" styleClass="coord-box-label"/>
-                                <Label fx:id="statDuration" text="--:--:--" styleClass="coord-box-value"/>
-                            </VBox>
+                        <VBox fx:id="bottomStatsContainer" styleClass="detail-info-section-overlay" prefHeight="80" VBox.vgrow="NEVER">
+                            <HBox alignment="CENTER" spacing="16">
+                                <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
 
-                            <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
-                                <Label text="ELEVATION GAIN" styleClass="coord-box-label"/>
-                                <Label fx:id="statElevation" text="-- m" styleClass="coord-box-value"/>
-                            </VBox>
+                                <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
+                                    <Label text="DISTANCE" styleClass="coord-box-label"/>
+                                    <Label fx:id="statDistance" text="-- km" styleClass="coord-box-value"/>
+                                </VBox>
 
-                            <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
-                                <Label text="AVG SPEED" styleClass="coord-box-label"/>
-                                <Label fx:id="statSpeed" text="-- km/h" styleClass="coord-box-value"/>
-                            </VBox>
-                        </HBox>
+                                <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
+                                    <Label text="DURATION" styleClass="coord-box-label"/>
+                                    <Label fx:id="statDuration" text="--:--:--" styleClass="coord-box-value"/>
+                                </VBox>
+
+                                <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
+                                    <Label text="ELEVATION GAIN" styleClass="coord-box-label"/>
+                                    <Label fx:id="statElevation" text="-- m" styleClass="coord-box-value"/>
+                                </VBox>
+
+                                <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
+                                    <Label text="AVG SPEED" styleClass="coord-box-label"/>
+                                    <Label fx:id="statSpeed" text="-- km/h" styleClass="coord-box-value"/>
+                                </VBox>
+                            </HBox>
+
+                            <StackPane fx:id="chartContainer" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                                <LineChart fx:id="elevationChart" animated="false" createSymbols="false" legendVisible="false">
+                                    <xAxis>
+                                        <NumberAxis fx:id="xAxis" label="Distance (km)" autoRanging="true"/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis fx:id="yAxis" label="Elevation (m)" autoRanging="true"/>
+                                    </yAxis>
+                                </LineChart>
+                                <Pane fx:id="chartOverlay" mouseTransparent="true" />
+                            </StackPane>
+
+                        </VBox>
                     </VBox>
-                </bottom>
+                </center>
 
             </BorderPane>
 

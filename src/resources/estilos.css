@@ -343,6 +343,28 @@
     -fx-translate-y: 2;
 }
 
+.add-btn {
+    -fx-background-color:  -color-accent;
+    -fx-text-fill:         white;
+    -fx-font-size:         24px;
+    -fx-font-weight:       bold;
+    -fx-background-radius: 50;
+    -fx-min-width:         40px;
+    -fx-min-height:        40px;
+    -fx-max-width:         40px;
+    -fx-max-height:        40px;
+    -fx-cursor:            hand;
+    -fx-padding:           0;
+    -fx-alignment:         center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.35), 5, 0, 0, 2);
+}
+
+.add-btn:pressed {
+    -fx-background-color: -color-accent-hover;
+    -fx-effect: dropshadow(three-pass-box, transparent, 0, 0, 0, 0);
+    -fx-translate-y: 2;
+}
+
 .search-bar {
     -fx-background-color:  white;
     -fx-border-color:      #cccccc;
@@ -394,6 +416,12 @@
     -fx-background:       transparent;
     -fx-background-color: transparent;
     -fx-border-color:     transparent;
+    -fx-padding:          0; /* Removes inner padding holding the map back */
+}
+
+/* Fixes the white viewport background in JavaFX ScrollPanes */
+.maps-scroll > .viewport {
+    -fx-background-color: transparent;
 }
 
 .maps-container {
@@ -621,8 +649,12 @@
     -fx-max-height: 240;
 }
 
-.detail-info-section {
-    -fx-background-color: -color-bg-primary;
+/* Overlay Stats Section */
+.detail-info-section-overlay {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-border-color:     -color-bg-surface;
+    -fx-border-width:     1 0 0 0;
+    -fx-effect:           dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, -4);
 }
 
 .detail-name {
@@ -700,4 +732,23 @@
 
 .fav-map-btn:hover {
     -fx-background-color: #fef2fa;
+}
+
+/* ── Toggle Menu Button ──────────────────────────────────────────── */
+.toggle-menu-btn {
+    -fx-background-color:  rgba(255, 255, 255, 0.95);
+    -fx-text-fill:         -color-text-primary;
+    -fx-font-size:         18px;
+    -fx-font-weight:       bold;
+    -fx-cursor:            hand;
+    -fx-background-radius: 8 8 0 0;
+    -fx-padding:           6 24 6 24; /* Increased top and bottom padding from 0 to 6 */
+    -fx-border-color:      #1a1a1a;
+    -fx-border-width:      2 2 0 2;
+    -fx-effect:            dropshadow(three-pass-box, rgba(0,0,0,0.1), 5, 0, 0, -2);
+    -fx-translate-y:       1; /* Pushes it down 1 pixel so the stats container doesn't overlap its bottom edge */
+}
+
+.toggle-menu-btn:hover {
+    -fx-background-color: -color-bg-secondary;
 }
