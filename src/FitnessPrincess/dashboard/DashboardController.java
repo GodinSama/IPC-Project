@@ -44,7 +44,7 @@ public class DashboardController implements Initializable {
     @FXML private Pane mapPane;
     @FXML private ImageView mapImageView;
 
-    @FXML private ToggleButton addMarkerToggle; // Kept for FXML compatibility, but hidden in code
+    @FXML private ToggleButton addMarkerToggle;
     @FXML private Button toggleMenuBtn;
     @FXML private Label mapModeLabel;
 
@@ -769,6 +769,40 @@ public class DashboardController implements Initializable {
                 chartContainer.setVisible(true);
                 chartContainer.setManaged(true);
             }
+        }
+    }
+
+    @FXML
+    private void onAddActivity() {
+        try {
+            javafx.stage.Stage mainWindow = (javafx.stage.Stage) searchField.getScene().getWindow();
+
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/FitnessPrincess/activities/ActivityMapView.fxml")
+            );
+            javafx.scene.Parent root = loader.load();
+
+            javafx.stage.Stage popupStage = new javafx.stage.Stage();
+            popupStage.initOwner(mainWindow);
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
+
+            javafx.scene.Scene scene = new javafx.scene.Scene(root, mainWindow.getWidth(), mainWindow.getHeight());
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+
+            popupStage.setScene(scene);
+
+            popupStage.setX(mainWindow.getX());
+            popupStage.setY(mainWindow.getY());
+
+            popupStage.showAndWait(); // <--- Pauses the thread here until the popup is closed
+
+            // <--- Refreshes the view automatically with the newly added activity
+            loadUserActivities();
+
+        } catch (Exception e) {
+            System.err.println("Error al intentar abrir la pantalla de crear actividad.");
+            e.printStackTrace();
         }
     }
 }

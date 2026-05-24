@@ -19,6 +19,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
+import FitnessPrincess.app.MainLayoutController;
 
 /**
  * FXML Controller class
@@ -47,7 +48,7 @@ public class AvatarController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
+    }
     
     
     public void recibirNuevoAvatar(File nuevaFoto) {
@@ -94,13 +95,11 @@ public class AvatarController implements Initializable {
     @FXML
     private void darleskip(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("ProfileView.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml"));
             Parent root = loader.load();
-            
-            if (this.avatarSeleccionado != null) {
-                ProfileViewController profileCtrl = loader.getController();
-                profileCtrl.recibirNuevoAvatar(this.avatarSeleccionado);
-            }
+
+            MainLayoutController mainCtrl = loader.getController();
+            mainCtrl.showProfile();
             
             
             Stage stage = (Stage) botonSkip.getScene().getWindow();

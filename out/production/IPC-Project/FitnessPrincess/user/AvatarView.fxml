@@ -12,7 +12,7 @@
 <?import javafx.scene.text.Font?>
 
 <VBox alignment="TOP_CENTER" prefHeight="600.0" prefWidth="400.0" spacing="40.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.user.AvatarController">
-    
+
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="60.0" />
     </padding>
@@ -31,20 +31,20 @@
 
     <HBox fx:id="vboxmodify" alignment="CENTER" onMouseClicked="#darlemodify" spacing="10.0">
         <Button fx:id="btnPrevious" style="-fx-background-color: transparent; -fx-font-size: 24px; -fx-cursor: hand;" text="&lt;" />
-        
+
         <Label text="click to modify" textFill="#888888">
             <font>
                 <Font name="Courier New" size="16.0" />
             </font>
         </Label>
-        
+
         <Button fx:id="btnNext" style="-fx-background-color: transparent; -fx-font-size: 24px; -fx-cursor: hand;" text="&gt;" />
     </HBox>
 
     <Region VBox.vgrow="ALWAYS" />
 
     <AnchorPane prefHeight="50.0">
-        
+
         <HBox alignment="CENTER" spacing="12.0" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
             <Circle fill="#e0e0e0" radius="6.0" />
             <Circle fill="#a0a0a0" radius="6.0" />
@@ -55,6 +55,6 @@
                 <Font name="Courier New" size="20.0" />
             </font>
         </Button>
-        
+
     </AnchorPane>
 </VBox>

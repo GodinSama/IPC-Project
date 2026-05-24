@@ -6,9 +6,14 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import upv.ipc.sportlib.SportActivityApp;
+import upv.ipc.sportlib.User;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -25,10 +30,13 @@ public class MainLayoutController {
     // Desktop nav buttons
     @FXML private Button navDashboard;
     @FXML private Button navActivities;
-    @FXML private Button navProfile;
     @FXML private Button navHistory;
     @FXML private Button navMaps;
-    @FXML private Button navSignOut;
+
+    // User profile elements in Desktop nav
+    @FXML private Button navProfile;
+    @FXML private Circle navAvatarCircle;
+    @FXML private Label lblUserNick;
 
     // Mobile tab buttons
     @FXML private Button tabDashboard;
@@ -36,7 +44,6 @@ public class MainLayoutController {
     @FXML private Button tabProfile;
     @FXML private Button tabHistory;
     @FXML private Button tabMaps;
-    @FXML private Button tabSignOut;
 
     // Cache to store loaded views so they don't reset when switching tabs
     private final Map<String, Node> viewCache = new HashMap<>();
@@ -53,6 +60,23 @@ public class MainLayoutController {
                         applyLayout(newW.doubleValue()));
             }
         });
+
+        // Load User Data (Nickname and Avatar) into the Top Right Corner
+        try {
+            SportActivityApp app = SportActivityApp.getInstance();
+            User user = app.getCurrentUser();
+
+            if (user != null) {
+                if (lblUserNick != null) {
+                    lblUserNick.setText(user.getNickName());
+                }
+                if (user.getAvatar() != null && navAvatarCircle != null) {
+                    navAvatarCircle.setFill(new ImagePattern(user.getAvatar()));
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Could not load user data for navigation bar.");
+        }
 
         // Initialize active states for the default view
         setActiveTab(tabDashboard);
@@ -76,7 +100,7 @@ public class MainLayoutController {
     // Active tab highlight (mobile)
     private void setActiveTab(Button active) {
         if (tabActivities == null) return; // Safeguard
-        for (Button tab : new Button[]{tabDashboard, tabActivities, tabProfile, tabHistory, tabMaps, tabSignOut}) {
+        for (Button tab : new Button[]{tabDashboard, tabActivities, tabProfile, tabHistory, tabMaps}) {
             if (tab != null) {
                 tab.getStyleClass().removeAll("tab-btn-active");
                 if (!tab.getStyleClass().contains("tab-btn")) {
@@ -93,7 +117,7 @@ public class MainLayoutController {
     // Active nav highlight (desktop)
     private void setActiveNav(Button active) {
         if (navActivities == null) return; // Safeguard
-        for (Button nav : new Button[]{navDashboard, navActivities, navProfile, navHistory, navMaps, navSignOut}) {
+        for (Button nav : new Button[]{navDashboard, navActivities, navHistory, navMaps}) {
             if (nav != null) {
                 nav.getStyleClass().removeAll("nav-btn-active");
                 if (!nav.getStyleClass().contains("nav-btn")) {
@@ -101,7 +125,9 @@ public class MainLayoutController {
                 }
             }
         }
-        if (active != null) {
+        // Only apply active styling if the clicked button is a standard text button,
+        // not the circular profile picture button.
+        if (active != null && active != navProfile) {
             active.getStyleClass().removeAll("nav-btn");
             active.getStyleClass().add("nav-btn-active");
         }
@@ -141,7 +167,7 @@ public class MainLayoutController {
     }
 
     @FXML
-    private void showProfile() {
+    public void showProfile() {
         setActiveTab(tabProfile);
         setActiveNav(navProfile);
         loadView("/FitnessPrincess/user/ProfileView.fxml");
@@ -159,20 +185,5 @@ public class MainLayoutController {
         setActiveTab(tabMaps);
         setActiveNav(navMaps);
         loadView("/FitnessPrincess/maps/MapManagementView.fxml");
-    }
-
-    @FXML
-    private void handleLogout() {
-        try {
-            // Clear the cache so the next user starts fresh
-            viewCache.clear();
-
-            Stage stage = (Stage) rootPane.getScene().getWindow();
-            Parent loginRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml")));
-            stage.setScene(new Scene(loginRoot));
-        } catch (Exception e) {
-            System.err.println("Could not return to login screen.");
-            e.printStackTrace();
-        }
     }
 }
