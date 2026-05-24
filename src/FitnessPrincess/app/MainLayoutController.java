@@ -99,8 +99,7 @@ public class MainLayoutController {
 
     // Active tab highlight (mobile)
     private void setActiveTab(Button active) {
-        if (tabActivities == null) return; // Safeguard
-        for (Button tab : new Button[]{tabDashboard, tabActivities, tabProfile, tabHistory, tabMaps}) {
+        for (Button tab : new Button[]{tabDashboard, tabProfile, tabHistory, tabMaps}) {
             if (tab != null) {
                 tab.getStyleClass().removeAll("tab-btn-active");
                 if (!tab.getStyleClass().contains("tab-btn")) {
@@ -116,8 +115,7 @@ public class MainLayoutController {
 
     // Active nav highlight (desktop)
     private void setActiveNav(Button active) {
-        if (navActivities == null) return; // Safeguard
-        for (Button nav : new Button[]{navDashboard, navActivities, navHistory, navMaps}) {
+        for (Button nav : new Button[]{navDashboard, navHistory, navMaps}) {
             if (nav != null) {
                 nav.getStyleClass().removeAll("nav-btn-active");
                 if (!nav.getStyleClass().contains("nav-btn")) {
@@ -157,13 +155,6 @@ public class MainLayoutController {
         setActiveTab(tabDashboard);
         setActiveNav(navDashboard);
         loadView("/FitnessPrincess/dashboard/DashboardView.fxml");
-    }
-
-    @FXML
-    private void showActivities() {
-        setActiveTab(tabActivities);
-        setActiveNav(navActivities);
-        loadView("/FitnessPrincess/activities/DashboardView.fxml");
     }
 
     @FXML

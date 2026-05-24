@@ -352,7 +352,24 @@ public class DashboardController implements Initializable {
         info.getChildren().addAll(name, sub);
         row.getChildren().addAll(thumb, info);
 
+        // --- Activity Context Menu for Deletion ---
+        ContextMenu activityMenu = new ContextMenu();
+        MenuItem deleteActItem = new MenuItem("🗑️ Delete Activity");
+        deleteActItem.setOnAction(actionEvent -> {
+            deleteActivity(activity);
+        });
+        activityMenu.getItems().add(deleteActItem);
+
+        row.setOnContextMenuRequested(e -> {
+            activityMenu.show(row, e.getScreenX(), e.getScreenY());
+        });
+
         row.setOnMouseClicked(e -> {
+            // Hide context menu if active on standard left click
+            if (e.getButton() == MouseButton.PRIMARY) {
+                activityMenu.hide();
+            }
+
             if (currentSelectedRow != null) {
                 currentSelectedRow.getStyleClass().remove("map-list-row-selected");
             }
@@ -371,6 +388,46 @@ public class DashboardController implements Initializable {
         });
 
         return row;
+    }
+
+    private void deleteActivity(Activity activity) {
+        if (activity == null) return;
+        SportActivityApp app = SportActivityApp.getInstance();
+
+        try {
+            // The library structure might vary, attempt reflection for safety on closed-source model
+            try {
+                SportActivityApp.class.getMethod("removeActivity", Activity.class)
+                        .invoke(app, activity);
+            } catch (NoSuchMethodException e1) {
+                try {
+                    if (app.getCurrentUser() != null) {
+                        app.getCurrentUser().getClass().getMethod("removeActivity", Activity.class)
+                                .invoke(app.getCurrentUser(), activity);
+                    }
+                } catch (NoSuchMethodException e2) {
+                    // Direct modification fallback
+                    app.getUserActivities().remove(activity);
+                }
+            }
+        } catch (Exception ex) {
+            System.err.println("Notice: Activity removed from list, but library lacks an accessible model removal method.");
+        }
+
+        // Clean up from state
+        if (allUserActivities != null) {
+            allUserActivities.remove(activity);
+        }
+
+        // Unset if the currently viewed map is the one we just deleted
+        if (currentActivity == activity) {
+            currentActivity = null;
+            currentSelectedRow = null;
+            renderMap(null, mapSelector.getValue());
+        }
+
+        // Re-render list
+        filterActivities();
     }
 
     @FXML

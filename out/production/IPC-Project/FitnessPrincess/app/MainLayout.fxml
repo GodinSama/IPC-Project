@@ -20,7 +20,6 @@
             <Label text="🏃 Fitness" styleClass="nav-brand"/>
             <Label text="Princess" styleClass="nav-brand-2"/>
             <Button fx:id="navDashboard" text="Dashboard" styleClass="nav-btn" onAction="#showDashboard"/>
-            <Button fx:id="navActivities" text="Activities" styleClass="nav-btn" onAction="#showActivities"/>
             <Button fx:id="navHistory" text="Session History" styleClass="nav-btn" onAction="#showSessionHistory"/>
             <Button fx:id="navMaps" text="Manage Maps" styleClass="nav-btn" onAction="#showMapManagement"/>
 
@@ -43,7 +42,6 @@
     <bottom>
         <HBox fx:id="mobileNav" styleClass="tab-bar" spacing="0" alignment="CENTER" managed="false" visible="false">
             <Button fx:id="tabDashboard" text="D" styleClass="tab-btn" onAction="#showDashboard" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Button fx:id="tabActivities" text="A" styleClass="tab-btn" onAction="#showActivities" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
             <Button fx:id="tabProfile" text="P" styleClass="tab-btn" onAction="#showProfile" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
             <Button fx:id="tabHistory" text="H" styleClass="tab-btn" onAction="#showSessionHistory" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
             <Button fx:id="tabMaps" text="M" styleClass="tab-btn" onAction="#showMapManagement" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
