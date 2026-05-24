@@ -275,7 +275,7 @@ public class DashboardController implements Initializable {
     }
 
     private void updateModeLabel() {
-        mapModeLabel.setText("Explore Mode (Right-click map to place markers, right-click markers to delete, left-click markers to toggle text)");
+        mapModeLabel.setText("Explore Mode");
         mapModeLabel.setStyle("-fx-text-fill: -color-text-muted;");
     }
 

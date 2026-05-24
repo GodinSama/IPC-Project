@@ -22,6 +22,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+
+// Ensure these imports match your actual library package name
 import upv.ipc.sportlib.SportActivityApp;
 import upv.ipc.sportlib.User;
 
@@ -159,12 +161,13 @@ public class ProfileViewController implements Initializable {
 
             // Only save if everything validated correctly
             if (isDataValid) {
-                user.setEmail(Email.getText());
-                user.setPassword(passwordhided.getText());
-                user.setBirthDate(dateOfBirth.getValue());
-                // Note: user.setAvatarPath() is already handled in AvatarController,
-                // so we just persist the updated user object here.
-                app.saveUser(user);
+                // FIXED: Use the correct library method to persist updates
+                app.updateCurrentUser(
+                        Email.getText(),
+                        passwordhided.getText(),
+                        dateOfBirth.getValue(),
+                        user.getAvatarPath() // Keeps the current avatar untouched
+                );
                 System.out.println("Perfil actualizado con éxito.");
             }
 
@@ -181,6 +184,9 @@ public class ProfileViewController implements Initializable {
     @FXML
     private void darlesignout(ActionEvent event) {
         try {
+            // FIXED: Ensure the session is officially closed and saved to the database!
+            SportActivityApp.getInstance().logout();
+
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml"));
             Parent root = loader.load();
 

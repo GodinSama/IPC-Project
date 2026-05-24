@@ -24,7 +24,7 @@ import java.util.ResourceBundle;
 
 public class MapManagementController implements Initializable {
 
-    private static final double MOBILE_BREAKPOINT = 838;
+    private static final double MOBILE_BREAKPOINT = 800;
 
     // ── Layout skeleton ──────────────────────────────────────────────
     @FXML private HBox      rootContainer;

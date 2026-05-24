@@ -132,7 +132,6 @@ public class AvatarSelectorController implements Initializable {
                 if (rutaImagen.startsWith("file:")) {
                     this.avatarSeleccionado = new File(new URI(rutaImagen));
                 } else {
-                    // Previene el IllegalArgumentException si es un recurso empaquetado (jar)
                     this.avatarSeleccionado = new File(rutaImagen);
                 }
                 System.out.println("Avatar por defecto seleccionado: " + avatarSeleccionado.getName());

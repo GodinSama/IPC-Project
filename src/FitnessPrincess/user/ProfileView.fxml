@@ -115,7 +115,7 @@
             </ImageView>
             <Label styleClass="field-label" text="Date of Birth" />
          </HBox>
-         <DatePicker fx:id="dateOfBirth" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 3 0 0 0;" styleClass="auth-field">
+         <DatePicker fx:id="dateOfBirth" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 3 0 0 0;" styleClass="date-field">
             <VBox.margin>
                <Insets top="2.0" />
             </VBox.margin>

@@ -3,7 +3,6 @@ package FitnessPrincess.app;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -21,7 +20,7 @@ import java.util.Objects;
 
 public class MainLayoutController {
 
-    private static final double MOBILE_BREAKPOINT = 838;
+    private static final double MIN_WINDOW_SIZE = 838;
 
     @FXML private BorderPane rootPane;
     @FXML private HBox desktopNav;
@@ -38,7 +37,7 @@ public class MainLayoutController {
     @FXML private Circle navAvatarCircle;
     @FXML private Label lblUserNick;
 
-    // Mobile tab buttons
+    // Mobile tab buttons (Kept to prevent FXML injection errors, even if hidden)
     @FXML private Button tabDashboard;
     @FXML private Button tabActivities;
     @FXML private Button tabProfile;
@@ -52,14 +51,29 @@ public class MainLayoutController {
     public void initialize() {
         rootPane.setUserData(this);
 
-        // Listen for scene attachment, then watch width
+        // Listen for scene attachment to apply minimum window bounds
         rootPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
-                applyLayout(newScene.getWidth());
-                newScene.widthProperty().addListener((o, oldW, newW) ->
-                        applyLayout(newW.doubleValue()));
+                // Enforce minimum window size when window is attached
+                newScene.windowProperty().addListener((winObs, oldWin, newWin) -> {
+                    if (newWin instanceof Stage) {
+                        Stage stage = (Stage) newWin;
+                        stage.setMinWidth(MIN_WINDOW_SIZE);
+                        stage.setMinHeight(MIN_WINDOW_SIZE);
+                    }
+                });
+
+                // Enforce if window is already present
+                if (newScene.getWindow() instanceof Stage) {
+                    Stage stage = (Stage) newScene.getWindow();
+                    stage.setMinWidth(MIN_WINDOW_SIZE);
+                    stage.setMinHeight(MIN_WINDOW_SIZE);
+                }
             }
         });
+
+        // Permanently set the layout to desktop mode
+        applyStaticDesktopLayout();
 
         // Load User Data (Nickname and Avatar) into the Top Right Corner
         try {
@@ -79,37 +93,20 @@ public class MainLayoutController {
         }
 
         // Initialize active states for the default view
-        setActiveTab(tabDashboard);
         setActiveNav(navDashboard);
         loadView("/FitnessPrincess/dashboard/DashboardView.fxml");
     }
 
-    // Responsive switch
-    private void applyLayout(double width) {
-        boolean isMobile = width < MOBILE_BREAKPOINT;
-
-        // Desktop nav: top bar
-        desktopNav.setVisible(!isMobile);
-        desktopNav.setManaged(!isMobile);
-
-        // Mobile nav: bottom tab bar
-        mobileNav.setVisible(isMobile);
-        mobileNav.setManaged(isMobile);
-    }
-
-    // Active tab highlight (mobile)
-    private void setActiveTab(Button active) {
-        for (Button tab : new Button[]{tabDashboard, tabProfile, tabHistory, tabMaps}) {
-            if (tab != null) {
-                tab.getStyleClass().removeAll("tab-btn-active");
-                if (!tab.getStyleClass().contains("tab-btn")) {
-                    tab.getStyleClass().add("tab-btn");
-                }
-            }
+    // Force Desktop View unconditionally to prevent split-second rendering glitches
+    private void applyStaticDesktopLayout() {
+        if (desktopNav != null) {
+            desktopNav.setVisible(true);
+            desktopNav.setManaged(true);
         }
-        if (active != null) {
-            active.getStyleClass().removeAll("tab-btn");
-            active.getStyleClass().add("tab-btn-active");
+
+        if (mobileNav != null) {
+            mobileNav.setVisible(false);
+            mobileNav.setManaged(false);
         }
     }
 
@@ -152,28 +149,24 @@ public class MainLayoutController {
     // Navigation handlers
     @FXML
     private void showDashboard() {
-        setActiveTab(tabDashboard);
         setActiveNav(navDashboard);
         loadView("/FitnessPrincess/dashboard/DashboardView.fxml");
     }
 
     @FXML
     public void showProfile() {
-        setActiveTab(tabProfile);
         setActiveNav(navProfile);
         loadView("/FitnessPrincess/user/ProfileView.fxml");
     }
 
     @FXML
     private void showSessionHistory() {
-        setActiveTab(tabHistory);
         setActiveNav(navHistory);
         loadView("/FitnessPrincess/user/SessionHistoryView.fxml");
     }
 
     @FXML
     public void showMapManagement() {
-        setActiveTab(tabMaps);
         setActiveNav(navMaps);
         loadView("/FitnessPrincess/maps/MapManagementView.fxml");
     }
