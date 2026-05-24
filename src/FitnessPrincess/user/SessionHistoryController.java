@@ -1,3 +1,4 @@
+// used ai to solve my errors
 package FitnessPrincess.user;
 
 import java.net.URL;
@@ -87,6 +88,7 @@ public class SessionHistoryController implements Initializable {
         loadUserSessions();
     }
 
+    // used ai to filter the list correctly with the prompt 'how to get items from a list matching the current month'
     // Filter user sessions by the active month and populate the view
     private void loadUserSessions() {
         sessionsContainer.getChildren().clear();
@@ -252,6 +254,7 @@ public class SessionHistoryController implements Initializable {
         sessionsContainer.getChildren().add(empty);
     }
 
+    // used ai
     // Convert raw minutes into a readable hour/minute string
     private String formatDuration(long totalMinutes) {
         if (totalMinutes <= 0) return "0m";

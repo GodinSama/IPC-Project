@@ -1,3 +1,4 @@
+// used ai to solve my errors
 package FitnessPrincess.dashboard;
 
 import javafx.application.Platform;
@@ -387,7 +388,7 @@ public class DashboardController implements Initializable {
         return row;
     }
 
-    // Safely removes an activity from the user profile using reflection fallbacks
+    // used ai to figure out the reflection fallback logic with the prompt 'how to safely call a method to remove an activity if the library model is closed source and lacks a direct method'
     private void deleteActivity(Activity activity) {
         if (activity == null) return;
         SportActivityApp app = SportActivityApp.getInstance();
@@ -710,6 +711,7 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // used ai
     // Scales transform originating from a specific target coordinate
     private void zoomAroundPoint(double factor, double pivotX, double pivotY) {
         if (currentProjection == null) return;

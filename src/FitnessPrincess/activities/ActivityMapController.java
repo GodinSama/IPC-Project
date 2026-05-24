@@ -1,3 +1,4 @@
+// used ai to solve my errors
 package FitnessPrincess.activities;
 
 import upv.ipc.sportlib.Activity;
