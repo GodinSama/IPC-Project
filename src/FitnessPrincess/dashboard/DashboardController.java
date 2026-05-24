@@ -30,14 +30,15 @@ import java.time.Duration;
 import java.util.List;
 import java.util.ResourceBundle;
 
+// Controller for the Dashboard view handling activities, maps, charts, and interactive controls
 public class DashboardController implements Initializable {
 
-    // ── Left panel controls ──────────────────────────────────────────
+    // Left panel controls
     @FXML private VBox activitiesContainer;
     @FXML private TextField searchField;
     @FXML private Button deleteButton;
 
-    // ── Map panel controls ───────────────────────────────────────────
+    // Map panel controls
     @FXML private ComboBox<MapRegion> mapSelector;
     @FXML private ScrollPane mapScrollPane;
     @FXML private Group mapGroup;
@@ -48,14 +49,14 @@ public class DashboardController implements Initializable {
     @FXML private Button toggleMenuBtn;
     @FXML private Label mapModeLabel;
 
-    // ── Statistics Footer ────────────────────────────────────────────
+    // Statistics footer
     @FXML private Label statDistance;
     @FXML private Label statDuration;
     @FXML private Label statElevation;
     @FXML private Label statSpeed;
     @FXML private VBox bottomStatsContainer;
 
-    // ── Elevation Chart ──────────────────────────────────────────────
+    // Elevation chart
     @FXML private StackPane chartContainer;
     @FXML private LineChart<Number, Number> elevationChart;
     @FXML private Pane chartOverlay;
@@ -66,14 +67,14 @@ public class DashboardController implements Initializable {
     private Circle graphHoverMarker = new Circle(6, Color.web("#3498db"));
     private Circle chartHoverMarker = new Circle(5, Color.web("#3498db"));
 
-    // ── State variables ──────────────────────────────────────────────
+    // State variables
     private Activity currentActivity = null;
     private MapProjection currentProjection = null;
     private HBox currentSelectedRow = null;
     private boolean isProgrammaticMapChange = false;
     private List<Activity> allUserActivities;
 
-    // Custom Drag & Zoom control
+    // Custom drag & zoom control
     private static final double ZOOM_FACTOR = 1.15;
     private double currentZoom = 1.0;
     private double dragStartX, dragStartY;
@@ -87,15 +88,16 @@ public class DashboardController implements Initializable {
 
     private boolean isMenuExpanded = false;
 
+    // Setup map constraints, scroll events, charts, and context menus on load
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Hide the toggle button since we use context menu now
+        // Hide toggle button since context menus are now used
         if (addMarkerToggle != null) {
             addMarkerToggle.setVisible(false);
             addMarkerToggle.setManaged(false);
         }
 
-        // Setup search listener for filtering
+        // Search listener for filtering activities
         if (searchField != null) {
             searchField.textProperty().addListener((obs, oldVal, newVal) -> {
                 if (deleteButton != null) {
@@ -105,20 +107,20 @@ public class DashboardController implements Initializable {
             });
         }
 
-        // Hijack the ScrollPane: Kill scrollbars and default panning
+        // Hijack ScrollPane to remove default panning and scrollbars
         mapScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         mapScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         mapScrollPane.setPannable(false);
         mapScrollPane.setContent(mapGroup);
 
-        // Intercept scroll wheel to zoom exactly at the mouse pointer's location
+        // Intercept scroll wheel to zoom at pointer location
         mapScrollPane.addEventFilter(ScrollEvent.ANY, e -> {
             if (e.getDeltaY() > 0) {
                 zoomAroundPoint(ZOOM_FACTOR, e.getX(), e.getY());
             } else if (e.getDeltaY() < 0) {
                 zoomAroundPoint(1 / ZOOM_FACTOR, e.getX(), e.getY());
             }
-            e.consume(); // Stop the scrollpane from trying to scroll vertically
+            e.consume();
         });
 
         mapGroup.getTransforms().add(mapScaleTransform);
@@ -138,18 +140,16 @@ public class DashboardController implements Initializable {
             chartOverlay.getChildren().add(chartHoverMarker);
         }
 
-        // Set up the elevation chart mouse hover listener
+        // Setup elevation chart mouse hover listener
         if (elevationChart != null && xAxis != null) {
             elevationChart.setOnMouseMoved(e -> {
                 if (currentActivity == null || currentProjection == null) return;
 
-                // Convert mouse position to X axis coordinate
                 double xInAxis = xAxis.sceneToLocal(e.getSceneX(), e.getSceneY()).getX();
                 if (xInAxis >= 0 && xInAxis <= xAxis.getWidth()) {
                     Number xValue = xAxis.getValueForDisplay(xInAxis);
                     double targetDistance = xValue.doubleValue();
 
-                    // Find closest trackpoint by cumulative distance
                     double currentDist = 0;
                     TrackPoint prev = null;
                     TrackPoint closest = null;
@@ -169,14 +169,12 @@ public class DashboardController implements Initializable {
                         prev = tp;
                     }
 
-                    // Highlight on the map
                     if (closest != null) {
                         Point2D p = currentProjection.project(closest);
                         graphHoverMarker.setCenterX(p.getX());
                         graphHoverMarker.setCenterY(p.getY());
                         graphHoverMarker.setVisible(true);
 
-                        // Highlight on the chart
                         Node plotBackground = elevationChart.lookup(".chart-plot-background");
                         if (plotBackground != null && chartOverlay != null) {
                             double displayX = xAxis.getDisplayPosition(closestDist);
@@ -197,7 +195,7 @@ public class DashboardController implements Initializable {
             });
         }
 
-        // --- Context Menu Setup ---
+        // Context menu setup
         mapContextMenu = new ContextMenu();
         MenuItem addAnnotationItem = new MenuItem("📍 Add Annotation");
         mapContextMenu.getItems().add(addAnnotationItem);
@@ -210,21 +208,18 @@ public class DashboardController implements Initializable {
             }
         });
 
-        // Custom Mouse Handlers for drag, pan, and right-click
+        // Custom mouse handlers for drag, pan, and right-click
         mapPane.setOnMousePressed(e -> {
-            // Hide active marker menus if we click anywhere on the map
             if (currentActiveMarkerMenu != null) {
                 currentActiveMarkerMenu.hide();
                 currentActiveMarkerMenu = null;
             }
 
             if (e.getButton() == MouseButton.SECONDARY) {
-                // Right Click -> Show Context Menu
                 lastRightClickX = e.getX();
                 lastRightClickY = e.getY();
                 mapContextMenu.show(mapPane, e.getScreenX(), e.getScreenY());
             } else if (e.getButton() == MouseButton.PRIMARY) {
-                // Left Click -> Hide Menu, start dragging
                 if (mapContextMenu != null) mapContextMenu.hide();
                 dragStartX = e.getSceneX() - mapTranslateX;
                 dragStartY = e.getSceneY() - mapTranslateY;
@@ -256,6 +251,7 @@ public class DashboardController implements Initializable {
         });
     }
 
+    // Configures map selector dropdown converter
     private void setupMapSelector() {
         mapSelector.setConverter(new StringConverter<>() {
             @Override
@@ -269,16 +265,19 @@ public class DashboardController implements Initializable {
         });
     }
 
+    // Fetches map regions from app instance
     private void loadAvailableMaps() {
         SportActivityApp app = SportActivityApp.getInstance();
         mapSelector.getItems().setAll(app.getMapRegions());
     }
 
+    // Updates UI mode label
     private void updateModeLabel() {
         mapModeLabel.setText("Explore Mode");
         mapModeLabel.setStyle("-fx-text-fill: -color-text-muted;");
     }
 
+    // Loads current user activities
     private void loadUserActivities() {
         SportActivityApp app = SportActivityApp.getInstance();
         if (app.getCurrentUser() == null) return;
@@ -287,6 +286,7 @@ public class DashboardController implements Initializable {
         filterActivities();
     }
 
+    // Filters activities based on selected map and search text
     private void filterActivities() {
         if (allUserActivities == null) return;
         activitiesContainer.getChildren().clear();
@@ -295,7 +295,6 @@ public class DashboardController implements Initializable {
         String searchText = searchField != null && searchField.getText() != null ? searchField.getText().toLowerCase() : "";
 
         for (Activity activity : allUserActivities) {
-            // Filter by map
             boolean mapMatches = false;
             if (selectedMap != null) {
                 MapRegion suggested = activity.getSuggestedMap();
@@ -304,7 +303,6 @@ public class DashboardController implements Initializable {
                 }
             }
 
-            // Filter by search text
             boolean textMatches = true;
             if (!searchText.isEmpty()) {
                 String name = activity.getName() == null ? "Unnamed Route" : activity.getName();
@@ -319,13 +317,13 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // Builds a UI row for a single activity in the list
     private HBox buildActivityRow(Activity activity) {
         HBox row = new HBox(12);
         row.getStyleClass().add("map-list-row");
         row.setAlignment(Pos.CENTER_LEFT);
         row.setMinHeight(68);
 
-        // Thumbnail stylized identically to MapManagementController
         StackPane thumb = new StackPane();
         thumb.getStyleClass().add("map-list-thumb");
 
@@ -352,7 +350,7 @@ public class DashboardController implements Initializable {
         info.getChildren().addAll(name, sub);
         row.getChildren().addAll(thumb, info);
 
-        // --- Activity Context Menu for Deletion ---
+        // Activity context menu for deletion
         ContextMenu activityMenu = new ContextMenu();
         MenuItem deleteActItem = new MenuItem("🗑️ Delete Activity");
         deleteActItem.setOnAction(actionEvent -> {
@@ -365,7 +363,6 @@ public class DashboardController implements Initializable {
         });
 
         row.setOnMouseClicked(e -> {
-            // Hide context menu if active on standard left click
             if (e.getButton() == MouseButton.PRIMARY) {
                 activityMenu.hide();
             }
@@ -390,12 +387,12 @@ public class DashboardController implements Initializable {
         return row;
     }
 
+    // Safely removes an activity from the user profile using reflection fallbacks
     private void deleteActivity(Activity activity) {
         if (activity == null) return;
         SportActivityApp app = SportActivityApp.getInstance();
 
         try {
-            // The library structure might vary, attempt reflection for safety on closed-source model
             try {
                 SportActivityApp.class.getMethod("removeActivity", Activity.class)
                         .invoke(app, activity);
@@ -406,7 +403,6 @@ public class DashboardController implements Initializable {
                                 .invoke(app.getCurrentUser(), activity);
                     }
                 } catch (NoSuchMethodException e2) {
-                    // Direct modification fallback
                     app.getUserActivities().remove(activity);
                 }
             }
@@ -414,31 +410,28 @@ public class DashboardController implements Initializable {
             System.err.println("Notice: Activity removed from list, but library lacks an accessible model removal method.");
         }
 
-        // Clean up from state
         if (allUserActivities != null) {
             allUserActivities.remove(activity);
         }
 
-        // Unset if the currently viewed map is the one we just deleted
         if (currentActivity == activity) {
             currentActivity = null;
             currentSelectedRow = null;
             renderMap(null, mapSelector.getValue());
         }
 
-        // Re-render list
         filterActivities();
     }
 
+    // Handles map combo box selection changes
     @FXML
     private void onMapSelected() {
         if (isProgrammaticMapChange) return;
         MapRegion selectedRegion = mapSelector.getValue();
 
         if (selectedRegion != null) {
-            filterActivities(); // Reload list to only show maps for this region
+            filterActivities();
 
-            // Unset activity if it doesn't belong to the newly selected map
             if (currentActivity != null) {
                 MapRegion suggested = currentActivity.getSuggestedMap();
                 if (suggested == null || !suggested.getName().equals(selectedRegion.getName())) {
@@ -453,15 +446,16 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // Clears the search text field
     @FXML
     private void deleteField() {
         if (searchField != null) searchField.clear();
     }
 
+    // Renders the selected map region and maps activity routes
     private void renderMap(Activity activity, MapRegion region) {
         if (region == null) return;
 
-        // Clear elevation chart data
         if (elevationChart != null) {
             elevationChart.getData().clear();
         }
@@ -500,11 +494,9 @@ public class DashboardController implements Initializable {
                 TrackPoint prev = null;
 
                 for (TrackPoint tp : activity.getTrackPoints()) {
-                    // Update route on map
                     Point2D p = currentProjection.project(tp);
                     routeLine.getPoints().addAll(p.getX(), p.getY());
 
-                    // Update elevation chart series
                     if (prev != null) {
                         currentDistance += prev.distanceTo(tp) / 1000.0;
                     }
@@ -532,7 +524,6 @@ public class DashboardController implements Initializable {
                 statSpeed.setText("-- km/h");
             }
 
-            // Add marker for graph hover on top of everything
             mapPane.getChildren().add(graphHoverMarker);
 
             Platform.runLater(() -> {
@@ -548,7 +539,7 @@ public class DashboardController implements Initializable {
         }
     }
 
-    // ── Popup for Adding Annotations
+    // Opens a popup modal for creating map annotations
     private void showAnnotationPopup(double x, double y) {
         try {
             javafx.stage.Stage mainWindow = (javafx.stage.Stage) mapScrollPane.getScene().getWindow();
@@ -609,6 +600,7 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // Converts canvas coords to geo points and registers annotation
     private void createMarkerAt(double x, double y, String text, String hexColor) {
         GeoPoint geoPoint = currentProjection.unproject(x, y);
 
@@ -619,6 +611,7 @@ public class DashboardController implements Initializable {
         if (savedAnn != null) drawAnnotation(savedAnn);
     }
 
+    // Renders the annotation visually onto the map pane
     private void drawAnnotation(Annotation ann) {
         if (ann.getType() == AnnotationType.POINT && !ann.getGeoPoints().isEmpty()) {
             Point2D p = currentProjection.project(ann.getGeoPoints().get(0));
@@ -634,27 +627,23 @@ public class DashboardController implements Initializable {
             markerGroup.getChildren().add(marker);
 
             Label textLabel = null;
-            // If the annotation has text, prepare a label next to the dot
             if (ann.getText() != null && !ann.getText().trim().isEmpty() && !ann.getText().equals("New Marker")) {
                 textLabel = new Label(ann.getText());
-                // Simple inline styling to ensure text is readable over the map
                 textLabel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.85); -fx-padding: 3px 6px; -fx-background-radius: 4px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a; -fx-border-color: #cccccc; -fx-border-radius: 4px;");
                 textLabel.setLayoutX(p.getX() + 10);
                 textLabel.setLayoutY(p.getY() - 10);
-                textLabel.setVisible(false); // Make it hidden by default
+                textLabel.setVisible(false);
                 markerGroup.getChildren().add(textLabel);
             }
 
             final Label finalTextLabel = textLabel;
 
-            // --- Deletion Logic: Right-click on the marker to delete it ---
+            // Context menu logic for annotation deletion
             ContextMenu markerMenu = new ContextMenu();
             MenuItem deleteItem = new MenuItem("🗑️ Delete Annotation");
             deleteItem.setOnAction(actionEvent -> {
                 if (currentActivity != null) {
                     try {
-                        // The library returns an unmodifiable list for getAnnotations(), so we can't remove directly.
-                        // We use reflection to safely attempt standard removal methods without risking compilation errors.
                         try {
                             SportActivityApp.class.getMethod("removeAnnotation", Activity.class, Annotation.class)
                                     .invoke(SportActivityApp.getInstance(), currentActivity, ann);
@@ -676,33 +665,24 @@ public class DashboardController implements Initializable {
                         System.err.println("Notice: Marker removed from view, but library lacks an accessible model removal method.");
                     }
                 }
-                mapPane.getChildren().remove(markerGroup); // Remove from the view immediately
+                mapPane.getChildren().remove(markerGroup);
             });
             markerMenu.getItems().add(deleteItem);
 
-            // Intercept clicks directly on the marker group
             markerGroup.setOnMousePressed(e -> {
                 if (e.getButton() == MouseButton.SECONDARY) {
-                    // Hide any globally open menus to avoid overlap
                     if (mapContextMenu != null) mapContextMenu.hide();
                     if (currentActiveMarkerMenu != null) currentActiveMarkerMenu.hide();
 
                     markerMenu.show(markerGroup, e.getScreenX(), e.getScreenY());
                     currentActiveMarkerMenu = markerMenu;
-                    e.consume(); // Prevents the mapPane's context menu from triggering beneath it
+                    e.consume();
                 } else if (e.getButton() == MouseButton.PRIMARY) {
-                    // Toggle visibility of the annotation text on left click
                     if (finalTextLabel != null) {
                         finalTextLabel.setVisible(!finalTextLabel.isVisible());
                     }
-                    e.consume(); // Prevents map panning initiation
+                    e.consume();
                 }
-            });
-
-            // FIX: Consume dragging on the marker to prevent teleportation
-            // Prevents the mapPane from receiving a MouseDragged event with stale start coordinates
-            markerGroup.setOnMouseDragged(e -> {
-                e.consume();
             });
             // --------------------------------------------------------------
 
@@ -710,6 +690,7 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // Handles map zoom-in via UI button
     @FXML
     private void onZoomIn() {
         if (currentProjection != null) {
@@ -719,6 +700,7 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // Handles map zoom-out via UI button
     @FXML
     private void onZoomOut() {
         if (currentProjection != null) {
@@ -728,6 +710,7 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // Scales transform originating from a specific target coordinate
     private void zoomAroundPoint(double factor, double pivotX, double pivotY) {
         if (currentProjection == null) return;
 
@@ -749,6 +732,7 @@ public class DashboardController implements Initializable {
         applyTransformsAndClamp();
     }
 
+    // Bounds check to stop panning outside map borders
     private void clampZoom() {
         if (currentProjection == null) return;
         double minZoom = calculateMinZoom();
@@ -758,6 +742,7 @@ public class DashboardController implements Initializable {
         applyTransformsAndClamp();
     }
 
+    // Gets minimum valid zoom before empty border edges appear
     private double calculateMinZoom() {
         double viewWidth = mapScrollPane.getViewportBounds().getWidth();
         double viewHeight = mapScrollPane.getViewportBounds().getHeight();
@@ -773,6 +758,7 @@ public class DashboardController implements Initializable {
         return Math.max(viewWidth / mapWidth, viewHeight / mapHeight);
     }
 
+    // Safely executes map translation boundaries
     private void applyTransformsAndClamp() {
         if (mapPane.getPrefWidth() <= 0) return;
 
@@ -796,6 +782,7 @@ public class DashboardController implements Initializable {
         mapScaleTransform.setY(currentZoom);
     }
 
+    // Formats duration object into HH:mm:ss format
     private String formatDuration(Duration d) {
         if (d == null) return "00:00:00";
         long hours = d.toHours();
@@ -804,10 +791,10 @@ public class DashboardController implements Initializable {
         return String.format("%02d:%02d:%02d", hours, mins, secs);
     }
 
+    // Handles expanding/collapsing the statistics footer area
     @FXML
     private void onToggleMenu() {
         if (isMenuExpanded) {
-            // Shrink
             bottomStatsContainer.setPrefHeight(80);
             toggleMenuBtn.setText("⌃");
             isMenuExpanded = false;
@@ -817,7 +804,6 @@ public class DashboardController implements Initializable {
                 chartContainer.setManaged(false);
             }
         } else {
-            // Expand
             bottomStatsContainer.setPrefHeight(350);
             toggleMenuBtn.setText("⌄");
             isMenuExpanded = true;
@@ -829,6 +815,7 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // Loads the add activity window and pauses map interactions until closed
     @FXML
     private void onAddActivity() {
         try {
@@ -848,13 +835,11 @@ public class DashboardController implements Initializable {
             scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
 
             popupStage.setScene(scene);
-
             popupStage.setX(mainWindow.getX());
             popupStage.setY(mainWindow.getY());
 
-            popupStage.showAndWait(); // <--- Pauses the thread here until the popup is closed
+            popupStage.showAndWait();
 
-            // <--- Refreshes the view automatically with the newly added activity
             loadUserActivities();
 
         } catch (Exception e) {

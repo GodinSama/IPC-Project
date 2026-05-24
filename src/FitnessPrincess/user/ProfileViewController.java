@@ -23,41 +23,35 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
 
-// Ensure these imports match your actual library package name
 import upv.ipc.sportlib.SportActivityApp;
 import upv.ipc.sportlib.User;
 
+// Controller for the user profile view handling data display, edits, and session management
 public class ProfileViewController implements Initializable {
 
-    @FXML
-    private Button botonedit;
-    @FXML
-    private TextField nickname;
-    @FXML
-    private TextField Email;
-    @FXML
-    private TextField password;
-    @FXML
-    private DatePicker dateOfBirth;
-    @FXML
-    private Button botonsave;
-    @FXML
-    private Button botonsignout;
-    @FXML
-    private Circle currentavatar;
-    @FXML
-    private PasswordField passwordhided;
+    // UI controls
+    @FXML private Button botonedit;
+    @FXML private TextField nickname;
+    @FXML private TextField Email;
+    @FXML private TextField password;
+    @FXML private DatePicker dateOfBirth;
+    @FXML private Button botonsave;
+    @FXML private Button botonsignout;
+    @FXML private Circle currentavatar;
+    @FXML private PasswordField passwordhided;
 
+    // State variables
     private boolean togglepass;
     private User user = null;
 
+    // Style cache for validation resets
     private String estiloOriginalEmail;
     private String estiloOriginalPass;
     private String estiloOriginalFecha;
 
+    // Initialize original styles, bind properties, and load user data
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         estiloOriginalEmail = Email.getStyle();
         estiloOriginalPass = passwordhided.getStyle();
         estiloOriginalFecha = dateOfBirth.getStyle();
@@ -70,6 +64,7 @@ public class ProfileViewController implements Initializable {
         togglepass = false;
     }
 
+    // Fetch user data from the app instance and populate fields
     private void cargarDatosUsuario() {
         try {
             SportActivityApp app = SportActivityApp.getInstance();
@@ -90,6 +85,7 @@ public class ProfileViewController implements Initializable {
         }
     }
 
+    // Navigate to the avatar selection view
     @FXML
     private void darleedit(ActionEvent event) {
         try {
@@ -111,6 +107,7 @@ public class ProfileViewController implements Initializable {
         }
     }
 
+    // Validate inputs and save updated profile data
     @FXML
     private void darlesave(ActionEvent event) {
         Email.setStyle(estiloOriginalEmail);
@@ -159,14 +156,12 @@ public class ProfileViewController implements Initializable {
                 isDataValid = false;
             }
 
-            // Only save if everything validated correctly
             if (isDataValid) {
-                // FIXED: Use the correct library method to persist updates
                 app.updateCurrentUser(
                         Email.getText(),
                         passwordhided.getText(),
                         dateOfBirth.getValue(),
-                        user.getAvatarPath() // Keeps the current avatar untouched
+                        user.getAvatarPath()
                 );
                 System.out.println("Perfil actualizado con éxito.");
             }
@@ -181,10 +176,10 @@ public class ProfileViewController implements Initializable {
         }
     }
 
+    // Log out the current user and return to the login screen
     @FXML
     private void darlesignout(ActionEvent event) {
         try {
-            // FIXED: Ensure the session is officially closed and saved to the database!
             SportActivityApp.getInstance().logout();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml"));
@@ -202,6 +197,7 @@ public class ProfileViewController implements Initializable {
         }
     }
 
+    // Toggle password text visibility
     @FXML
     private void passwordHide(MouseEvent event) {
         if(togglepass){

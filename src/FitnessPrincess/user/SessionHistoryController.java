@@ -28,15 +28,16 @@ import upv.ipc.sportlib.SportActivityApp;
 import upv.ipc.sportlib.Session;
 import upv.ipc.sportlib.User;
 
+// Controller for viewing the user's session history by month
 public class SessionHistoryController implements Initializable {
 
-    // ── FXML nodes ────────────────────────────────────────────────────────────
-    @FXML private Button  prevMonthButton;
-    @FXML private Button  nextMonthButton;
-    @FXML private Label   monthLabel;
+    // UI controls
+    @FXML private Button prevMonthButton;
+    @FXML private Button nextMonthButton;
+    @FXML private Label monthLabel;
 
     @FXML private ScrollPane scrollPane;
-    @FXML private VBox       sessionsContainer;
+    @FXML private VBox sessionsContainer;
 
     @FXML private Label totalSessionsLabel;
     @FXML private Label totalDurationLabel;
@@ -44,17 +45,16 @@ public class SessionHistoryController implements Initializable {
     @FXML private Label totalViewedLabel;
     @FXML private Label totalAnnotationsLabel;
 
-    // ── State ─────────────────────────────────────────────────────────────────
+    // State variables
     private YearMonth currentMonth;
     private SportActivityApp app;
 
-    // ── Formatters ────────────────────────────────────────────────────────────
+    // Formatters
     private static final DateTimeFormatter MONTH_FMT = DateTimeFormatter.ofPattern("MMMM yyyy");
     private static final DateTimeFormatter TIME_FMT  = DateTimeFormatter.ofPattern("HH:mm");
     private static final DateTimeFormatter DATE_FMT  = DateTimeFormatter.ofPattern("EEE d MMM yyyy");
 
-    // ── Initialisation ────────────────────────────────────────────────────────
-
+    // Initialize the view with the current month and load session data
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         currentMonth = YearMonth.now();
@@ -63,6 +63,7 @@ public class SessionHistoryController implements Initializable {
         loadUserSessions();
     }
 
+    // Set up navigation button actions
     private void wireButtons() {
         if (prevMonthButton != null) {
             prevMonthButton.setOnAction(e -> {
@@ -78,9 +79,7 @@ public class SessionHistoryController implements Initializable {
         }
     }
 
-    // ── Data loading ──────────────────────────────────────────────────────────
-
-    /** Called whenever the month changes. */
+    // Update the label and reload data when the month changes
     private void refreshView() {
         if (monthLabel != null) {
             monthLabel.setText(currentMonth.format(MONTH_FMT));
@@ -88,6 +87,7 @@ public class SessionHistoryController implements Initializable {
         loadUserSessions();
     }
 
+    // Filter user sessions by the active month and populate the view
     private void loadUserSessions() {
         sessionsContainer.getChildren().clear();
 
@@ -114,17 +114,17 @@ public class SessionHistoryController implements Initializable {
 
         int cardIndex = monthSessions.size();
         long totalMinutes = 0;
-        int  totalImported    = 0;
-        int  totalViewed      = 0;
-        int  totalAnnotations = 0;
+        int totalImported = 0;
+        int totalViewed = 0;
+        int totalAnnotations = 0;
 
         for (Session session : monthSessions) {
             long durationMins = session.getDuration() == null ? 0
                     : session.getDuration().toMinutes();
-            totalMinutes      += durationMins;
-            totalImported     += session.getImportedActivities();
-            totalViewed       += session.getViewedActivities();
-            totalAnnotations  += session.getAnnotationsCreated();
+            totalMinutes += durationMins;
+            totalImported += session.getImportedActivities();
+            totalViewed += session.getViewedActivities();
+            totalAnnotations += session.getAnnotationsCreated();
 
             Node card = buildCard(
                     cardIndex--,
@@ -138,24 +138,15 @@ public class SessionHistoryController implements Initializable {
             sessionsContainer.getChildren().add(card);
         }
 
-        updateTotals(monthSessions.size(), totalMinutes,
-                totalImported, totalViewed, totalAnnotations);
+        updateTotals(monthSessions.size(), totalMinutes, totalImported, totalViewed, totalAnnotations);
     }
 
-    // ── Card builder ──────────────────────────────────────────────────────────
-
-    private Node buildCard(int index,
-                           LocalDateTime start,
-                           LocalDateTime end,
-                           long durationMinutes,
-                           int imported,
-                           int viewed,
-                           int annotations) {
-
+    // Construct an expandable UI card for a single session
+    private Node buildCard(int index, LocalDateTime start, LocalDateTime end, long durationMinutes, int imported, int viewed, int annotations) {
         VBox card = new VBox(0);
         card.getStyleClass().add("sh-card");
 
-        // ── Header row ──────────────────────────────────────────────────────
+        // Header row
         HBox header = new HBox(14);
         header.setAlignment(Pos.CENTER_LEFT);
         header.getStyleClass().add("sh-card-header");
@@ -166,7 +157,7 @@ public class SessionHistoryController implements Initializable {
         Label timeRange = new Label(
                 (start != null ? start.format(TIME_FMT) : "??:??")
                         + " – "
-                        + (end   != null ? end.format(TIME_FMT)   : "??:??")
+                        + (end != null ? end.format(TIME_FMT) : "??:??")
         );
         timeRange.getStyleClass().add("sh-card-time");
 
@@ -184,7 +175,7 @@ public class SessionHistoryController implements Initializable {
 
         header.getChildren().addAll(sessionNum, timeRange, dateLabel, spacer, durationBadge, chevron);
 
-        // ── Stats grid (hidden by default) ──────────────────────────────────
+        // Stats grid (hidden by default)
         GridPane stats = new GridPane();
         stats.setHgap(24);
         stats.setVgap(10);
@@ -193,12 +184,12 @@ public class SessionHistoryController implements Initializable {
         stats.getStyleClass().add("sh-card-stats");
         GridPane.setMargin(stats, new Insets(0));
 
-        addStat(stats, "⏱", "Total time",         formatDuration(durationMinutes), 0, 0);
-        addStat(stats, "📝","Annotations created", String.valueOf(annotations),      0, 1);
-        addStat(stats, "🏃","Activities viewed",   String.valueOf(viewed),            1, 0);
-        addStat(stats, "🗂","Activities imported", String.valueOf(imported),          1, 1);
+        addStat(stats, "⏱", "Total time", formatDuration(durationMinutes), 0, 0);
+        addStat(stats, "📝", "Annotations created", String.valueOf(annotations), 0, 1);
+        addStat(stats, "🏃", "Activities viewed", String.valueOf(viewed), 1, 0);
+        addStat(stats, "🗂", "Activities imported", String.valueOf(imported), 1, 1);
 
-        // ── Toggle on header click ───────────────────────────────────────────
+        // Toggle details visibility on header click
         header.setOnMouseClicked(e -> {
             boolean nowVisible = !stats.isVisible();
             stats.setVisible(nowVisible);
@@ -212,6 +203,7 @@ public class SessionHistoryController implements Initializable {
         return card;
     }
 
+    // Helper method to populate the statistics grid
     private void addStat(GridPane grid, String icon, String key, String value, int col, int row) {
         HBox cell = new HBox(8);
         cell.setAlignment(Pos.CENTER_LEFT);
@@ -230,23 +222,21 @@ public class SessionHistoryController implements Initializable {
         grid.add(cell, col, row);
     }
 
-    // ── Totals bar ────────────────────────────────────────────────────────────
-
-    private void updateTotals(int sessions, long totalMinutes,
-                              int imported, int viewed, int annotations) {
-        if (totalSessionsLabel   != null) totalSessionsLabel.setText(String.valueOf(sessions));
-        if (totalDurationLabel   != null) totalDurationLabel.setText(formatDuration(totalMinutes));
-        if (totalImportedLabel   != null) totalImportedLabel.setText(String.valueOf(imported));
-        if (totalViewedLabel     != null) totalViewedLabel.setText(String.valueOf(viewed));
-        if (totalAnnotationsLabel!= null) totalAnnotationsLabel.setText(String.valueOf(annotations));
+    // Refresh the top-level summary totals
+    private void updateTotals(int sessions, long totalMinutes, int imported, int viewed, int annotations) {
+        if (totalSessionsLabel != null) totalSessionsLabel.setText(String.valueOf(sessions));
+        if (totalDurationLabel != null) totalDurationLabel.setText(formatDuration(totalMinutes));
+        if (totalImportedLabel != null) totalImportedLabel.setText(String.valueOf(imported));
+        if (totalViewedLabel != null) totalViewedLabel.setText(String.valueOf(viewed));
+        if (totalAnnotationsLabel != null) totalAnnotationsLabel.setText(String.valueOf(annotations));
     }
 
+    // Reset totals when no data is available
     private void clearTotals() {
         updateTotals(0, 0, 0, 0, 0);
     }
 
-    // ── Empty state ───────────────────────────────────────────────────────────
-
+    // Display a placeholder message when the current month has no sessions
     private void showEmptyState() {
         VBox empty = new VBox(12);
         empty.setAlignment(Pos.CENTER);
@@ -262,8 +252,7 @@ public class SessionHistoryController implements Initializable {
         sessionsContainer.getChildren().add(empty);
     }
 
-    // ── Utilities ─────────────────────────────────────────────────────────────
-
+    // Convert raw minutes into a readable hour/minute string
     private String formatDuration(long totalMinutes) {
         if (totalMinutes <= 0) return "0m";
         long hours = totalMinutes / 60;
@@ -273,8 +262,9 @@ public class SessionHistoryController implements Initializable {
         return hours + "h " + mins + "m";
     }
 
-    // --- To show the monthly summary ---
-    @FXML private void onShowSummary() {
+    // Open the monthly summary modal popup
+    @FXML
+    private void onShowSummary() {
         try {
             javafx.stage.Stage mainWindow = (javafx.stage.Stage) prevMonthButton.getScene().getWindow();
 
@@ -293,7 +283,6 @@ public class SessionHistoryController implements Initializable {
             scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
 
             popupStage.setScene(scene);
-
             popupStage.setX(mainWindow.getX());
             popupStage.setY(mainWindow.getY());
 
@@ -304,5 +293,4 @@ public class SessionHistoryController implements Initializable {
             e.printStackTrace();
         }
     }
-
 }

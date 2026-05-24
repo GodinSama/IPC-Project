@@ -28,7 +28,6 @@ public class MainLayoutController {
 
     // Desktop nav buttons
     @FXML private Button navDashboard;
-    @FXML private Button navActivities;
     @FXML private Button navHistory;
     @FXML private Button navMaps;
 
@@ -39,7 +38,6 @@ public class MainLayoutController {
 
     // Mobile tab buttons (Kept to prevent FXML injection errors, even if hidden)
     @FXML private Button tabDashboard;
-    @FXML private Button tabActivities;
     @FXML private Button tabProfile;
     @FXML private Button tabHistory;
     @FXML private Button tabMaps;
@@ -51,10 +49,9 @@ public class MainLayoutController {
     public void initialize() {
         rootPane.setUserData(this);
 
-        // Listen for scene attachment to apply minimum window bounds
+        // Apply minimum window bounds
         rootPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene != null) {
-                // Enforce minimum window size when window is attached
                 newScene.windowProperty().addListener((winObs, oldWin, newWin) -> {
                     if (newWin instanceof Stage) {
                         Stage stage = (Stage) newWin;
@@ -63,7 +60,6 @@ public class MainLayoutController {
                     }
                 });
 
-                // Enforce if window is already present
                 if (newScene.getWindow() instanceof Stage) {
                     Stage stage = (Stage) newScene.getWindow();
                     stage.setMinWidth(MIN_WINDOW_SIZE);
@@ -72,10 +68,10 @@ public class MainLayoutController {
             }
         });
 
-        // Permanently set the layout to desktop mode
+        // Permanently set the layout to desktop mode - Had no time to make phone mode
         applyStaticDesktopLayout();
 
-        // Load User Data (Nickname and Avatar) into the Top Right Corner
+        // Load User Data (Nickname and Avatar)
         try {
             SportActivityApp app = SportActivityApp.getInstance();
             User user = app.getCurrentUser();
@@ -97,7 +93,6 @@ public class MainLayoutController {
         loadView("/FitnessPrincess/dashboard/DashboardView.fxml");
     }
 
-    // Force Desktop View unconditionally to prevent split-second rendering glitches
     private void applyStaticDesktopLayout() {
         if (desktopNav != null) {
             desktopNav.setVisible(true);
@@ -110,7 +105,7 @@ public class MainLayoutController {
         }
     }
 
-    // Active nav highlight (desktop)
+    // Active nav highlight (desktop) - Selected nav menu shown as a diff colour
     private void setActiveNav(Button active) {
         for (Button nav : new Button[]{navDashboard, navHistory, navMaps}) {
             if (nav != null) {
@@ -120,22 +115,19 @@ public class MainLayoutController {
                 }
             }
         }
-        // Only apply active styling if the clicked button is a standard text button,
-        // not the circular profile picture button.
         if (active != null && active != navProfile) {
             active.getStyleClass().removeAll("nav-btn");
             active.getStyleClass().add("nav-btn-active");
         }
     }
 
-    // Core view loader with Caching implemented
+    // Core view loader
     public void loadView(String fxmlPath) {
         try {
             if (viewCache.containsKey(fxmlPath)) {
-                // Reuse the already loaded view to preserve state (like the map)
                 rootPane.setCenter(viewCache.get(fxmlPath));
             } else {
-                // Load and cache the view for the first time
+                // Load and save the view for the first time
                 Node view = FXMLLoader.load(Objects.requireNonNull(getClass().getResource(fxmlPath)));
                 viewCache.put(fxmlPath, view);
                 rootPane.setCenter(view);

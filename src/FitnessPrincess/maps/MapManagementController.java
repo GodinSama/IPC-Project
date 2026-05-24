@@ -26,13 +26,13 @@ public class MapManagementController implements Initializable {
 
     private static final double MOBILE_BREAKPOINT = 800;
 
-    // ── Layout skeleton ──────────────────────────────────────────────
+    // Layout skeleton
     @FXML private HBox      rootContainer;
     @FXML private VBox      leftPanel;
     @FXML private Separator panelDivider;
     @FXML private StackPane detailPanel;
 
-    // ── Left panel ───────────────────────────────────────────────────
+    // Left panel controls
     @FXML private VBox      topBar;
     @FXML private HBox      titleRow;
     @FXML private HBox      searchRow;
@@ -43,7 +43,7 @@ public class MapManagementController implements Initializable {
     @FXML private Button    deleteButton;
     @FXML private VBox      mapsContainer;
 
-    // ── Right panel ──────────────────────────────────────────────────
+    // Right panel controls
     @FXML private VBox      emptyState;
     @FXML private VBox      detailContent;
     @FXML private StackPane detailImagePane;
@@ -52,15 +52,16 @@ public class MapManagementController implements Initializable {
     @FXML private Label     detailLat;
     @FXML private Label     detailLon;
 
-    // ── State ────────────────────────────────────────────────────────
+    // State variables
     private boolean pcMode = false;
     private MapRegion selectedRegion = null;
     private final ObservableList<MapRegion> masterData = FXCollections.observableArrayList();
 
     // Active embedded creation view
     private Node activeCreationView = null;
+    private HBox currentSelectedRow = null;
 
-    // ════════════════════════════════════════════════════════════════
+    // Initialize layout listeners and load maps
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         searchField.textProperty().addListener((obs, o, n) -> performSearch(n));
@@ -84,6 +85,7 @@ public class MapManagementController implements Initializable {
         });
     }
 
+    // Build standard list row for PC mode
     private HBox buildListRow(MapRegion region) {
         HBox row = new HBox(12);
         row.getStyleClass().add("map-list-row");
@@ -131,6 +133,7 @@ public class MapManagementController implements Initializable {
         return row;
     }
 
+    // Build card format for mobile mode
     private HBox buildMapCard(MapRegion region) {
         HBox mapCard = new HBox(12);
         mapCard.getStyleClass().add("map-card");
@@ -187,8 +190,7 @@ public class MapManagementController implements Initializable {
         return mapCard;
     }
 
-    private HBox currentSelectedRow = null;
-
+    // Handle region selection from the list or card view
     private void selectRegion(MapRegion region, HBox row) {
         // If they are creating a map, cancel it to look at the new selected region
         if (activeCreationView != null) {
@@ -227,6 +229,7 @@ public class MapManagementController implements Initializable {
         detailContent.setManaged(true);
     }
 
+    // Refresh the list of maps in the UI container
     private void refreshCards(List<MapRegion> regions) {
         mapsContainer.getChildren().clear();
         for (MapRegion region : regions) {
@@ -236,6 +239,7 @@ public class MapManagementController implements Initializable {
         }
     }
 
+    // Fetch and display maps from the database backend
     @FXML
     public void loadMaps() {
         SportActivityApp app = SportActivityApp.getInstance();
@@ -243,6 +247,7 @@ public class MapManagementController implements Initializable {
         refreshCards(masterData);
     }
 
+    // Adjust layout for mobile vs desktop views
     private void applyLayout(double width) {
         boolean isMobile  = width < MOBILE_BREAKPOINT;
         boolean wasPcMode = pcMode;
@@ -269,7 +274,9 @@ public class MapManagementController implements Initializable {
             refreshCards(masterData);
             selectedRegion = null;
             currentSelectedRow = null;
-            hideCreationView(); // Clear layout cleanly on resize
+
+            // Clear layout cleanly on resize
+            hideCreationView();
 
             emptyState.setVisible(true);
             emptyState.setManaged(true);
@@ -278,6 +285,7 @@ public class MapManagementController implements Initializable {
         }
     }
 
+    // Filter maps based on search input
     @FXML
     private void performSearch(String txt) {
         deleteButton.setVisible(txt != null && !txt.isEmpty());
@@ -291,6 +299,7 @@ public class MapManagementController implements Initializable {
         }
     }
 
+    // Open embedded Map Creation view
     @FXML
     private void onAddMap() {
         // Prevent stacking views if one is already open
@@ -321,7 +330,7 @@ public class MapManagementController implements Initializable {
             detailContent.setVisible(false);
             detailContent.setManaged(false);
 
-            // For mobile, switch to showing the right panel
+            // Switch to showing the right panel in mobile view
             if (!pcMode) {
                 leftPanel.setVisible(false);
                 leftPanel.setManaged(false);
@@ -367,44 +376,41 @@ public class MapManagementController implements Initializable {
 
     @FXML
     private void onEditMap() {
-        // TODO: open edit view for selectedRegion
+        // Edit map logic
     }
 
     @FXML
     private void onDeleteMap() {
-        // 1. Double-check that a region is actually selected
+        // Double-check that a region is actually selected
         if (selectedRegion == null) {
             return;
         }
 
-        // 2. Show a confirmation popup
+        // Show a confirmation popup
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
         alert.setTitle("Delete Map");
         alert.setHeaderText("Delete '" + selectedRegion.getName() + "'?");
         alert.setContentText("Are you sure you want to delete this map? This action cannot be undone.");
 
-        // 3. Wait for the user to click OK or Cancel
+        // Wait for the user to click OK or Cancel
         alert.showAndWait().ifPresent(response -> {
             if (response == ButtonType.OK) {
 
-                // 4. Remove it from your database backend
+                // Remove it from the database backend
                 SportActivityApp app = SportActivityApp.getInstance();
-
-                // Note: If your method in SportActivityApp is named differently
-                // (e.g., deleteMap, removeRegion), change this line to match it:
                 app.removeMapRegion(selectedRegion);
 
-                // 5. Clear the selection state
+                // Clear the selection state
                 selectedRegion = null;
                 if (currentSelectedRow != null) {
                     currentSelectedRow.getStyleClass().remove("map-list-row-selected");
                     currentSelectedRow = null;
                 }
 
-                // 6. Reload the map list so the deleted map disappears from the sidebar
+                // Reload the map list so the deleted map disappears from the sidebar
                 loadMaps();
 
-                // 7. Hide the right-side detail panel and bring back the empty state
+                // Hide the right-side detail panel and bring back the empty state
                 detailContent.setVisible(false);
                 detailContent.setManaged(false);
                 emptyState.setVisible(true);
@@ -415,9 +421,10 @@ public class MapManagementController implements Initializable {
 
     @FXML
     private void onFavMap() {
-        // TODO: FAV selectedRegion + put tpo the top
+        // Favorite map logic
     }
 
+    // Clear the search input field
     @FXML
     private void deleteField() {
         searchField.clear();
