@@ -1,3 +1,4 @@
+// used ai to solve my errors
 package FitnessPrincess.dashboard;
 
 import javafx.application.Platform;
@@ -6,9 +7,11 @@ import javafx.fxml.Initializable;
 import javafx.geometry.Point2D;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -16,6 +19,9 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polyline;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.transform.Scale;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.util.StringConverter;
 import upv.ipc.sportlib.*;
 
@@ -25,91 +31,209 @@ import java.time.Duration;
 import java.util.List;
 import java.util.ResourceBundle;
 
+// Controller for the Dashboard view handling activities, maps, charts, and interactive controls
 public class DashboardController implements Initializable {
 
-    // ── Left panel controls ──────────────────────────────────────────
+    // Left panel controls
     @FXML private VBox activitiesContainer;
+    @FXML private TextField searchField;
+    @FXML private Button deleteButton;
 
-    // ── Map panel controls ───────────────────────────────────────────
+    // Map panel controls
     @FXML private ComboBox<MapRegion> mapSelector;
     @FXML private ScrollPane mapScrollPane;
     @FXML private Group mapGroup;
     @FXML private Pane mapPane;
     @FXML private ImageView mapImageView;
 
-    @FXML private ColorPicker markerColorPicker;
     @FXML private ToggleButton addMarkerToggle;
+    @FXML private Button toggleMenuBtn;
     @FXML private Label mapModeLabel;
 
-    // ── Statistics Footer ────────────────────────────────────────────
+    // Statistics footer
     @FXML private Label statDistance;
     @FXML private Label statDuration;
     @FXML private Label statElevation;
     @FXML private Label statSpeed;
+    @FXML private VBox bottomStatsContainer;
 
-    // ── State variables ──────────────────────────────────────────────
+    // Elevation chart
+    @FXML private StackPane chartContainer;
+    @FXML private LineChart<Number, Number> elevationChart;
+    @FXML private Pane chartOverlay;
+    @FXML private NumberAxis xAxis;
+    @FXML private NumberAxis yAxis;
+
+    // Markers for tracking user mouse
+    private Circle graphHoverMarker = new Circle(6, Color.web("#3498db"));
+    private Circle chartHoverMarker = new Circle(5, Color.web("#3498db"));
+
+    // State variables
     private Activity currentActivity = null;
     private MapProjection currentProjection = null;
     private HBox currentSelectedRow = null;
     private boolean isProgrammaticMapChange = false;
+    private List<Activity> allUserActivities;
 
-    // Custom Drag & Zoom control
+    // Custom drag & zoom control
     private static final double ZOOM_FACTOR = 1.15;
     private double currentZoom = 1.0;
     private double dragStartX, dragStartY;
     private double mapTranslateX = 0, mapTranslateY = 0;
+    private double lastRightClickX = 0, lastRightClickY = 0;
     private final Scale mapScaleTransform = new Scale(1, 1, 0, 0);
 
+    // Menu tracking to prevent overlaps
+    private ContextMenu mapContextMenu;
+    private ContextMenu currentActiveMarkerMenu;
+
+    private boolean isMenuExpanded = false;
+
+    // Setup map constraints, scroll events, charts, and context menus on load
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        markerColorPicker.setValue(Color.web("#E74C3C"));
+        // Hide toggle button since context menus are now used
+        if (addMarkerToggle != null) {
+            addMarkerToggle.setVisible(false);
+            addMarkerToggle.setManaged(false);
+        }
 
-        // Hijack the ScrollPane: Kill scrollbars and default panning
+        // Search listener for filtering activities
+        if (searchField != null) {
+            searchField.textProperty().addListener((obs, oldVal, newVal) -> {
+                if (deleteButton != null) {
+                    deleteButton.setVisible(newVal != null && !newVal.isEmpty());
+                }
+                filterActivities();
+            });
+        }
+
+        // Hijack ScrollPane to remove default panning and scrollbars
         mapScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         mapScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         mapScrollPane.setPannable(false);
         mapScrollPane.setContent(mapGroup);
 
-        // Intercept scroll wheel to zoom exactly at the mouse pointer's location
+        // Intercept scroll wheel to zoom at pointer location
         mapScrollPane.addEventFilter(ScrollEvent.ANY, e -> {
             if (e.getDeltaY() > 0) {
                 zoomAroundPoint(ZOOM_FACTOR, e.getX(), e.getY());
             } else if (e.getDeltaY() < 0) {
                 zoomAroundPoint(1 / ZOOM_FACTOR, e.getX(), e.getY());
             }
-            e.consume(); // Stop the scrollpane from trying to scroll vertically
+            e.consume();
         });
 
         mapGroup.getTransforms().add(mapScaleTransform);
         setupMapSelector();
 
-        // Custom Mouse Handlers for drag and pan
-        mapPane.setOnMousePressed(e -> {
-            if (addMarkerToggle.isSelected()) {
-                if (currentActivity != null && currentProjection != null) {
-                    createMarkerAt(e.getX(), e.getY());
-                    addMarkerToggle.setSelected(false);
-                    updateModeLabel();
-                } else {
-                    System.out.println("Select an activity first to add markers to it.");
-                    addMarkerToggle.setSelected(false);
-                    updateModeLabel();
+        // Setup map hover marker
+        graphHoverMarker.setStroke(Color.WHITE);
+        graphHoverMarker.setStrokeWidth(2);
+        graphHoverMarker.setVisible(false);
+        graphHoverMarker.setMouseTransparent(true);
+
+        // Setup chart hover marker
+        chartHoverMarker.setStroke(Color.WHITE);
+        chartHoverMarker.setStrokeWidth(1.5);
+        chartHoverMarker.setVisible(false);
+        if (chartOverlay != null) {
+            chartOverlay.getChildren().add(chartHoverMarker);
+        }
+
+        // Setup elevation chart mouse hover listener
+        if (elevationChart != null && xAxis != null) {
+            elevationChart.setOnMouseMoved(e -> {
+                if (currentActivity == null || currentProjection == null) return;
+
+                double xInAxis = xAxis.sceneToLocal(e.getSceneX(), e.getSceneY()).getX();
+                if (xInAxis >= 0 && xInAxis <= xAxis.getWidth()) {
+                    Number xValue = xAxis.getValueForDisplay(xInAxis);
+                    double targetDistance = xValue.doubleValue();
+
+                    double currentDist = 0;
+                    TrackPoint prev = null;
+                    TrackPoint closest = null;
+                    double minDiff = Double.MAX_VALUE;
+                    double closestDist = 0;
+
+                    for (TrackPoint tp : currentActivity.getTrackPoints()) {
+                        if (prev != null) {
+                            currentDist += prev.distanceTo(tp) / 1000.0;
+                        }
+                        double diff = Math.abs(currentDist - targetDistance);
+                        if (diff < minDiff) {
+                            minDiff = diff;
+                            closest = tp;
+                            closestDist = currentDist;
+                        }
+                        prev = tp;
+                    }
+
+                    if (closest != null) {
+                        Point2D p = currentProjection.project(closest);
+                        graphHoverMarker.setCenterX(p.getX());
+                        graphHoverMarker.setCenterY(p.getY());
+                        graphHoverMarker.setVisible(true);
+
+                        Node plotBackground = elevationChart.lookup(".chart-plot-background");
+                        if (plotBackground != null && chartOverlay != null) {
+                            double displayX = xAxis.getDisplayPosition(closestDist);
+                            double displayY = yAxis.getDisplayPosition(closest.getElevation());
+
+                            Point2D pt = chartOverlay.sceneToLocal(plotBackground.localToScene(displayX, displayY));
+                            chartHoverMarker.setCenterX(pt.getX());
+                            chartHoverMarker.setCenterY(pt.getY());
+                            chartHoverMarker.setVisible(true);
+                        }
+                    }
                 }
+            });
+
+            elevationChart.setOnMouseExited(e -> {
+                graphHoverMarker.setVisible(false);
+                chartHoverMarker.setVisible(false);
+            });
+        }
+
+        // Context menu setup
+        mapContextMenu = new ContextMenu();
+        MenuItem addAnnotationItem = new MenuItem("📍 Add Annotation");
+        mapContextMenu.getItems().add(addAnnotationItem);
+
+        addAnnotationItem.setOnAction(e -> {
+            if (currentActivity != null && currentProjection != null) {
+                showAnnotationPopup(lastRightClickX, lastRightClickY);
             } else {
+                System.out.println("Select an activity first to add markers to it.");
+            }
+        });
+
+        // Custom mouse handlers for drag, pan, and right-click
+        mapPane.setOnMousePressed(e -> {
+            if (currentActiveMarkerMenu != null) {
+                currentActiveMarkerMenu.hide();
+                currentActiveMarkerMenu = null;
+            }
+
+            if (e.getButton() == MouseButton.SECONDARY) {
+                lastRightClickX = e.getX();
+                lastRightClickY = e.getY();
+                mapContextMenu.show(mapPane, e.getScreenX(), e.getScreenY());
+            } else if (e.getButton() == MouseButton.PRIMARY) {
+                if (mapContextMenu != null) mapContextMenu.hide();
                 dragStartX = e.getSceneX() - mapTranslateX;
                 dragStartY = e.getSceneY() - mapTranslateY;
             }
         });
 
         mapPane.setOnMouseDragged(e -> {
-            if (!addMarkerToggle.isSelected()) {
+            if (e.getButton() == MouseButton.PRIMARY) {
                 mapTranslateX = e.getSceneX() - dragStartX;
                 mapTranslateY = e.getSceneY() - dragStartY;
                 applyTransformsAndClamp();
             }
         });
-
-        addMarkerToggle.selectedProperty().addListener((obs, oldVal, newVal) -> updateModeLabel());
 
         mapScrollPane.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> {
             Platform.runLater(this::clampZoom);
@@ -122,11 +246,13 @@ public class DashboardController implements Initializable {
                 isProgrammaticMapChange = true;
                 mapSelector.getSelectionModel().selectFirst();
                 isProgrammaticMapChange = false;
+                filterActivities();
                 renderMap(null, mapSelector.getValue());
             }
         });
     }
 
+    // Configures map selector dropdown converter
     private void setupMapSelector() {
         mapSelector.setConverter(new StringConverter<>() {
             @Override
@@ -140,37 +266,76 @@ public class DashboardController implements Initializable {
         });
     }
 
+    // Fetches map regions from app instance
     private void loadAvailableMaps() {
         SportActivityApp app = SportActivityApp.getInstance();
         mapSelector.getItems().setAll(app.getMapRegions());
     }
 
+    // Updates UI mode label
     private void updateModeLabel() {
-        if (addMarkerToggle.isSelected()) {
-            mapModeLabel.setText("Marker Mode: Click map to place");
-            mapModeLabel.setStyle("-fx-text-fill: -color-error;");
-        } else {
-            mapModeLabel.setText("Explore Mode");
-            mapModeLabel.setStyle("-fx-text-fill: -color-text-muted;");
-        }
+        mapModeLabel.setText("Explore Mode");
+        mapModeLabel.setStyle("-fx-text-fill: -color-text-muted;");
     }
 
+    // Loads current user activities
     private void loadUserActivities() {
         SportActivityApp app = SportActivityApp.getInstance();
         if (app.getCurrentUser() == null) return;
 
-        List<Activity> activities = app.getUserActivities();
+        allUserActivities = app.getUserActivities();
+        filterActivities();
+    }
+
+    // Filters activities based on selected map and search text
+    private void filterActivities() {
+        if (allUserActivities == null) return;
         activitiesContainer.getChildren().clear();
-        for (Activity activity : activities) {
-            activitiesContainer.getChildren().add(buildActivityRow(activity));
+
+        MapRegion selectedMap = mapSelector.getValue();
+        String searchText = searchField != null && searchField.getText() != null ? searchField.getText().toLowerCase() : "";
+
+        for (Activity activity : allUserActivities) {
+            boolean mapMatches = false;
+            if (selectedMap != null) {
+                MapRegion suggested = activity.getSuggestedMap();
+                if (suggested != null && suggested.getName().equals(selectedMap.getName())) {
+                    mapMatches = true;
+                }
+            }
+
+            boolean textMatches = true;
+            if (!searchText.isEmpty()) {
+                String name = activity.getName() == null ? "Unnamed Route" : activity.getName();
+                if (!name.toLowerCase().contains(searchText)) {
+                    textMatches = false;
+                }
+            }
+
+            if (mapMatches && textMatches) {
+                activitiesContainer.getChildren().add(buildActivityRow(activity));
+            }
         }
     }
 
+    // Builds a UI row for a single activity in the list
     private HBox buildActivityRow(Activity activity) {
         HBox row = new HBox(12);
         row.getStyleClass().add("map-list-row");
         row.setAlignment(Pos.CENTER_LEFT);
         row.setMinHeight(68);
+
+        StackPane thumb = new StackPane();
+        thumb.getStyleClass().add("map-list-thumb");
+
+        Rectangle rect = new Rectangle(48, 48);
+        rect.setArcWidth(20);
+        rect.setArcHeight(20);
+        rect.setFill(Color.web("#2d5a3d"));
+
+        Label ico = new Label("🏃");
+        ico.setStyle("-fx-font-size:20px;");
+        thumb.getChildren().addAll(rect, ico);
 
         VBox info = new VBox(2);
         HBox.setHgrow(info, Priority.ALWAYS);
@@ -184,9 +349,25 @@ public class DashboardController implements Initializable {
         sub.getStyleClass().add("list-row-sub");
 
         info.getChildren().addAll(name, sub);
-        row.getChildren().add(info);
+        row.getChildren().addAll(thumb, info);
+
+        // Activity context menu for deletion
+        ContextMenu activityMenu = new ContextMenu();
+        MenuItem deleteActItem = new MenuItem("🗑️ Delete Activity");
+        deleteActItem.setOnAction(actionEvent -> {
+            deleteActivity(activity);
+        });
+        activityMenu.getItems().add(deleteActItem);
+
+        row.setOnContextMenuRequested(e -> {
+            activityMenu.show(row, e.getScreenX(), e.getScreenY());
+        });
 
         row.setOnMouseClicked(e -> {
+            if (e.getButton() == MouseButton.PRIMARY) {
+                activityMenu.hide();
+            }
+
             if (currentSelectedRow != null) {
                 currentSelectedRow.getStyleClass().remove("map-list-row-selected");
             }
@@ -207,17 +388,78 @@ public class DashboardController implements Initializable {
         return row;
     }
 
+    // used ai to figure out the reflection fallback logic with the prompt 'how to safely call a method to remove an activity if the library model is closed source and lacks a direct method'
+    private void deleteActivity(Activity activity) {
+        if (activity == null) return;
+        SportActivityApp app = SportActivityApp.getInstance();
+
+        try {
+            try {
+                SportActivityApp.class.getMethod("removeActivity", Activity.class)
+                        .invoke(app, activity);
+            } catch (NoSuchMethodException e1) {
+                try {
+                    if (app.getCurrentUser() != null) {
+                        app.getCurrentUser().getClass().getMethod("removeActivity", Activity.class)
+                                .invoke(app.getCurrentUser(), activity);
+                    }
+                } catch (NoSuchMethodException e2) {
+                    app.getUserActivities().remove(activity);
+                }
+            }
+        } catch (Exception ex) {
+            System.err.println("Notice: Activity removed from list, but library lacks an accessible model removal method.");
+        }
+
+        if (allUserActivities != null) {
+            allUserActivities.remove(activity);
+        }
+
+        if (currentActivity == activity) {
+            currentActivity = null;
+            currentSelectedRow = null;
+            renderMap(null, mapSelector.getValue());
+        }
+
+        filterActivities();
+    }
+
+    // Handles map combo box selection changes
     @FXML
     private void onMapSelected() {
         if (isProgrammaticMapChange) return;
         MapRegion selectedRegion = mapSelector.getValue();
+
         if (selectedRegion != null) {
+            filterActivities();
+
+            if (currentActivity != null) {
+                MapRegion suggested = currentActivity.getSuggestedMap();
+                if (suggested == null || !suggested.getName().equals(selectedRegion.getName())) {
+                    currentActivity = null;
+                    if (currentSelectedRow != null) {
+                        currentSelectedRow.getStyleClass().remove("map-list-row-selected");
+                        currentSelectedRow = null;
+                    }
+                }
+            }
             renderMap(currentActivity, selectedRegion);
         }
     }
 
+    // Clears the search text field
+    @FXML
+    private void deleteField() {
+        if (searchField != null) searchField.clear();
+    }
+
+    // Renders the selected map region and maps activity routes
     private void renderMap(Activity activity, MapRegion region) {
         if (region == null) return;
+
+        if (elevationChart != null) {
+            elevationChart.getData().clear();
+        }
 
         try {
             File imgFile = new File(region.getImagePath());
@@ -248,11 +490,25 @@ public class DashboardController implements Initializable {
                 routeLine.setStroke(Color.web("#2eb84b"));
                 routeLine.setStrokeWidth(3.0);
 
+                XYChart.Series<Number, Number> elevationSeries = new XYChart.Series<>();
+                double currentDistance = 0;
+                TrackPoint prev = null;
+
                 for (TrackPoint tp : activity.getTrackPoints()) {
                     Point2D p = currentProjection.project(tp);
                     routeLine.getPoints().addAll(p.getX(), p.getY());
+
+                    if (prev != null) {
+                        currentDistance += prev.distanceTo(tp) / 1000.0;
+                    }
+                    elevationSeries.getData().add(new XYChart.Data<>(currentDistance, tp.getElevation()));
+                    prev = tp;
                 }
                 mapPane.getChildren().add(routeLine);
+
+                if (elevationChart != null) {
+                    elevationChart.getData().add(elevationSeries);
+                }
 
                 for (Annotation ann : activity.getAnnotations()) {
                     drawAnnotation(ann);
@@ -269,11 +525,14 @@ public class DashboardController implements Initializable {
                 statSpeed.setText("-- km/h");
             }
 
+            mapPane.getChildren().add(graphHoverMarker);
+
             Platform.runLater(() -> {
                 mapTranslateX = 0;
                 mapTranslateY = 0;
                 currentZoom = calculateMinZoom();
                 applyTransformsAndClamp();
+                updateModeLabel();
             });
 
         } catch (Exception e) {
@@ -281,35 +540,158 @@ public class DashboardController implements Initializable {
         }
     }
 
-    private void createMarkerAt(double x, double y) {
-        GeoPoint geoPoint = currentProjection.unproject(x, y);
-        Color selectedColor = markerColorPicker.getValue();
-        String hexColor = String.format("#%02X%02X%02X",
-                (int) (selectedColor.getRed() * 255),
-                (int) (selectedColor.getGreen() * 255),
-                (int) (selectedColor.getBlue() * 255));
+    // Opens a popup modal for creating map annotations
+    private void showAnnotationPopup(double x, double y) {
+        try {
+            javafx.stage.Stage mainWindow = (javafx.stage.Stage) mapScrollPane.getScene().getWindow();
 
-        Annotation ann = new Annotation(AnnotationType.POINT, "New Marker", hexColor, 2.0, List.of(geoPoint));
+            URL fxmlLocation = getClass().getResource("AddAnnotationView.fxml");
+
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(fxmlLocation);
+            javafx.scene.Parent root = loader.load();
+
+            javafx.stage.Stage popupStage = new javafx.stage.Stage();
+            popupStage.initOwner(mainWindow);
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
+
+            TextArea textArea = (TextArea) root.lookup("#annotationTextArea");
+            ColorPicker colorPicker = (ColorPicker) root.lookup("#markerColorPicker");
+            Button saveBtn = (Button) root.lookup("#saveAnnotationBtn");
+            Button closeBtn = (Button) root.lookup("#closeAnnotationBtn");
+
+            if (closeBtn != null) {
+                closeBtn.setOnAction(e -> popupStage.close());
+            }
+
+            if (colorPicker != null) {
+                colorPicker.setValue(Color.web("#E74C3C"));
+            }
+
+            if (saveBtn != null && textArea != null && colorPicker != null) {
+                saveBtn.setOnAction(e -> {
+                    String text = textArea.getText();
+                    if (text == null || text.trim().isEmpty()) {
+                        text = "Marker";
+                    }
+
+                    Color selectedColor = colorPicker.getValue();
+                    String hexColor = String.format("#%02X%02X%02X",
+                            (int) (selectedColor.getRed() * 255),
+                            (int) (selectedColor.getGreen() * 255),
+                            (int) (selectedColor.getBlue() * 255));
+
+                    createMarkerAt(x, y, text.trim(), hexColor);
+                    popupStage.close();
+                });
+            }
+
+            javafx.scene.Scene scene = new javafx.scene.Scene(root, mainWindow.getWidth(), mainWindow.getHeight());
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+            scene.getStylesheets().addAll(mapScrollPane.getScene().getStylesheets());
+
+            popupStage.setScene(scene);
+            popupStage.setX(mainWindow.getX());
+            popupStage.setY(mainWindow.getY());
+            popupStage.show();
+
+        } catch (Exception e) {
+            System.err.println("Error opening Add Annotation FXML:");
+            e.printStackTrace();
+        }
+    }
+
+    // Converts canvas coords to geo points and registers annotation
+    private void createMarkerAt(double x, double y, String text, String hexColor) {
+        GeoPoint geoPoint = currentProjection.unproject(x, y);
+
+        Annotation ann = new Annotation(AnnotationType.POINT, text, hexColor, 2.0, List.of(geoPoint));
         SportActivityApp app = SportActivityApp.getInstance();
         Annotation savedAnn = app.addAnnotation(currentActivity, ann);
 
         if (savedAnn != null) drawAnnotation(savedAnn);
     }
 
+    // Renders the annotation visually onto the map pane
     private void drawAnnotation(Annotation ann) {
         if (ann.getType() == AnnotationType.POINT && !ann.getGeoPoints().isEmpty()) {
             Point2D p = currentProjection.project(ann.getGeoPoints().get(0));
+
+            Group markerGroup = new Group();
+
             Circle marker = new Circle(p.getX(), p.getY(), 6);
             try { marker.setFill(Color.web(ann.getColor())); }
             catch (Exception e) { marker.setFill(Color.RED); }
 
             marker.setStroke(Color.WHITE);
             marker.setStrokeWidth(2);
-            mapPane.getChildren().add(marker);
+            markerGroup.getChildren().add(marker);
+
+            Label textLabel = null;
+            if (ann.getText() != null && !ann.getText().trim().isEmpty() && !ann.getText().equals("New Marker")) {
+                textLabel = new Label(ann.getText());
+                textLabel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.85); -fx-padding: 3px 6px; -fx-background-radius: 4px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a; -fx-border-color: #cccccc; -fx-border-radius: 4px;");
+                textLabel.setLayoutX(p.getX() + 10);
+                textLabel.setLayoutY(p.getY() - 10);
+                textLabel.setVisible(false);
+                markerGroup.getChildren().add(textLabel);
+            }
+
+            final Label finalTextLabel = textLabel;
+
+            // Context menu logic for annotation deletion
+            ContextMenu markerMenu = new ContextMenu();
+            MenuItem deleteItem = new MenuItem("🗑️ Delete Annotation");
+            deleteItem.setOnAction(actionEvent -> {
+                if (currentActivity != null) {
+                    try {
+                        try {
+                            SportActivityApp.class.getMethod("removeAnnotation", Activity.class, Annotation.class)
+                                    .invoke(SportActivityApp.getInstance(), currentActivity, ann);
+                        } catch (NoSuchMethodException e1) {
+                            try {
+                                SportActivityApp.class.getMethod("removeAnnotation", Annotation.class)
+                                        .invoke(SportActivityApp.getInstance(), ann);
+                            } catch (NoSuchMethodException e2) {
+                                try {
+                                    Activity.class.getMethod("removeAnnotation", Annotation.class)
+                                            .invoke(currentActivity, ann);
+                                } catch (NoSuchMethodException e3) {
+                                    Activity.class.getMethod("deleteAnnotation", Annotation.class)
+                                            .invoke(currentActivity, ann);
+                                }
+                            }
+                        }
+                    } catch (Exception ex) {
+                        System.err.println("Notice: Marker removed from view, but library lacks an accessible model removal method.");
+                    }
+                }
+                mapPane.getChildren().remove(markerGroup);
+            });
+            markerMenu.getItems().add(deleteItem);
+
+            markerGroup.setOnMousePressed(e -> {
+                if (e.getButton() == MouseButton.SECONDARY) {
+                    if (mapContextMenu != null) mapContextMenu.hide();
+                    if (currentActiveMarkerMenu != null) currentActiveMarkerMenu.hide();
+
+                    markerMenu.show(markerGroup, e.getScreenX(), e.getScreenY());
+                    currentActiveMarkerMenu = markerMenu;
+                    e.consume();
+                } else if (e.getButton() == MouseButton.PRIMARY) {
+                    if (finalTextLabel != null) {
+                        finalTextLabel.setVisible(!finalTextLabel.isVisible());
+                    }
+                    e.consume();
+                }
+            });
+            // --------------------------------------------------------------
+
+            mapPane.getChildren().add(markerGroup);
         }
     }
 
-    // Zoom logic for UI buttons (Zooms into the center of the screen)
+    // Handles map zoom-in via UI button
     @FXML
     private void onZoomIn() {
         if (currentProjection != null) {
@@ -319,6 +701,7 @@ public class DashboardController implements Initializable {
         }
     }
 
+    // Handles map zoom-out via UI button
     @FXML
     private void onZoomOut() {
         if (currentProjection != null) {
@@ -328,34 +711,30 @@ public class DashboardController implements Initializable {
         }
     }
 
-    /**
-     * Core math function to zoom in/out while keeping a specific screen coordinate (the pivot)
-     * locked in place, exactly like Google Maps.
-     */
+    // used ai
+    // Scales transform originating from a specific target coordinate
     private void zoomAroundPoint(double factor, double pivotX, double pivotY) {
         if (currentProjection == null) return;
 
         double targetZoom = currentZoom * factor;
 
-        // Clamp the zoom to prevent white space
         double minZoom = calculateMinZoom();
         if (targetZoom < minZoom) targetZoom = minZoom;
 
-        if (targetZoom == currentZoom) return; // Zoom is maxed out/minned out
+        if (targetZoom == currentZoom) return;
 
-        // 1. Calculate the exact map pixel underneath the cursor right now
         double mapPixelX = (pivotX - mapTranslateX) / currentZoom;
         double mapPixelY = (pivotY - mapTranslateY) / currentZoom;
 
         currentZoom = targetZoom;
 
-        // 2. Adjust translation so that same map pixel stays exactly under the cursor after scaling
         mapTranslateX = pivotX - (mapPixelX * currentZoom);
         mapTranslateY = pivotY - (mapPixelY * currentZoom);
 
         applyTransformsAndClamp();
     }
 
+    // Bounds check to stop panning outside map borders
     private void clampZoom() {
         if (currentProjection == null) return;
         double minZoom = calculateMinZoom();
@@ -365,6 +744,7 @@ public class DashboardController implements Initializable {
         applyTransformsAndClamp();
     }
 
+    // Gets minimum valid zoom before empty border edges appear
     private double calculateMinZoom() {
         double viewWidth = mapScrollPane.getViewportBounds().getWidth();
         double viewHeight = mapScrollPane.getViewportBounds().getHeight();
@@ -380,6 +760,7 @@ public class DashboardController implements Initializable {
         return Math.max(viewWidth / mapWidth, viewHeight / mapHeight);
     }
 
+    // Safely executes map translation boundaries
     private void applyTransformsAndClamp() {
         if (mapPane.getPrefWidth() <= 0) return;
 
@@ -403,11 +784,69 @@ public class DashboardController implements Initializable {
         mapScaleTransform.setY(currentZoom);
     }
 
+    // Formats duration object into HH:mm:ss format
     private String formatDuration(Duration d) {
         if (d == null) return "00:00:00";
         long hours = d.toHours();
         long mins = d.toMinutesPart();
         long secs = d.toSecondsPart();
         return String.format("%02d:%02d:%02d", hours, mins, secs);
+    }
+
+    // Handles expanding/collapsing the statistics footer area
+    @FXML
+    private void onToggleMenu() {
+        if (isMenuExpanded) {
+            bottomStatsContainer.setPrefHeight(80);
+            toggleMenuBtn.setText("⌃");
+            isMenuExpanded = false;
+
+            if (chartContainer != null) {
+                chartContainer.setVisible(false);
+                chartContainer.setManaged(false);
+            }
+        } else {
+            bottomStatsContainer.setPrefHeight(350);
+            toggleMenuBtn.setText("⌄");
+            isMenuExpanded = true;
+
+            if (chartContainer != null) {
+                chartContainer.setVisible(true);
+                chartContainer.setManaged(true);
+            }
+        }
+    }
+
+    // Loads the add activity window and pauses map interactions until closed
+    @FXML
+    private void onAddActivity() {
+        try {
+            javafx.stage.Stage mainWindow = (javafx.stage.Stage) searchField.getScene().getWindow();
+
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(
+                    getClass().getResource("/FitnessPrincess/activities/ActivityMapView.fxml")
+            );
+            javafx.scene.Parent root = loader.load();
+
+            javafx.stage.Stage popupStage = new javafx.stage.Stage();
+            popupStage.initOwner(mainWindow);
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
+
+            javafx.scene.Scene scene = new javafx.scene.Scene(root, mainWindow.getWidth(), mainWindow.getHeight());
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+
+            popupStage.setScene(scene);
+            popupStage.setX(mainWindow.getX());
+            popupStage.setY(mainWindow.getY());
+
+            popupStage.showAndWait();
+
+            loadUserActivities();
+
+        } catch (Exception e) {
+            System.err.println("Error al intentar abrir la pantalla de crear actividad.");
+            e.printStackTrace();
+        }
     }
 }

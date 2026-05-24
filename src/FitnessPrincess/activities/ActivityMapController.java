@@ -1,21 +1,18 @@
+// used ai to solve my errors
 package FitnessPrincess.activities;
 
 import upv.ipc.sportlib.Activity;
-import FitnessPrincess.app.MainLayoutController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import upv.ipc.sportlib.SportActivityApp;
+
 import java.io.File;
-import java.util.Objects;
 
 public class ActivityMapController {
 
@@ -46,7 +43,7 @@ public class ActivityMapController {
 
         Stage stage = (Stage) dropZoneLabel.getScene().getWindow();
 
-        // --- Open File Explorer --- 
+        // --- Open File Explorer ---
         File selectedFile = fileChooser.showOpenDialog(stage);
 
         if (selectedFile != null) {
@@ -63,21 +60,21 @@ public class ActivityMapController {
         SportActivityApp app = SportActivityApp.getInstance();
         String activityName = activityNameField.getText();
 
-        if (selectedGpxFile == null || activityName.isEmpty()) {
+        if (selectedGpxFile == null || activityName == null || activityName.trim().isEmpty()) {
             System.out.println("Error: Faltan datos por rellenar.");
             return;
         }
 
         try {
-            // --- Add new activity ---
+            // --- Import the default activity ---
             Activity nuevaActividad = app.importActivity(selectedGpxFile);
 
-            // --- If the user wrote a name ---
-            if (!activityName.isEmpty()) { 
-                nuevaActividad.setName(activityName);
+            // --- Persist the custom name to the database using the library's official method ---
+            if (nuevaActividad != null && !activityName.trim().isEmpty()) {
+                app.renameActivity(nuevaActividad, activityName.trim());
             }
-            
-            System.out.println("Activity saved successfully!");
+
+            System.out.println("Activity saved successfully with custom name!");
             goBack(event);
 
         } catch (Exception e) {

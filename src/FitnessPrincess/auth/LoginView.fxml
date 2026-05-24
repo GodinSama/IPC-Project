@@ -23,10 +23,10 @@
         <VBox styleClass="auth-container" spacing="8" alignment="CENTER_LEFT">
 
             <Label text="Username"/>
-            <TextField fx:id="txtUsername" promptText="Enter Username"/>
+            <TextField fx:id="txtUsername" promptText="Enter Username" text="mateoesguay"/>
 
             <Label text="Password"/>
-            <PasswordField fx:id="txtPassword" promptText="Enter Password"/>
+            <PasswordField fx:id="txtPassword" promptText="Enter Password" text="Mateoesguay-2007"/>
 
         </VBox>
     </center>
