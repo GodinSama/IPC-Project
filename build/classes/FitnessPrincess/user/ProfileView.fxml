@@ -1,11 +1,170 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1">
-    <Label style="-fx-font-size: 24px;" text="This page is under construction!" />
-    <Label style="-fx-font-size: 18px;" text="ProfileView" />
-   <Button mnemonicParsing="false" text="Button" />
+<VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="450.0" style="-fx-background-color: white;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.user.ProfileViewController">
+   <children>
+      
+      <AnchorPane prefHeight="40.0">
+         <children>
+            <Button fx:id="botonx" layoutX="390.0" mnemonicParsing="false" onAction="#darlex" style="-fx-background-color: transparent; -fx-cursor: hand;" text="✕" AnchorPane.rightAnchor="-20.0" AnchorPane.topAnchor="-10.0">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+
+      <Label text="Profile">
+         <font>
+            <Font name="Courier New" size="46.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="10.0" />
+         </VBox.margin>
+      </Label>
+
+      <ImageView fx:id="currentavatar" fitHeight="110.0" fitWidth="110.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../../resources/images/default_avatar.png" />
+         </image>
+         <clip>
+             <Circle centerX="55.0" centerY="55.0" radius="55.0" />
+         </clip>
+      </ImageView>
+
+      <Button fx:id="botonedit" mnemonicParsing="false" onAction="#darleedit" style="-fx-background-color: transparent; -fx-text-fill: #888888; -fx-cursor: hand;" text="Edit">
+         <font>
+            <Font name="Courier New" size="14.0" />
+         </font>
+         <VBox.margin>
+            <Insets bottom="20.0" top="5.0" />
+         </VBox.margin>
+      </Button>
+
+      <VBox maxWidth="320.0" spacing="15.0">
+         <children>
+            
+            <VBox spacing="5.0">
+               <children>
+                  <Label text="Nickname">
+                     <font>
+                        <Font name="Courier New" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../resources/images/Edit%20profile/nickname-removebg-preview.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <TextField fx:id="nickname" style="-fx-background-color: #b0cba0; -fx-border-color: black; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 8; -fx-font-family: 'Courier New'; -fx-font-size: 15px;" />
+               </children>
+            </VBox>
+
+            <VBox spacing="5.0">
+               <children>
+                  <Label text="Email">
+                     <font>
+                        <Font name="Courier New" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../resources/images/Edit%20profile/gmail-removebg-preview.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <TextField fx:id="Email" style="-fx-background-color: #e5f0dc; -fx-border-color: black; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 8; -fx-font-family: 'Courier New'; -fx-font-size: 15px;" />
+               </children>
+            </VBox>
+
+            <VBox spacing="5.0">
+               <children>
+                  <Label text="Password">
+                     <font>
+                        <Font name="Courier New" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../resources/images/Edit%20profile/password-removebg-preview.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <AnchorPane>
+                     <children>
+                        <PasswordField fx:id="passwordhided" prefHeight="39.0" prefWidth="320.0" style="-fx-background-color: #e5f0dc; -fx-border-color: black; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 8; -fx- font-family: 'Courier New'; -fx-font-size: 15px;" />
+                        <TextField fx:id="password" prefHeight="37.0" prefWidth="320.0" style="-fx-background-color: #e5f0dc; -fx-border-color: black; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 8; -fx-font-family: 'Courier New'; -fx-font-size: 15px;" />
+                        <Label layoutX="280.0" layoutY="8.0" onMouseClicked="#passwordHide" style="-fx-cursor: hand;" text="👁" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="8.0">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </VBox>
+
+            <VBox spacing="5.0">
+               <children>
+                  <Label text="Date of birth">
+                     <font>
+                        <Font name="Courier New" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../resources/images/Edit%20profile/calendar-removebg-preview.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Label>
+                  <DatePicker fx:id="dateOfBirth" maxWidth="1.7976931348623157E308" style="-fx-control-inner-background: #e5f0dc; -fx-background-color: transparent; -fx-border-color: black; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 2; -fx-font-family: 'Courier New'; -fx-font-size: 15px;" />
+               </children>
+            </VBox>
+
+         </children>
+         <VBox.margin>
+            <Insets top="10.0" />
+         </VBox.margin>
+      </VBox>
+
+      <VBox alignment="CENTER" spacing="15.0">
+         <children>
+            <Button fx:id="botonsave" mnemonicParsing="false" onAction="#darlesave" prefHeight="40.0" prefWidth="130.0" style="-fx-background-color: #00d684; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-weight: bold; -fx-cursor: hand;" text="SAVE">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+            <Button fx:id="botonsignout" mnemonicParsing="false" onAction="#darlesignout" prefHeight="40.0" prefWidth="180.0" style="-fx-background-color: #aeb4b7; -fx-text-fill: white; -fx-background-radius: 20; -fx-font-weight: bold; -fx-cursor: hand;" text="[→ SIGN OUT">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Button>
+         </children>
+         <VBox.margin>
+            <Insets top="40.0" />
+         </VBox.margin>
+      </VBox>
+
+   </children>
+   
+   <padding>
+      <Insets bottom="30.0" left="40.0" right="40.0" top="30.0" />
+   </padding>
 </VBox>

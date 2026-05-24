@@ -1,152 +1,431 @@
+// used ai to solve my errors
 package FitnessPrincess.maps;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import upv.ipc.sportlib.MapRegion;
 import upv.ipc.sportlib.SportActivityApp;
 
-import javafx.scene.image.Image;
-import javafx.scene.paint.ImagePattern;
-import javafx.scene.shape.Rectangle;
 import java.net.URL;
 import java.util.List;
-import java.util.Objects;
 import java.util.ResourceBundle;
 
 public class MapManagementController implements Initializable {
 
+    private static final double MOBILE_BREAKPOINT = 800;
+
+    // Layout skeleton
+    @FXML private HBox      rootContainer;
+    @FXML private VBox      leftPanel;
+    @FXML private Separator panelDivider;
+    @FXML private StackPane detailPanel;
+
+    // Left panel controls
+    @FXML private VBox      topBar;
+    @FXML private HBox      titleRow;
+    @FXML private HBox      searchRow;
+    @FXML private HBox      searchBar;
+    @FXML private Region    titleSpacer;
+    @FXML private Button    addMapBtn;
     @FXML private TextField searchField;
-    @FXML private ScrollPane mapsScrollPane;
-    @FXML private VBox mapsContainer;
-    @FXML private Button deleteButton;
+    @FXML private Button    deleteButton;
+    @FXML private VBox      mapsContainer;
 
-    private ObservableList<MapRegion> masterData = FXCollections.observableArrayList();
+    // Right panel controls
+    @FXML private VBox      emptyState;
+    @FXML private VBox      detailContent;
+    @FXML private StackPane detailImagePane;
+    @FXML private Label     detailName;
+    @FXML private Label     detailSubtitle;
+    @FXML private Label     detailLat;
+    @FXML private Label     detailLon;
 
+    // State variables
+    private boolean pcMode = false;
+    private MapRegion selectedRegion = null;
+    private final ObservableList<MapRegion> masterData = FXCollections.observableArrayList();
+
+    // Active embedded creation view
+    private Node activeCreationView = null;
+    private HBox currentSelectedRow = null;
+
+    // Initialize layout listeners and load maps
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
-            performSearch(newValue);
+        searchField.textProperty().addListener((obs, o, n) -> performSearch(n));
+
+        mapsContainer.setFillWidth(true);
+
+        rootContainer.widthProperty().addListener((obs, oldW, newW) -> {
+            if (newW != null && newW.doubleValue() > 0) {
+                applyLayout(newW.doubleValue());
+            }
         });
-        loadMaps();
+
+        Platform.runLater(() -> {
+            double w = rootContainer.getWidth();
+            if (w <= 0 && rootContainer.getScene() != null) {
+                w = rootContainer.getScene().getWidth();
+            }
+            if (w > 0) applyLayout(w);
+
+            loadMaps();
+        });
     }
 
+    // Build standard list row for PC mode
+    private HBox buildListRow(MapRegion region) {
+        HBox row = new HBox(12);
+        row.getStyleClass().add("map-list-row");
+        row.setAlignment(Pos.CENTER_LEFT);
+        row.setMinHeight(68);
+        row.setMaxWidth(Double.MAX_VALUE);
+
+        StackPane thumb = new StackPane();
+        thumb.getStyleClass().add("map-list-thumb");
+
+        Rectangle rect = new Rectangle(48, 48);
+        rect.setArcWidth(20);
+        rect.setArcHeight(20);
+
+        try {
+            String url = new java.io.File(region.getImagePath()).toURI().toString();
+            Image img = new Image(url, false);
+            if (!img.isError()) {
+                double z = 12.0, off = (1.0 - z) / 2.0;
+                rect.setFill(new ImagePattern(img, off, off, z, z, true));
+            } else {
+                rect.setFill(javafx.scene.paint.Color.web("#2d5a3d"));
+                Label ico = new Label("🗺");
+                ico.setStyle("-fx-font-size:18px;");
+                thumb.getChildren().add(ico);
+            }
+        } catch (Exception e) {
+            rect.setFill(javafx.scene.paint.Color.web("#2d5a3d"));
+        }
+        thumb.getChildren().add(0, rect);
+
+        VBox info = new VBox(2);
+        HBox.setHgrow(info, Priority.ALWAYS);
+        Label name = new Label(region.getName());
+        name.getStyleClass().add("list-row-name");
+        Label sub = new Label(String.format("%.2f°–%.2f° N  |  %.2f°–%.2f° E",
+                region.getLatMin(), region.getLatMax(),
+                region.getLonMin(), region.getLonMax()));
+        sub.getStyleClass().add("list-row-sub");
+        info.getChildren().addAll(name, sub);
+
+        row.getChildren().addAll(thumb, info);
+        row.setOnMouseClicked(e -> selectRegion(region, row));
+
+        return row;
+    }
+
+    // Build card format for mobile mode
     private HBox buildMapCard(MapRegion region) {
         HBox mapCard = new HBox(12);
         mapCard.getStyleClass().add("map-card");
         mapCard.setAlignment(Pos.CENTER_LEFT);
+        mapCard.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(mapCard, Priority.ALWAYS);
 
-        // --- Thumbnail using a static map image ---
         StackPane thumbnail = new StackPane();
         thumbnail.getStyleClass().add("map-thumbnail");
 
-        String imageUrl = new java.io.File(region.getImagePath()).toURI().toString();
-
-        // Load synchronously (false) so ImagePattern doesn't throw "Image not yet loaded"
-        Image img = new Image(imageUrl, false);
         Rectangle mapImage = new Rectangle(84, 74);
-
-        // Native rounding for the square
         mapImage.setArcWidth(20);
         mapImage.setArcHeight(20);
         mapImage.getStyleClass().add("map-thumbnail-image");
 
-        // Fallback icon in case image fails to load
         Label fallbackIcon = new Label("🗺");
         fallbackIcon.getStyleClass().add("map-thumbnail-icon");
 
-        if (img.isError()) {
+        try {
+            String imageUrl = new java.io.File(region.getImagePath()).toURI().toString();
+            Image img = new Image(imageUrl, false);
+            if (img.isError()) {
+                thumbnail.getChildren().setAll(fallbackIcon);
+            } else {
+                double z = 16.0, off = (1.0 - z) / 2.0;
+                mapImage.setFill(new ImagePattern(img, off, off, z, z, true));
+                thumbnail.getChildren().add(mapImage);
+            }
+        } catch (Exception e) {
             thumbnail.getChildren().setAll(fallbackIcon);
-        } else {
-            // Create a zoomed-in effect using ImagePattern coordinates.
-            // width/height of 2.0 makes the image 2x larger inside the shape.
-            // x/y of -0.5 shifts the starting point to keep the zoom perfectly centered.
-            double zoomFactor = 16.0;
-            double offset = (1.0 - zoomFactor) / 2.0;
-            mapImage.setFill(new ImagePattern(img, offset, offset, zoomFactor, zoomFactor, true));
-
-            thumbnail.getChildren().add(mapImage);
         }
 
         VBox infoBox = new VBox(3);
         HBox.setHgrow(infoBox, Priority.ALWAYS);
         infoBox.setAlignment(Pos.TOP_LEFT);
+        infoBox.setMaxWidth(Double.MAX_VALUE);
 
         Label nameLabel = new Label(region.getName());
         nameLabel.getStyleClass().addAll("card-title", "map-card-name");
+        nameLabel.setWrapText(true);
+        nameLabel.setMaxWidth(Double.MAX_VALUE);
 
-        Label subtitleLabel = new Label("Offline coverage for city and surroundings");
-        subtitleLabel.getStyleClass().addAll("card-subtitle");
-
-        Label latLabel = new Label(String.format("Latitude:  %.4f (S) to %.4f (N)", region.getLatMin(), region.getLatMax()));
+        Label latLabel = new Label(String.format("Lat:  %.4f → %.4f", region.getLatMin(), region.getLatMax()));
         latLabel.getStyleClass().add("map-coord");
-
-        Label lonLabel = new Label(String.format("Longitude: %.4f (W) to %.4f (E)", region.getLonMin(), region.getLonMax()));
+        latLabel.setWrapText(true);
+        latLabel.setMaxWidth(Double.MAX_VALUE);
+        Label lonLabel = new Label(String.format("Lon: %.4f → %.4f", region.getLonMin(), region.getLonMax()));
         lonLabel.getStyleClass().add("map-coord");
+        lonLabel.setWrapText(true);
+        lonLabel.setMaxWidth(Double.MAX_VALUE);
 
-        infoBox.getChildren().addAll(nameLabel, subtitleLabel, latLabel, lonLabel);
+        infoBox.getChildren().addAll(nameLabel, latLabel, lonLabel);
         mapCard.getChildren().addAll(thumbnail, infoBox);
-
         return mapCard;
     }
 
+    // Handle region selection from the list or card view
+    private void selectRegion(MapRegion region, HBox row) {
+        // If they are creating a map, cancel it to look at the new selected region
+        if (activeCreationView != null) {
+            hideCreationView();
+        }
+
+        selectedRegion = region;
+
+        if (currentSelectedRow != null)
+            currentSelectedRow.getStyleClass().remove("map-list-row-selected");
+        row.getStyleClass().add("map-list-row-selected");
+        currentSelectedRow = row;
+
+        detailName.setText(region.getName());
+        detailSubtitle.setText("Offline coverage for city and surroundings");
+        detailLat.setText(String.format("%.4f° S  →  %.4f° N", region.getLatMin(), region.getLatMax()));
+        detailLon.setText(String.format("%.4f° W  →  %.4f° E", region.getLonMin(), region.getLonMax()));
+
+        detailImagePane.getChildren().clear();
+        try {
+            String url = new java.io.File(region.getImagePath()).toURI().toString();
+            Image img = new Image(url, false);
+            if (!img.isError()) {
+                Rectangle rect = new Rectangle();
+                rect.widthProperty().bind(detailImagePane.widthProperty());
+                rect.heightProperty().bind(detailImagePane.heightProperty());
+                double z = 4.0, off = (1.0 - z) / 2.0;
+                rect.setFill(new ImagePattern(img, off, off, z, z, true));
+                detailImagePane.getChildren().add(rect);
+            }
+        } catch (Exception ignored) {}
+
+        emptyState.setVisible(false);
+        emptyState.setManaged(false);
+        detailContent.setVisible(true);
+        detailContent.setManaged(true);
+    }
+
+    // Refresh the list of maps in the UI container
     private void refreshCards(List<MapRegion> regions) {
         mapsContainer.getChildren().clear();
         for (MapRegion region : regions) {
-            mapsContainer.getChildren().add(buildMapCard(region));
+            mapsContainer.getChildren().add(
+                    pcMode ? buildListRow(region) : buildMapCard(region)
+            );
         }
     }
 
+    // Fetch and display maps from the database backend
     @FXML
-    private void loadMaps() {
+    public void loadMaps() {
         SportActivityApp app = SportActivityApp.getInstance();
         masterData.setAll(app.getMapRegions());
         refreshCards(masterData);
     }
 
-    @FXML
-    private void performSearch(String txtSearch) {
-        deleteButton.setVisible(txtSearch != null && !txtSearch.isEmpty());
+    // Adjust layout for mobile vs desktop views
+    private void applyLayout(double width) {
+        boolean isMobile  = width < MOBILE_BREAKPOINT;
+        boolean wasPcMode = pcMode;
+        pcMode = !isMobile;
 
-        if (txtSearch == null || txtSearch.isEmpty()) {
+        panelDivider.setVisible(!isMobile);
+        panelDivider.setManaged(!isMobile);
+        detailPanel.setVisible(!isMobile);
+        detailPanel.setManaged(!isMobile);
+
+        if (isMobile) {
+            leftPanel.setMinWidth(Region.USE_COMPUTED_SIZE);
+            leftPanel.setPrefWidth(Region.USE_COMPUTED_SIZE);
+            leftPanel.setMaxWidth(Double.MAX_VALUE);
+            HBox.setHgrow(leftPanel, Priority.ALWAYS);
+        } else {
+            leftPanel.setMinWidth(320);
+            leftPanel.setPrefWidth(320);
+            leftPanel.setMaxWidth(320);
+            HBox.setHgrow(leftPanel, Priority.NEVER);
+        }
+
+        if (pcMode != wasPcMode) {
+            refreshCards(masterData);
+            selectedRegion = null;
+            currentSelectedRow = null;
+
+            // Clear layout cleanly on resize
+            hideCreationView();
+
+            emptyState.setVisible(true);
+            emptyState.setManaged(true);
+            detailContent.setVisible(false);
+            detailContent.setManaged(false);
+        }
+    }
+
+    // Filter maps based on search input
+    @FXML
+    private void performSearch(String txt) {
+        deleteButton.setVisible(txt != null && !txt.isEmpty());
+        if (txt == null || txt.isEmpty()) {
             refreshCards(masterData);
         } else {
             List<MapRegion> filtered = masterData.stream()
-                    .filter(r -> r.getName().toLowerCase().contains(txtSearch.toLowerCase()))
+                    .filter(r -> r.getName().toLowerCase().contains(txt.toLowerCase()))
                     .toList();
             refreshCards(filtered);
         }
     }
 
+    // Open embedded Map Creation view
     @FXML
     private void onAddMap() {
+        // Prevent stacking views if one is already open
+        if (activeCreationView != null) {
+            return;
+        }
+
         try {
-            Stage stage = (Stage) searchField.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/maps/MapCreationView.fxml")));
-            stage.setScene(new Scene(root));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/maps/MapCreationView.fxml"));
+            Parent root = loader.load();
+
+            // Link the child to the parent
+            MapCreationController ctrl = loader.getController();
+            ctrl.setParentController(this);
+
+            // Add view overlay to detailPanel
+            activeCreationView = root;
+            detailPanel.getChildren().add(root);
+
+            // Disable the add button
+            if (addMapBtn != null) {
+                addMapBtn.setDisable(true);
+            }
+
+            // Hide normal content
+            emptyState.setVisible(false);
+            emptyState.setManaged(false);
+            detailContent.setVisible(false);
+            detailContent.setManaged(false);
+
+            // Switch to showing the right panel in mobile view
+            if (!pcMode) {
+                leftPanel.setVisible(false);
+                leftPanel.setManaged(false);
+                detailPanel.setVisible(true);
+                detailPanel.setManaged(true);
+            }
+
         } catch (Exception e) {
-            System.err.println("Could not open Map Creation view.");
+            System.err.println("Could not open embedded Map Creation view.");
             e.printStackTrace();
         }
     }
 
+    // Called by the child controller to close itself
+    public void hideCreationView() {
+        if (activeCreationView != null) {
+            detailPanel.getChildren().remove(activeCreationView);
+            activeCreationView = null;
+        }
+
+        // Re-enable the add button
+        if (addMapBtn != null) {
+            addMapBtn.setDisable(false);
+        }
+
+        if (pcMode) {
+            // Restore previous state depending on selection
+            if (selectedRegion != null) {
+                detailContent.setVisible(true);
+                detailContent.setManaged(true);
+            } else {
+                emptyState.setVisible(true);
+                emptyState.setManaged(true);
+            }
+        } else {
+            // For mobile, go back to the left list
+            leftPanel.setVisible(true);
+            leftPanel.setManaged(true);
+            detailPanel.setVisible(false);
+            detailPanel.setManaged(false);
+        }
+    }
+
+    @FXML
+    private void onEditMap() {
+        // Edit map logic
+    }
+
+    @FXML
+    private void onDeleteMap() {
+        // Double-check that a region is actually selected
+        if (selectedRegion == null) {
+            return;
+        }
+
+        // Show a confirmation popup
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Delete Map");
+        alert.setHeaderText("Delete '" + selectedRegion.getName() + "'?");
+        alert.setContentText("Are you sure you want to delete this map? This action cannot be undone.");
+
+        // Wait for the user to click OK or Cancel
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+
+                // Remove it from the database backend
+                SportActivityApp app = SportActivityApp.getInstance();
+                app.removeMapRegion(selectedRegion);
+
+                // Clear the selection state
+                selectedRegion = null;
+                if (currentSelectedRow != null) {
+                    currentSelectedRow.getStyleClass().remove("map-list-row-selected");
+                    currentSelectedRow = null;
+                }
+
+                // Reload the map list so the deleted map disappears from the sidebar
+                loadMaps();
+
+                // Hide the right-side detail panel and bring back the empty state
+                detailContent.setVisible(false);
+                detailContent.setManaged(false);
+                emptyState.setVisible(true);
+                emptyState.setManaged(true);
+            }
+        });
+    }
+
+    @FXML
+    private void onFavMap() {
+        // Favorite map logic
+    }
+
+    // Clear the search input field
     @FXML
     private void deleteField() {
         searchField.clear();

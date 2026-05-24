@@ -13,7 +13,7 @@
         xmlns="http://javafx.com/javafx/21"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="FitnessPrincess.auth.LoginController"
-        stylesheets="@/resources/estilos.css">
+        stylesheets="@../../resources/estilos.css">
 
     <top>
         <!-- PlaceHolder -->
@@ -23,10 +23,10 @@
         <VBox styleClass="auth-container" spacing="8" alignment="CENTER_LEFT">
 
             <Label text="Username"/>
-            <TextField fx:id="txtUsername" promptText="Enter Username"/>
+            <TextField fx:id="txtUsername" promptText="Enter Username" text="mateoesguay"/>
 
             <Label text="Password"/>
-            <PasswordField fx:id="txtPassword" promptText="Enter Password"/>
+            <PasswordField fx:id="txtPassword" promptText="Enter Password" text="Mateoesguay-2007"/>
 
         </VBox>
     </center>

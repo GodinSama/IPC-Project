@@ -1,8 +1,133 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-    <Label text="This page is under construction!" style="-fx-font-size: 24px;"/>
-    <Label text="ProfileView" style="-fx-font-size: 18px;"/>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" prefHeight="800.0" prefWidth="800.0" styleClass="view-container" stylesheets="@../../resources/estilos.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.user.ProfileViewController">
+
+   <padding>
+      <Insets bottom="30.0" left="24.0" right="24.0" top="0.0" />
+   </padding>
+
+   <AnchorPane maxWidth="500.0" minHeight="56.0" prefHeight="56.0">
+
+      <Label alignment="CENTER" style="-fx-font-size: 20px;" styleClass="auth-title" text="Profile" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="10.0" />
+
+      <Button fx:id="botonsignout" mnemonicParsing="false" onAction="#darlesignout" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-color: #d32f2f; -fx-border-width: 1; -fx-padding: 5 14 5 14;" styleClass="delete-map-btn" text="Sign Out" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="12.0" />
+
+   </AnchorPane>
+
+   <VBox alignment="CENTER" maxWidth="500.0">
+      <VBox.margin>
+         <Insets bottom="22.0" top="10.0" />
+      </VBox.margin>
+
+      <StackPane alignment="BOTTOM_RIGHT" maxWidth="116.0" prefHeight="116.0" prefWidth="116.0">
+
+         <Circle fx:id="currentavatar" fill="#e0e0e0" radius="56.0" StackPane.alignment="CENTER" />
+
+         <Button fx:id="botonedit" mnemonicParsing="false" onAction="#darleedit" style="-fx-min-width: 30px; -fx-min-height: 30px; -fx-max-width: 30px; -fx-max-height: 30px; -fx-font-size: 13px;" styleClass="add-btn" text="✎" StackPane.alignment="BOTTOM_RIGHT" />
+
+      </StackPane>
+   </VBox>
+
+   <VBox maxWidth="500.0" spacing="0.0" style="-fx-padding: 6 0 6 0;" styleClass="summary-card">
+      <VBox.margin>
+         <Insets bottom="22.0" />
+      </VBox.margin>
+
+      <VBox style="-fx-padding: 14 20 14 20;">
+         <HBox alignment="CENTER_LEFT" spacing="8.0">
+            <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/images/Edit%20profile/nickname-removebg-preview.png" />
+               </image>
+            </ImageView>
+            <Label styleClass="field-label" text="Nickname" />
+         </HBox>
+         <TextField fx:id="nickname" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 3 0 0 0; -fx-font-size: 15px;" styleClass="auth-field">
+            <VBox.margin>
+               <Insets top="2.0" />
+            </VBox.margin>
+         </TextField>
+      </VBox>
+
+      <Region maxWidth="1.7976931348623157E308" prefHeight="1.0" styleClass="detail-divider" />
+
+      <VBox style="-fx-padding: 14 20 14 20;">
+         <HBox alignment="CENTER_LEFT" spacing="8.0">
+            <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/images/Edit%20profile/gmail-removebg-preview.png" />
+               </image>
+            </ImageView>
+            <Label styleClass="field-label" text="Email" />
+         </HBox>
+         <TextField fx:id="Email" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 3 0 0 0; -fx-font-size: 15px;" styleClass="auth-field">
+            <VBox.margin>
+               <Insets top="2.0" />
+            </VBox.margin>
+         </TextField>
+      </VBox>
+
+      <Region maxWidth="1.7976931348623157E308" prefHeight="1.0" styleClass="detail-divider" />
+
+      <VBox style="-fx-padding: 14 20 14 20;">
+         <HBox alignment="CENTER_LEFT" spacing="8.0">
+            <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/images/Edit%20profile/password-removebg-preview.png" />
+               </image>
+            </ImageView>
+            <Label styleClass="field-label" text="Password" />
+         </HBox>
+         <AnchorPane>
+            <VBox.margin>
+               <Insets top="2.0" />
+            </VBox.margin>
+            <PasswordField fx:id="passwordhided" prefHeight="36.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 3 0 0 0; -fx-font-size: 15px;" styleClass="auth-field" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0" />
+            <TextField fx:id="password" prefHeight="36.0" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 3 0 0 0; -fx-font-size: 15px;" styleClass="auth-field" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="32.0" AnchorPane.topAnchor="0.0" />
+            <Label onMouseClicked="#passwordHide" style="-fx-font-size: 15px;" styleClass="link-btn" text="👁" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="9.0" />
+         </AnchorPane>
+      </VBox>
+
+      <Region maxWidth="1.7976931348623157E308" prefHeight="1.0" styleClass="detail-divider" />
+
+      <VBox style="-fx-padding: 14 20 14 20;">
+         <HBox alignment="CENTER_LEFT" spacing="8.0">
+            <ImageView fitHeight="14.0" fitWidth="14.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../resources/images/Edit%20profile/calendar-removebg-preview.png" />
+               </image>
+            </ImageView>
+            <Label styleClass="field-label" text="Date of Birth" />
+         </HBox>
+         <DatePicker fx:id="dateOfBirth" maxWidth="1.7976931348623157E308" style="-fx-background-color: transparent; -fx-border-color: transparent; -fx-padding: 3 0 0 0;" styleClass="date-field">
+            <VBox.margin>
+               <Insets top="2.0" />
+            </VBox.margin>
+         </DatePicker>
+      </VBox>
+
+   </VBox>
+
+   <Button fx:id="botonsave" maxWidth="500.0" mnemonicParsing="false" onAction="#darlesave" prefHeight="46.0" style="-fx-background-radius: 12; -fx-font-size: 14px; -fx-padding: 0;" styleClass="primary-btn" text="Save Changes">
+      <VBox.margin>
+         <Insets top="4.0" />
+      </VBox.margin>
+   </Button>
+
 </VBox>

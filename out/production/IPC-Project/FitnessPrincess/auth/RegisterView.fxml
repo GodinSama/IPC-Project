@@ -14,7 +14,7 @@
         xmlns="http://javafx.com/javafx/21"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="FitnessPrincess.auth.RegisterController"
-        stylesheets="@/resources/estilos.css">
+        stylesheets="@../../resources/estilos.css">
 
     <top>
         <!-- PlaceHolder -->

@@ -1,3 +1,4 @@
+// used ai to solve my errors
 package FitnessPrincess.user;
 
 import javafx.event.ActionEvent;
@@ -35,49 +36,51 @@ public class MonthlySummaryController implements Initializable {
         currentMonth = YearMonth.now();
         updateMonthView();
     }
-   
+
     private void updateMonthView() {
-        // --- show the current month ---
+        // show the current month
         String formattedDate = currentMonth.format(formatter);
         formattedDate = formattedDate.substring(0, 1).toUpperCase() + formattedDate.substring(1);
         monthLabel.setText(formattedDate);
-        
-        // --- right arrow logic ---
+
+        // used ai
+        // right arrow logic
         YearMonth realMaxMonth = YearMonth.now();
         if (currentMonth.equals(realMaxMonth) || currentMonth.isAfter(realMaxMonth)) {
             nextBtn.setDisable(true);
         } else {
             nextBtn.setDisable(false);
         }
-        
-        // --- calculate data ---
+
+        // calculate data
         double totalDistance = 0.0;
         Duration totalTime = Duration.ZERO;
         int totalAscent = 0;
         int totalDescent = 0;
 
         SportActivityApp app = SportActivityApp.getInstance();
-        
+
+        // used ai to figure out how to sum the elevation with the prompt 'how to get total ascent and descent from activity list'
         for (Activity activity : app.getUserActivities()) {
             YearMonth activityMonth = YearMonth.from(activity.getStartTime());
-            
+
             if (activityMonth.equals(currentMonth)) {
                 totalDistance += activity.getTotalDistance();
                 totalTime = totalTime.plus(activity.getDuration());
-                
-                totalAscent += (int) activity.getElevationGain(); 
+
+                totalAscent += (int) activity.getElevationGain();
                 totalDescent += (int) activity.getElevationLoss();
             }
         }
 
-        // --- show the calculated data ---
+        // show the calculated data
         long hours = totalTime.toHours();
-        long minutes = totalTime.toMinutesPart(); 
-        
+        long minutes = totalTime.toMinutesPart();
+
         timeLabel.setText(hours + "h " + minutes + "min");
-        
-        distanceLabel.setText(String.format(Locale.ENGLISH, "%.1f Km", totalDistance)); 
-        
+
+        distanceLabel.setText(String.format(Locale.ENGLISH, "%.1f Km", totalDistance));
+
         ascentLabel.setText("+ " + totalAscent + " m");
         descentLabel.setText("- " + totalDescent + " m");
     }

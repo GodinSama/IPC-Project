@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Pos?>
+
+<StackPane xmlns="http://javafx.com/javafx/21"
+           xmlns:fx="http://javafx.com/fxml/1"
+           styleClass="view-container, summary-overlay"
+           stylesheets="@../../resources/estilos.css">
+
+    <VBox alignment="TOP_CENTER" spacing="20" maxWidth="450" maxHeight="420" styleClass="summary-card">
+
+        <HBox alignment="TOP_RIGHT">
+            <Button fx:id="closeAnnotationBtn" text="X" styleClass="summary-close-btn"
+                    minWidth="28" minHeight="28" maxWidth="28" maxHeight="28" />
+        </HBox>
+
+        <Label text="Add Annotation" styleClass="summary-title"/>
+
+        <VBox spacing="8">
+            <Label text="Annotation Text:" styleClass="field-label"/>
+            <TextArea fx:id="annotationTextArea" promptText="e.g. Nice view here..." styleClass="text-field" prefRowCount="4" wrapText="true"/>
+        </VBox>
+
+        <VBox spacing="8">
+            <Label text="Marker Color:" styleClass="field-label"/>
+            <ColorPicker fx:id="markerColorPicker" styleClass="secondary-btn" maxWidth="Infinity" />
+        </VBox>
+
+        <HBox alignment="CENTER_RIGHT">
+            <Button fx:id="saveAnnotationBtn" text="Save Marker" styleClass="save-btn" defaultButton="true" />
+        </HBox>
+
+    </VBox>
+</StackPane>

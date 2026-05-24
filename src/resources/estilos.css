@@ -3,6 +3,9 @@
    All should inherit from this
    ============================================================ */
 
+/* ── The whole of this file has used AI to configure and improve designs  ── */
+/* ── With the prompts of "Improve my design" or "Apply this css file to my designs"  ── */
+
 /* ── Colour palette  ── */
 .root {
     -color-bg-primary:   #ffffff;
@@ -33,6 +36,12 @@
 
 .nav-brand {
     -fx-text-fill:   #ffffff;
+    -fx-font-size:   18px;
+    -fx-font-weight: bold;
+}
+
+.nav-brand-2 {
+    -fx-text-fill:   #feacea;
     -fx-font-size:   18px;
     -fx-font-weight: bold;
 }
@@ -144,8 +153,7 @@
 /* ── Form fields ─────────────────────────────────────────────────────── */
 .auth-field,
 .text-field,
-.password-field,
-.date-picker > .text-field {
+.password-field {
     -fx-background-color:  -color-bg-surface;
     -fx-text-fill:         -color-text-primary;
     -fx-prompt-text-fill:  -color-text-muted;
@@ -160,6 +168,46 @@
 .text-field:focused,
 .password-field:focused {
     -fx-border-color: -color-accent;
+}
+
+/* 1. Style the outer DatePicker container as the main "pill" */
+.date-field {
+    -fx-background-color:  -color-bg-surface;
+    -fx-border-color:      #1a1a1a;
+    -fx-border-radius:     20;
+    -fx-background-radius: 20;
+    -fx-pref-width:        320;
+    -fx-padding:           0; /* Remove default padding so children fit seamlessly */
+}
+
+/* 2. Handle focus for the entire control */
+.date-field:focused,
+.date-field:contains-focus {
+    -fx-border-color: -color-accent;
+}
+
+/* 3. Strip the background/border from the inner text field */
+.date-field > .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color:     transparent;
+    -fx-text-fill:        -color-text-primary;
+    -fx-prompt-text-fill: -color-text-muted;
+    -fx-padding:          8 8 8 16;
+    -fx-background-insets: 0;
+}
+
+/* 4. Strip the background/border from the calendar button */
+.date-field > .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-color:     transparent;
+    -fx-background-radius: 0 20 20 0;
+    -fx-background-insets: 0;
+    -fx-padding:          8 16 8 8;
+}
+
+/* Optional: Add a subtle hover effect to just the button area */
+.date-field > .arrow-button:hover {
+    -fx-background-color: rgba(0, 0, 0, 0.05);
 }
 
 .readonly-field {
@@ -333,8 +381,30 @@
 
 .add-map-btn:pressed {
     -fx-background-color: -color-accent-hover;
-    -fx-effect: dropshadow(three-pass-box, transparent, 0, 0, 0, 0); 
-    -fx-translate-y: 2; 
+    -fx-effect: dropshadow(three-pass-box, transparent, 0, 0, 0, 0);
+    -fx-translate-y: 2;
+}
+
+.add-btn {
+    -fx-background-color:  -color-accent;
+    -fx-text-fill:         white;
+    -fx-font-size:         24px;
+    -fx-font-weight:       bold;
+    -fx-background-radius: 50;
+    -fx-min-width:         40px;
+    -fx-min-height:        40px;
+    -fx-max-width:         40px;
+    -fx-max-height:        40px;
+    -fx-cursor:            hand;
+    -fx-padding:           0;
+    -fx-alignment:         center;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.35), 5, 0, 0, 2);
+}
+
+.add-btn:pressed {
+    -fx-background-color: -color-accent-hover;
+    -fx-effect: dropshadow(three-pass-box, transparent, 0, 0, 0, 0);
+    -fx-translate-y: 2;
 }
 
 .search-bar {
@@ -388,17 +458,24 @@
     -fx-background:       transparent;
     -fx-background-color: transparent;
     -fx-border-color:     transparent;
+    -fx-padding:          0; /* Removes inner padding holding the map back */
+}
+
+/* Fixes the white viewport background in JavaFX ScrollPanes */
+.maps-scroll > .viewport {
+    -fx-background-color: transparent;
 }
 
 .maps-container {
     -fx-background-color: transparent;
-    -fx-padding:          4 16 16 16;
+    -fx-padding:          4 8 16 8;
 }
 
 .map-card {
     -fx-background-color:  -color-card-dark;
     -fx-background-radius: 12;
     -fx-padding:           12;
+    -fx-max-width: 99999;
 }
 
 .map-thumbnail {
@@ -420,11 +497,79 @@
     -fx-font-weight: bold;
     -fx-font-family: 'Courier New', monospace;
     -fx-wrap-text:   true;
+    -fx-max-width: 99999;
 }
 
 .map-coord {
     -fx-text-fill:   #a8d8a8;
     -fx-font-size:   10px;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-wrap-text:   true;
+    -fx-max-width: 99999;
+}
+
+.map-card-pc {
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 6, 0, 0, 2);
+}
+
+.map-card-pc-name {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* ══════════════════════════════════════════════════════════════════
+   PC TWO-PANEL LAYOUT  (WhatsApp-style)
+   ══════════════════════════════════════════════════════════════════ */
+
+/* ── Left panel ──────────────────────────────────────────────────── */
+.maps-left-panel {
+    -fx-background-color: -color-bg-primary;
+    -fx-border-color:     -color-bg-surface;
+    -fx-border-width:     0 1 0 0;
+}
+
+.maps-list-container {
+    -fx-background-color: transparent;
+    -fx-padding:          4 8 16 8;
+}
+
+/* ── List row (PC sidebar) ───────────────────────────────────────── */
+.map-list-row {
+    -fx-background-color:  transparent;
+    -fx-padding:           10 16 10 16;
+    -fx-cursor:            hand;
+}
+
+.map-list-row:hover {
+    -fx-background-color: -color-bg-secondary;
+}
+
+.map-list-row-selected {
+    -fx-background-color: -color-bg-surface;
+    -fx-border-color:     -color-accent;
+    -fx-border-width:     0 0 0 3;
+}
+
+.map-list-thumb {
+    -fx-background-color:  -color-card-dark;
+    -fx-background-radius: 10;
+    -fx-min-width:  52;
+    -fx-min-height: 52;
+    -fx-max-width:  52;
+    -fx-max-height: 52;
+}
+
+.list-row-name {
+    -fx-text-fill:   -color-text-primary;
+    -fx-font-size:   14px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.list-row-sub {
+    -fx-text-fill: -color-text-muted;
+    -fx-font-size: 11px;
     -fx-font-family: 'Courier New', monospace;
 }
 
@@ -448,8 +593,8 @@
     -fx-font-weight: bold;
     -fx-cursor: hand;
     -fx-border-color: black;
-    -fx-border-radius: 50; 
-    -fx-background-radius: 50; 
+    -fx-border-radius: 50;
+    -fx-background-radius: 50;
     -fx-padding: 0;
 }
 
@@ -497,4 +642,392 @@
     -fx-text-fill: #aed581;
     -fx-font-size: 24px;
     -fx-font-weight: 900;
+}
+
+/* ── Panel divider ───────────────────────────────────────────────── */
+.panel-divider {
+    -fx-background-color: -color-bg-surface;
+    -fx-pref-width:       1;
+}
+
+/* ── Right detail panel ──────────────────────────────────────────── */
+.maps-detail-panel {
+    -fx-background-color: -color-bg-secondary;
+}
+
+/* Empty state */
+.maps-empty-state {
+    -fx-alignment: center;
+    -fx-padding:   40;
+}
+
+.empty-state-icon {
+    -fx-font-size: 56px;
+    -fx-opacity:   0.4;
+}
+
+.empty-state-title {
+    -fx-font-size:   20px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-secondary;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.empty-state-subtitle {
+    -fx-font-size:  13px;
+    -fx-text-fill:  -color-text-muted;
+    -fx-alignment:  center;
+    -fx-text-alignment: center;
+}
+
+/* Detail content */
+.map-detail-content {
+    -fx-background-color: -color-bg-primary;
+}
+
+.detail-image-pane {
+    -fx-background-color: -color-card-dark;
+    -fx-min-height: 200;
+    -fx-max-height: 240;
+}
+
+/* Overlay Stats Section */
+.detail-info-section-overlay {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-border-color:     -color-bg-surface;
+    -fx-border-width:     1 0 0 0;
+    -fx-effect:           dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, -4);
+}
+
+.detail-name {
+    -fx-font-size:   24px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-primary;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.detail-subtitle {
+    -fx-font-size:  13px;
+    -fx-text-fill:  -color-text-muted;
+}
+
+.detail-divider {
+    -fx-background-color: -color-bg-surface;
+    -fx-pref-height: 1;
+}
+
+.detail-section-header {
+    -fx-font-size:   11px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-muted;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-padding:     4 0 0 0;
+}
+
+.coord-box {
+    -fx-background-color:  -color-bg-surface;
+    -fx-background-radius: 10;
+    -fx-padding:           12 16 12 16;
+    -fx-spacing:           4;
+}
+
+.coord-box-label {
+    -fx-font-size:   10px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-text-muted;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.coord-box-value {
+    -fx-font-size:   13px;
+    -fx-font-weight: bold;
+    -fx-text-fill:   -color-accent;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+/* Delete map button */
+.delete-map-btn {
+    -fx-background-color:  transparent;
+    -fx-text-fill:         -color-error;
+    -fx-font-size:         16px;
+    -fx-cursor:            hand;
+    -fx-background-radius: 8;
+    -fx-padding:           6 10 6 10;
+    -fx-border-radius:     8;
+    -fx-border-color:      transparent;
+}
+
+.delete-map-btn:hover {
+    -fx-background-color: #fdecea;
+}
+
+.fav-map-btn {
+    -fx-background-color:  transparent;
+    -fx-text-fill:         -color-error;
+    -fx-font-size:         16px;
+    -fx-cursor:            hand;
+    -fx-background-radius: 8;
+    -fx-padding:           6 10 6 10;
+    -fx-border-radius:     8;
+    -fx-border-color:      transparent;
+}
+
+.fav-map-btn:hover {
+    -fx-background-color: #fef2fa;
+}
+
+/* ── Toggle Menu Button ──────────────────────────────────────────── */
+.toggle-menu-btn {
+    -fx-background-color:  rgba(255, 255, 255, 0.95);
+    -fx-text-fill:         -color-text-primary;
+    -fx-font-size:         18px;
+    -fx-font-weight:       bold;
+    -fx-cursor:            hand;
+    -fx-background-radius: 9 9 0 0;
+    -fx-border-radius:     8 8 0 0; /* Added to perfectly hug the background corners */
+    -fx-padding:           6 24 6 24;
+    -fx-border-color:      #a1a1a1;
+    -fx-border-width:      2 2 0 2;
+    -fx-translate-y:       1;
+}
+
+.toggle-menu-btn:hover {
+    -fx-background-color: -color-bg-secondary;
+    -fx-effect:           dropshadow(three-pass-box, rgba(0,0,0,0.25), 12, 0, 0, -4); /* Elevates on hover */
+}
+
+.toggle-menu-btn:pressed,
+.toggle-menu-btn:selected {
+    -fx-background-color: #e8e8e8; /* Slight darkening to show activation */
+    -fx-effect:           dropshadow(three-pass-box, rgba(0,0,0,0.05), 2, 0, 0, -1); /* Shadow shrinks to simulate pressing */
+    -fx-translate-y:      2; /* Moves down to simulate a physical click */
+}
+
+/* ══════════════════════════════════════════════════════════════
+   SESSION HISTORY  —  PC layout
+   Append these rules to the bottom of estilos.css
+   ══════════════════════════════════════════════════════════════ */
+
+/* ── Root panel ─────────────────────────────────────────────── */
+.sh-root {
+    -fx-background-color: -color-bg-secondary;
+}
+
+/* ── Top header bar ─────────────────────────────────────────── */
+.sh-header {
+    -fx-background-color: -color-card-dark;
+    -fx-padding:          18 24 18 24;
+    -fx-effect:           dropshadow(three-pass-box, rgba(0,0,0,0.35), 8, 0, 0, 4);
+}
+
+.sh-title {
+    -fx-text-fill:   #ffffff;
+    -fx-font-size:   22px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+/* ── Month navigator ─────────────────────────────────────────── */
+.sh-month-nav {
+    -fx-background-color:  rgba(255,255,255,0.08);
+    -fx-background-radius: 20;
+    -fx-padding:           6 14 6 14;
+}
+
+.sh-nav-btn {
+    -fx-background-color:  transparent;
+    -fx-text-fill:         #c8e6c8;
+    -fx-font-size:         20px;
+    -fx-font-weight:       bold;
+    -fx-cursor:            hand;
+    -fx-background-radius: 20;
+    -fx-padding:           2 10 2 10;
+}
+
+.sh-nav-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.15);
+    -fx-text-fill:        #ffffff;
+}
+
+.sh-month-label {
+    -fx-text-fill:   #ffffff;
+    -fx-font-size:   15px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-min-width:   140;
+    -fx-alignment:   center;
+}
+
+/* ── Close button ───────────────────────────────────────────── */
+.sh-close-btn {
+    -fx-background-color:  rgba(255,255,255,0.08);
+    -fx-text-fill:         #c8e6c8;
+    -fx-font-size:         15px;
+    -fx-font-weight:       bold;
+    -fx-cursor:            hand;
+    -fx-background-radius: 20;
+    -fx-min-width:         32;
+    -fx-min-height:        32;
+    -fx-padding:           4 10 4 10;
+}
+
+.sh-close-btn:hover {
+    -fx-background-color: rgba(231,76,60,0.75);
+    -fx-text-fill:        #ffffff;
+}
+
+/* ── Scroll pane ────────────────────────────────────────────── */
+.sh-scroll {
+    -fx-background-color: transparent;
+    -fx-background:       transparent;
+}
+
+.sh-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ── Session list container ─────────────────────────────────── */
+.sh-list {
+    -fx-background-color: transparent;
+}
+
+/* ── Session card (collapsed) ───────────────────────────────── */
+.sh-card {
+    -fx-background-color:  white;
+    -fx-background-radius: 10;
+    -fx-border-radius:     10;
+    -fx-border-color:      -color-bg-surface;
+    -fx-border-width:      1;
+    -fx-effect:            dropshadow(three-pass-box, rgba(0,0,0,0.07), 6, 0, 0, 3);
+    -fx-cursor:            hand;
+}
+
+/* ── Card header ────────────────────────────────────────────── */
+.sh-card-header {
+    -fx-padding:           14 18 14 18;
+}
+
+.sh-card-session-num {
+    -fx-text-fill:   -color-card-dark;
+    -fx-font-size:   15px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-min-width:   100;
+}
+
+.sh-card-time {
+    -fx-text-fill:   -color-text-secondary;
+    -fx-font-size:   13px;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.sh-card-date {
+    -fx-text-fill:   -color-text-muted;
+    -fx-font-size:   12px;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.sh-card-duration-badge {
+    -fx-background-color:  -color-bg-surface;
+    -fx-background-radius: 12;
+    -fx-text-fill:         -color-card-dark;
+    -fx-font-size:         12px;
+    -fx-font-weight:       bold;
+    -fx-font-family:       'Courier New', monospace;
+    -fx-padding:           4 12 4 12;
+}
+
+.sh-card-chevron {
+    -fx-text-fill:   -color-text-muted;
+    -fx-font-size:   13px;
+    -fx-min-width:   20;
+    -fx-alignment:   center;
+}
+
+/* ── Card — expanded state ──────────────────────────────────── */
+.sh-card-expanded {
+    -fx-border-color: -color-accent;
+    -fx-border-width: 1;
+    -fx-effect:       dropshadow(three-pass-box, rgba(46,184,75,0.18), 10, 0, 0, 4);
+}
+
+/* ── Stats grid ─────────────────────────────────────────────── */
+.sh-card-stats {
+    -fx-background-color:  -color-bg-secondary;
+    -fx-padding:           14 18 16 18;
+    -fx-background-radius: 0 0 10 10;
+}
+
+/* ── Stat cell ──────────────────────────────────────────────── */
+.sh-stat-cell {
+    -fx-background-color:  white;
+    -fx-background-radius: 8;
+    -fx-padding:           10 14 10 14;
+    -fx-pref-width:        360;
+    -fx-effect:            dropshadow(three-pass-box, rgba(0,0,0,0.05), 3, 0, 0, 1);
+}
+
+.sh-stat-icon {
+    -fx-font-size: 16px;
+}
+
+.sh-stat-key {
+    -fx-text-fill:   -color-text-secondary;
+    -fx-font-size:   13px;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.sh-stat-value {
+    -fx-text-fill:   -color-card-dark;
+    -fx-font-size:   14px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+/* ── Totals bar ─────────────────────────────────────────────── */
+.sh-totals-bar {
+    -fx-background-color: -color-card-dark;
+    -fx-pref-height:      72;
+    -fx-effect:           dropshadow(three-pass-box, rgba(0,0,0,0.3), 8, 0, 0, -4);
+}
+
+.sh-totals-heading {
+    -fx-text-fill:   rgba(200,230,200,0.6);
+    -fx-font-size:   10px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-min-width:   60;
+}
+
+.sh-total-item {
+    -fx-padding:    0 32 0 32;
+    -fx-alignment:  center;
+    -fx-spacing:    3;
+}
+
+.sh-total-key {
+    -fx-text-fill:   rgba(200,230,200,0.7);
+    -fx-font-size:   10px;
+    -fx-font-family: 'Courier New', monospace;
+    -fx-font-weight: bold;
+}
+
+.sh-total-value {
+    -fx-text-fill:   -color-accent;
+    -fx-font-size:   20px;
+    -fx-font-weight: bold;
+    -fx-font-family: 'Courier New', monospace;
+}
+
+.sh-totals-divider {
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-pref-height:      36;
+    -fx-pref-width:       1;
+}
+
+/* ── Empty state ────────────────────────────────────────────── */
+.sh-empty-label {
+    -fx-text-fill:   -color-text-muted;
+    -fx-font-size:   14px;
+    -fx-font-family: 'Courier New', monospace;
 }

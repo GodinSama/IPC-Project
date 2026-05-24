@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+
+<BorderPane
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="FitnessPrincess.dashboard.DashboardController"
+        stylesheets="@../../resources/estilos.css"
+        styleClass="view-container"
+        maxWidth="Infinity" maxHeight="Infinity"
+        HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+
+    <center>
+        <HBox fx:id="rootContainer" styleClass="view-container" HBox.hgrow="ALWAYS">
+
+            <VBox fx:id="leftPanel" styleClass="maps-left-panel" prefWidth="320" minWidth="320" maxWidth="320" HBox.hgrow="NEVER">
+
+                <VBox styleClass="maps-top-bar" spacing="10">
+                    <HBox alignment="CENTER_LEFT" spacing="8">
+                        <Label text="Dashboard" styleClass="maps-title"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="+"
+                                styleClass="primary-btn, add-btn"
+                                onAction="#onAddActivity"
+                                BorderPane.alignment="CENTER"
+                                minWidth="40" maxWidth="40" prefWidth="40"
+                                minHeight="40" maxHeight="40" prefHeight="40"
+                                alignment="CENTER" textAlignment="CENTER"
+                                style="-fx-padding: 0; -fx-font-weight: bold;" />
+                    </HBox>
+                    <HBox fx:id="searchBar" styleClass="search-bar" alignment="CENTER_LEFT" spacing="8">
+                        <Label text="🔍" styleClass="search-icon"/>
+                        <TextField fx:id="searchField" promptText="Search activities..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
+                        <Button fx:id="deleteButton" text="✕" visible="false" onAction="#deleteField" styleClass="delete-btn"/>
+                    </HBox>
+                </VBox>
+
+                <ScrollPane fitToWidth="true" styleClass="maps-scroll" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
+                    <VBox fx:id="activitiesContainer" styleClass="maps-list-container" spacing="2" fillWidth="true"/>
+                </ScrollPane>
+
+            </VBox>
+
+            <Separator orientation="VERTICAL" styleClass="panel-divider"/>
+
+            <BorderPane fx:id="mapContainer" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+
+                <top>
+                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="maps-top-bar">
+                        <Label fx:id="mapModeLabel" text="Explore Mode" styleClass="detail-section-header"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Label text="Map:" styleClass="field-label" />
+                        <ComboBox fx:id="mapSelector" promptText="Select Map..." onAction="#onMapSelected" prefWidth="150" />
+
+                        <ToggleButton fx:id="addMarkerToggle" text="📍 Add Marker" styleClass="secondary-btn"/>
+                        <Button text="➖" onAction="#onZoomOut" styleClass="secondary-btn"/>
+                        <Button text="➕" onAction="#onZoomIn" styleClass="secondary-btn"/>
+                    </HBox>
+                </top>
+
+                <center>
+                    <VBox VBox.vgrow="ALWAYS">
+
+                        <StackPane VBox.vgrow="ALWAYS">
+                            <ScrollPane fx:id="mapScrollPane" pannable="true" fitToWidth="true" fitToHeight="true" styleClass="maps-scroll">
+                                <Group fx:id="mapGroup">
+                                    <Pane fx:id="mapPane">
+                                        <ImageView fx:id="mapImageView" preserveRatio="true"/>
+                                    </Pane>
+                                </Group>
+                            </ScrollPane>
+
+                            <Button fx:id="toggleMenuBtn" text="⌃" onAction="#onToggleMenu" styleClass="toggle-menu-btn" StackPane.alignment="BOTTOM_CENTER"/>
+                        </StackPane>
+
+                        <VBox fx:id="bottomStatsContainer" styleClass="detail-info-section-overlay" prefHeight="80" VBox.vgrow="NEVER">
+                            <HBox alignment="CENTER" spacing="16">
+                                <padding><Insets top="16" right="24" bottom="16" left="24"/></padding>
+
+                                <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
+                                    <Label text="DISTANCE" styleClass="coord-box-label"/>
+                                    <Label fx:id="statDistance" text="-- km" styleClass="coord-box-value"/>
+                                </VBox>
+
+                                <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
+                                    <Label text="DURATION" styleClass="coord-box-label"/>
+                                    <Label fx:id="statDuration" text="--:--:--" styleClass="coord-box-value"/>
+                                </VBox>
+
+                                <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
+                                    <Label text="ELEVATION GAIN" styleClass="coord-box-label"/>
+                                    <Label fx:id="statElevation" text="-- m" styleClass="coord-box-value"/>
+                                </VBox>
+
+                                <VBox styleClass="coord-box" HBox.hgrow="ALWAYS" alignment="CENTER">
+                                    <Label text="AVG SPEED" styleClass="coord-box-label"/>
+                                    <Label fx:id="statSpeed" text="-- km/h" styleClass="coord-box-value"/>
+                                </VBox>
+                            </HBox>
+
+                            <StackPane fx:id="chartContainer" visible="false" managed="false" VBox.vgrow="ALWAYS">
+                                <LineChart fx:id="elevationChart" animated="false" createSymbols="false" legendVisible="false">
+                                    <xAxis>
+                                        <NumberAxis fx:id="xAxis" label="Distance (km)" autoRanging="true"/>
+                                    </xAxis>
+                                    <yAxis>
+                                        <NumberAxis fx:id="yAxis" label="Elevation (m)" autoRanging="true"/>
+                                    </yAxis>
+                                </LineChart>
+                                <Pane fx:id="chartOverlay" mouseTransparent="true" />
+                            </StackPane>
+
+                        </VBox>
+                    </VBox>
+                </center>
+
+            </BorderPane>
+
+        </HBox>
+    </center>
+</BorderPane>

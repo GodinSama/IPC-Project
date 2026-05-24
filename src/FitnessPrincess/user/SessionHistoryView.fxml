@@ -1,8 +1,108 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.control.Label?>
 
-<VBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
-    <Label text="This page is under construction!" style="-fx-font-size: 24px;"/>
-    <Label text="SessionHistory" style="-fx-font-size: 18px;"/>
-</VBox>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane
+        prefWidth="900.0"
+        prefHeight="650.0"
+        styleClass="sh-root"
+        stylesheets="@../../resources/estilos.css"
+        xmlns="http://javafx.com/javafx/21"
+        xmlns:fx="http://javafx.com/fxml/1"
+        fx:controller="FitnessPrincess.user.SessionHistoryController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" spacing="14.0" styleClass="sh-header">
+            <padding><Insets topRightBottomLeft="0.0"/></padding>
+
+            <Label text="Session History" styleClass="sh-title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="📅 Monthly summary" styleClass="secondary-btn" onAction="#onShowSummary"/>
+
+            <HBox alignment="CENTER" spacing="8.0" styleClass="sh-month-nav">
+                <Button fx:id="prevMonthButton"
+                        text="‹"
+                        styleClass="sh-nav-btn"
+                        mnemonicParsing="false"/>
+                <Label fx:id="monthLabel"
+                       text="May 2026"
+                       styleClass="sh-month-label"/>
+                <Button fx:id="nextMonthButton"
+                        text="›"
+                        styleClass="sh-nav-btn"
+                        mnemonicParsing="false"/>
+            </HBox>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane
+                fx:id="scrollPane"
+                fitToWidth="true"
+                hbarPolicy="NEVER"
+                vbarPolicy="AS_NEEDED"
+                styleClass="sh-scroll">
+
+            <content>
+                <VBox fx:id="sessionsContainer" spacing="12.0" styleClass="sh-list">
+                    <padding>
+                        <Insets top="20.0" right="24.0" bottom="20.0" left="24.0"/>
+                    </padding>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_LEFT" spacing="0.0" styleClass="sh-totals-bar">
+            <padding><Insets top="0.0" right="24.0" bottom="0.0" left="24.0"/></padding>
+
+            <Label text="MONTHLY TOTALS" styleClass="sh-totals-heading"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <VBox alignment="CENTER" styleClass="sh-total-item">
+                <Label text="Sessions" styleClass="sh-total-key"/>
+                <Label fx:id="totalSessionsLabel" text="—" styleClass="sh-total-value"/>
+            </VBox>
+
+            <Region prefWidth="1.0" styleClass="sh-totals-divider"/>
+
+            <VBox alignment="CENTER" styleClass="sh-total-item">
+                <Label text="Duration" styleClass="sh-total-key"/>
+                <Label fx:id="totalDurationLabel" text="—" styleClass="sh-total-value"/>
+            </VBox>
+
+            <Region prefWidth="1.0" styleClass="sh-totals-divider"/>
+
+            <VBox alignment="CENTER" styleClass="sh-total-item">
+                <Label text="Imported" styleClass="sh-total-key"/>
+                <Label fx:id="totalImportedLabel" text="—" styleClass="sh-total-value"/>
+            </VBox>
+
+            <Region prefWidth="1.0" styleClass="sh-totals-divider"/>
+
+            <VBox alignment="CENTER" styleClass="sh-total-item">
+                <Label text="Viewed" styleClass="sh-total-key"/>
+                <Label fx:id="totalViewedLabel" text="—" styleClass="sh-total-value"/>
+            </VBox>
+
+            <Region prefWidth="1.0" styleClass="sh-totals-divider"/>
+
+            <VBox alignment="CENTER" styleClass="sh-total-item">
+                <Label text="Annotations" styleClass="sh-total-key"/>
+                <Label fx:id="totalAnnotationsLabel" text="—" styleClass="sh-total-value"/>
+            </VBox>
+        </HBox>
+    </bottom>
+
+</BorderPane>
