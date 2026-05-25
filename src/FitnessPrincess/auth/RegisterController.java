@@ -10,6 +10,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
+import javafx.scene.control.Button;
 import javafx.scene.shape.SVGPath;
 import javafx.stage.Stage;
 import upv.ipc.sportlib.SportActivityApp;
@@ -29,6 +30,8 @@ public class RegisterController {
     @FXML private TextField txtPasswordVisible;
     @FXML private DatePicker valueBirthdate;
     
+    @FXML private Button nextBtn;
+    
     @FXML private SVGPath eyeIcon; 
 
     @FXML private Label usernameError;
@@ -43,6 +46,31 @@ public class RegisterController {
     public void initialize() {
         rootPane.setUserData(this);
         txtPasswordVisible.textProperty().bindBidirectional(txtPasswordMasked.textProperty());
+        Runnable checkFields = () -> {
+            boolean filled = !txtUsername.getText().trim().isEmpty()
+                    && !txtEmail.getText().trim().isEmpty()
+                    && !txtPasswordMasked.getText().isEmpty()
+                    && valueBirthdate.getValue() != null;
+
+            if (filled) {
+                nextBtn.getStyleClass().removeAll("next-btn");
+                if (!nextBtn.getStyleClass().contains("next-btn-active")) {
+                    nextBtn.getStyleClass().add("next-btn-active");
+                }
+                nextBtn.setStyle("");
+            } else {
+                nextBtn.getStyleClass().removeAll("next-btn-active");
+                if (!nextBtn.getStyleClass().contains("next-btn")) {
+                    nextBtn.getStyleClass().add("next-btn");
+                }
+                nextBtn.setStyle("-fx-background-color: #cccccc; -fx-text-fill: #888888; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 24 10 24;");
+            }
+        };
+
+        txtUsername.textProperty().addListener((o, ov, nv) -> checkFields.run());
+        txtEmail.textProperty().addListener((o, ov, nv) -> checkFields.run());
+        txtPasswordMasked.textProperty().addListener((o, ov, nv) -> checkFields.run());
+        valueBirthdate.valueProperty().addListener((o, ov, nv) -> checkFields.run());
     }
 
     @FXML
@@ -145,6 +173,10 @@ public class RegisterController {
             Stage stage = (Stage) rootPane.getScene().getWindow();
             Parent loginRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml")));
             stage.setScene(new Scene(loginRoot));
+            stage.setWidth(stage.getWidth());
+            stage.setHeight(stage.getHeight());
+            stage.centerOnScreen();
+            stage.show();
 
         } catch (Exception e) {
             e.printStackTrace();

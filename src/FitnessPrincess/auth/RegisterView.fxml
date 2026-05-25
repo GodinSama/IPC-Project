@@ -60,6 +60,10 @@
             </HBox>
             <Label fx:id="passwordError" wrapText="true" minHeight="-Infinity" maxWidth="Infinity" style="-fx-text-fill: #d32f2f; -fx-font-size: 11px;" visible="false" managed="false"/>
         </VBox>
+        
+        <Separator opacity="0.3">
+            <VBox.margin><Insets top="8" bottom="4"/></VBox.margin>
+        </Separator>
 
         <VBox spacing="4">
             <HBox alignment="CENTER_LEFT" spacing="6">
@@ -81,7 +85,8 @@
             </HBox>
             
             <HBox alignment="CENTER_RIGHT">
-                <Button text="Next ➔" defaultButton="true" onAction="#handleNext" styleClass="next-btn"/>
+                <Button fx:id="nextBtn" text="Next ➔" defaultButton="true" onAction="#handleNext" styleClass="next-btn"
+                        style="-fx-background-color: #cccccc; -fx-text-fill: #888888; -fx-background-radius: 8; -fx-padding: 10 24 10 24;"/>
             </HBox>
         </VBox>
 
