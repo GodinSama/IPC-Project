@@ -57,6 +57,7 @@ public class MapManagementController implements Initializable {
     private boolean pcMode = false;
     private MapRegion selectedRegion = null;
     private final ObservableList<MapRegion> masterData = FXCollections.observableArrayList();
+    private final java.util.Map<String, String> regionDescriptions = new java.util.HashMap<>();
 
     // Active embedded creation view
     private Node activeCreationView = null;
@@ -84,6 +85,10 @@ public class MapManagementController implements Initializable {
 
             loadMaps();
         });
+    }
+    
+    public void setPendingDescription(String regionName, String description) {
+        regionDescriptions.put(regionName, description);
     }
 
     // Build standard list row for PC mode
@@ -206,7 +211,7 @@ public class MapManagementController implements Initializable {
         currentSelectedRow = row;
 
         detailName.setText(region.getName());
-        detailSubtitle.setText("Offline coverage for city and surroundings");
+        detailSubtitle.setText(regionDescriptions.getOrDefault(region.getName(), "Offline coverage for city and surroundings"));
         detailLat.setText(String.format("%.4f° S  →  %.4f° N", region.getLatMin(), region.getLatMax()));
         detailLon.setText(String.format("%.4f° W  →  %.4f° E", region.getLonMin(), region.getLonMax()));
 

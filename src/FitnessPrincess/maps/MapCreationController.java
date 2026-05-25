@@ -23,6 +23,7 @@ public class MapCreationController {
     @FXML private TextField latMaxField;
     @FXML private TextField lonMinField;
     @FXML private TextField lonMaxField;
+    @FXML private TextField mapDescriptionField;
     @FXML private Label errorLabel;
 
     private File selectedImageFile = null;
@@ -73,10 +74,14 @@ public class MapCreationController {
             MapRegion newRegion = app.addMapRegion(mapName, selectedImageFile, latMin, latMax, lonMin, lonMax);
 
             if (newRegion != null) {
-                System.out.println("Map saved successfully!");
+                String description = mapDescriptionField.getText();
+                if (description == null || description.trim().isEmpty()) {
+                    description = "Offline coverage for city and surroundings";
+                }
                 if (parentController != null) {
-                    parentController.loadMaps(); // Refresh the parent's list
-                    parentController.hideCreationView(); // Close this panel
+                    parentController.setPendingDescription(newRegion.getName(), description);
+                    parentController.loadMaps();
+                    parentController.hideCreationView();
                 }
             }
         } catch (NumberFormatException e) {

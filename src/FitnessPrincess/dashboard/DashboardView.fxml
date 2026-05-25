@@ -39,6 +39,7 @@
                         <TextField fx:id="searchField" promptText="Search activities..." styleClass="search-field" HBox.hgrow="ALWAYS"/>
                         <Button fx:id="deleteButton" text="✕" visible="false" onAction="#deleteField" styleClass="delete-btn"/>
                     </HBox>
+                    
                 </VBox>
 
                 <ScrollPane fitToWidth="true" styleClass="maps-scroll" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" VBox.vgrow="ALWAYS">
@@ -52,18 +53,18 @@
             <BorderPane fx:id="mapContainer" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
 
                 <top>
-                    <HBox alignment="CENTER_LEFT" spacing="12" styleClass="maps-top-bar">
-                        <Label fx:id="mapModeLabel" text="Explore Mode" styleClass="detail-section-header"/>
+                    <VBox>
+                        <HBox alignment="CENTER_LEFT" spacing="12" styleClass="maps-top-bar">
+                            <Label fx:id="mapModeLabel" text="Explore Mode" styleClass="detail-section-header"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label text="Map:" styleClass="field-label" />
+                            <ComboBox fx:id="mapSelector" promptText="Select Map..." onAction="#onMapSelected" prefWidth="150" />
+                            <ToggleButton fx:id="addMarkerToggle" text="📍 Add Marker" styleClass="secondary-btn"/>
+                            <Button text="➖" onAction="#onZoomOut" styleClass="secondary-btn"/>
+                            <Button text="➕" onAction="#onZoomIn" styleClass="secondary-btn"/>
+                        </HBox>
 
-                        <Region HBox.hgrow="ALWAYS"/>
-
-                        <Label text="Map:" styleClass="field-label" />
-                        <ComboBox fx:id="mapSelector" promptText="Select Map..." onAction="#onMapSelected" prefWidth="150" />
-
-                        <ToggleButton fx:id="addMarkerToggle" text="📍 Add Marker" styleClass="secondary-btn"/>
-                        <Button text="➖" onAction="#onZoomOut" styleClass="secondary-btn"/>
-                        <Button text="➕" onAction="#onZoomIn" styleClass="secondary-btn"/>
-                    </HBox>
+                    </VBox>
                 </top>
 
                 <center>
