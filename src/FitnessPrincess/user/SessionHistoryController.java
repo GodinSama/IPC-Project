@@ -74,8 +74,10 @@ public class SessionHistoryController implements Initializable {
         }
         if (nextMonthButton != null) {
             nextMonthButton.setOnAction(e -> {
-                currentMonth = currentMonth.plusMonths(1);
-                refreshView();
+                if (currentMonth.isBefore(YearMonth.now())) {
+                    currentMonth = currentMonth.plusMonths(1);
+                    refreshView();
+                }
             });
         }
     }
@@ -84,6 +86,14 @@ public class SessionHistoryController implements Initializable {
     private void refreshView() {
         if (monthLabel != null) {
             monthLabel.setText(currentMonth.format(MONTH_FMT));
+        }
+        if (nextMonthButton != null) {
+            YearMonth realMaxMonth = YearMonth.now();
+            if (currentMonth.equals(realMaxMonth) || currentMonth.isAfter(realMaxMonth)) {
+                nextMonthButton.setDisable(true);
+            } else {
+                nextMonthButton.setDisable(false);
+            }
         }
         loadUserSessions();
     }

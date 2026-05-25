@@ -376,11 +376,6 @@ public class MapManagementController implements Initializable {
     }
 
     @FXML
-    private void onEditMap() {
-        // Edit map logic
-    }
-
-    @FXML
     private void onDeleteMap() {
         // Double-check that a region is actually selected
         if (selectedRegion == null) {
@@ -418,11 +413,6 @@ public class MapManagementController implements Initializable {
                 emptyState.setManaged(true);
             }
         });
-    }
-
-    @FXML
-    private void onFavMap() {
-        // Favorite map logic
     }
 
     // Clear the search input field

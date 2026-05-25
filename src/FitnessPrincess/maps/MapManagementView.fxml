@@ -76,8 +76,6 @@
                                    styleClass="detail-name" HBox.hgrow="ALWAYS" wrapText="true"/>
                             <Region HBox.hgrow="ALWAYS" />
                             <HBox alignment="CENTER_RIGHT" spacing="12">
-                                <Button text="❤" styleClass="fav-map-btn" onAction="#onFavMap"/>
-                                <Button text="✎ Edit" styleClass="secondary-btn" onAction="#onEditMap"/>
                                 <Button text="🗑" styleClass="delete-map-btn" onAction="#onDeleteMap"/>
                             </HBox>
                         </HBox>
