@@ -1,5 +1,6 @@
 package FitnessPrincess.auth;
 
+import FitnessPrincess.app.MainLayoutController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -21,18 +22,18 @@ import java.time.LocalDate;
 import java.util.Objects;
 
 public class RegisterController {
-    
+
     @FXML private VBox rootPane;
-    
+
     @FXML private TextField txtUsername;
     @FXML private TextField txtEmail;
     @FXML private PasswordField txtPasswordMasked;
     @FXML private TextField txtPasswordVisible;
     @FXML private DatePicker valueBirthdate;
-    
+
     @FXML private Button nextBtn;
-    
-    @FXML private SVGPath eyeIcon; 
+
+    @FXML private SVGPath eyeIcon;
 
     @FXML private Label usernameError;
     @FXML private Label emailError;
@@ -76,12 +77,12 @@ public class RegisterController {
     @FXML
     private void handleTogglePassword(MouseEvent event) {
         boolean isMasked = txtPasswordMasked.isVisible();
-        
+
         txtPasswordMasked.setVisible(!isMasked);
         txtPasswordMasked.setManaged(!isMasked);
         txtPasswordVisible.setVisible(isMasked);
         txtPasswordVisible.setManaged(isMasked);
-        
+
         if (isMasked) {
             eyeIcon.setContent(EYE_OPEN);
         } else {
@@ -105,7 +106,7 @@ public class RegisterController {
     @FXML
     private void handleNext() {
         hideAllErrors();
-        
+
         try {
             if (valueBirthdate.getValue() == null && !valueBirthdate.getEditor().getText().isEmpty()) {
                 try {
@@ -121,23 +122,23 @@ public class RegisterController {
 
             boolean hasErrors = false;
 
-            if (inUsername.isEmpty()) { showError(usernameError, "Nickname cannot be empty."); hasErrors = true; } 
+            if (inUsername.isEmpty()) { showError(usernameError, "Nickname cannot be empty."); hasErrors = true; }
             else if (!User.checkNickName(inUsername)) { showError(usernameError, "Invalid nickname format."); hasErrors = true; }
 
-            if (inEmail.isEmpty()) { showError(emailError, "Email cannot be empty."); hasErrors = true; } 
+            if (inEmail.isEmpty()) { showError(emailError, "Email cannot be empty."); hasErrors = true; }
             else if (!User.checkEmail(inEmail)) { showError(emailError, "Invalid email format."); hasErrors = true; }
 
-            if (inPassword.isEmpty()) { showError(passwordError, "Password cannot be empty."); hasErrors = true; } 
+            if (inPassword.isEmpty()) { showError(passwordError, "Password cannot be empty."); hasErrors = true; }
             else if (!User.checkPassword(inPassword)) { showError(passwordError, "Must be 8-20 chars: upper, lower, digit & symbol."); hasErrors = true; }
 
-            if (inBirthdate == null) { showError(birthdateError, "Birthdate cannot be empty."); hasErrors = true; } 
+            if (inBirthdate == null) { showError(birthdateError, "Birthdate cannot be empty."); hasErrors = true; }
             else if (!User.isOlderThan(inBirthdate, 12)) { showError(birthdateError, "You must be at least 12 years old."); hasErrors = true; }
 
             if (hasErrors) return;
 
             // User registration
             SportActivityApp app = SportActivityApp.getInstance();
-            
+
             // Default avatar
             boolean registered = app.registerUser(inUsername, inEmail, inPassword, inBirthdate, "");
 
@@ -170,13 +171,21 @@ public class RegisterController {
     @FXML
     private void handleLogin() {
         try {
-            Stage stage = (Stage) rootPane.getScene().getWindow();
-            Parent loginRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml")));
-            stage.setScene(new Scene(loginRoot));
-            stage.setWidth(stage.getWidth());
-            stage.setHeight(stage.getHeight());
-            stage.centerOnScreen();
-            stage.show();
+            // Load the Login view back through the Main Layout
+            Object userData = rootPane.getScene().getRoot().getUserData();
+            if (userData instanceof MainLayoutController) {
+                MainLayoutController mainController = (MainLayoutController) userData;
+                mainController.loadView("/FitnessPrincess/auth/LoginView.fxml");
+            } else {
+                // Fallback
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+                Parent loginRoot = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml")));
+                stage.setScene(new Scene(loginRoot));
+                stage.setWidth(stage.getWidth());
+                stage.setHeight(stage.getHeight());
+                stage.centerOnScreen();
+                stage.show();
+            }
 
         } catch (Exception e) {
             e.printStackTrace();

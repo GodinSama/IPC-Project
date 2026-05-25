@@ -19,6 +19,11 @@
             <Insets top="40" right="60" bottom="40" left="60"/>
         </padding>
 
+        <HBox alignment="CENTER_LEFT" maxWidth="Infinity">
+            <VBox.margin><Insets bottom="0" left="-20" top="-20"/></VBox.margin>
+            <Button text="← Back" onAction="#handleLogin" styleClass="back-btn"/>
+        </HBox>
+
         <Label text="Register" style="-fx-font-size: 36px; -fx-font-weight: bold; -fx-text-fill: #000000; -fx-padding: 0 0 10 0;"/>
 
         <VBox spacing="4">
@@ -26,6 +31,7 @@
                 <SVGPath content="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" fill="#555555" styleClass="field-icon-monochromatic"/>
                 <Label text="Nickname*" styleClass="field-label"/>
             </HBox>
+
             <HBox styleClass="input-container-box">
                 <TextField fx:id="txtUsername" promptText="Enter name" styleClass="input-embedded" HBox.hgrow="ALWAYS"/>
             </HBox>
@@ -37,6 +43,7 @@
                 <SVGPath content="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" fill="#555555" styleClass="field-icon-monochromatic"/>
                 <Label text="Email*" styleClass="field-label"/>
             </HBox>
+
             <HBox styleClass="input-container-box">
                 <TextField fx:id="txtEmail" promptText="Enter email" styleClass="input-embedded" HBox.hgrow="ALWAYS"/>
             </HBox>
@@ -60,7 +67,7 @@
             </HBox>
             <Label fx:id="passwordError" wrapText="true" minHeight="-Infinity" maxWidth="Infinity" style="-fx-text-fill: #d32f2f; -fx-font-size: 11px;" visible="false" managed="false"/>
         </VBox>
-        
+
         <Separator opacity="0.3">
             <VBox.margin><Insets top="8" bottom="4"/></VBox.margin>
         </Separator>
@@ -78,12 +85,12 @@
 
         <VBox spacing="10">
             <VBox.margin><Insets top="15"/></VBox.margin>
-            
+
             <HBox alignment="CENTER_LEFT" spacing="5">
                 <Label text="Already have an account?" styleClass="auth-footer-text"/>
                 <Button text="Sign In" onAction="#handleLogin" styleClass="signin-link-fat"/>
             </HBox>
-            
+
             <HBox alignment="CENTER_RIGHT">
                 <Button fx:id="nextBtn" text="Next ➔" defaultButton="true" onAction="#handleNext" styleClass="next-btn"
                         style="-fx-background-color: #cccccc; -fx-text-fill: #888888; -fx-background-radius: 8; -fx-padding: 10 24 10 24;"/>

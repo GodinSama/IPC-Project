@@ -47,6 +47,13 @@
                                        promptText="Enter map name"
                                        styleClass="text-field"/>
                         </VBox>
+                        
+                        <VBox spacing="8">
+                            <Label text="Description" styleClass="field-label"/>
+                            <TextField fx:id="mapDescriptionField"
+                                       promptText="e.g. Offline coverage for city and surroundings"
+                                       styleClass="text-field"/>
+                        </VBox>
 
                         <VBox spacing="8">
                             <HBox alignment="CENTER">

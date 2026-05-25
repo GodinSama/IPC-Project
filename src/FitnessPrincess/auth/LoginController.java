@@ -1,5 +1,6 @@
 package FitnessPrincess.auth;
 
+import FitnessPrincess.app.MainLayoutController;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -68,10 +69,17 @@ public class LoginController {
 
             SportActivityApp app = SportActivityApp.getInstance();
             if (app.login(inUsername, inPassword)) {
-                Stage stage = (Stage) rootPane.getScene().getWindow();
-                Parent root = FXMLLoader.load(Objects.requireNonNull(
-                        getClass().getResource("/FitnessPrincess/app/MainLayout.fxml")));
-                stage.setScene(new Scene(root));
+                // Fetch the MainLayoutController to activate the user dashboard without breaking the window
+                Object userData = rootPane.getScene().getRoot().getUserData();
+                if (userData instanceof MainLayoutController) {
+                    MainLayoutController mainController = (MainLayoutController) userData;
+                    mainController.activateApp(app.getCurrentUser());
+                } else {
+                    Stage stage = (Stage) rootPane.getScene().getWindow();
+                    Parent root = FXMLLoader.load(Objects.requireNonNull(
+                            getClass().getResource("/FitnessPrincess/app/MainLayout.fxml")));
+                    stage.setScene(new Scene(root));
+                }
             } else {
                 showError(passwordErrorLabel, "Invalid username or password.");
                 txtPassword.clear();
@@ -91,14 +99,22 @@ public class LoginController {
     @FXML
     private void handleSignUp() {
         try {
-            Stage stage = (Stage) rootPane.getScene().getWindow();
-            Parent root = FXMLLoader.load(Objects.requireNonNull(
-                    getClass().getResource("/FitnessPrincess/auth/RegisterView.fxml")));
-            stage.setScene(new Scene(root));
-            stage.setWidth(stage.getWidth());   // mantiene el ancho actual
-            stage.setHeight(stage.getHeight()); // mantiene el alto actual
-            stage.centerOnScreen();
-            stage.show();
+            // Load the Register view through the existing Main Layout
+            Object userData = rootPane.getScene().getRoot().getUserData();
+            if (userData instanceof MainLayoutController) {
+                MainLayoutController mainController = (MainLayoutController) userData;
+                mainController.loadView("/FitnessPrincess/auth/RegisterView.fxml");
+            } else {
+                // Fallback just in case
+                Stage stage = (Stage) rootPane.getScene().getWindow();
+                Parent root = FXMLLoader.load(Objects.requireNonNull(
+                        getClass().getResource("/FitnessPrincess/auth/RegisterView.fxml")));
+                stage.setScene(new Scene(root));
+                stage.setWidth(stage.getWidth());
+                stage.setHeight(stage.getHeight());
+                stage.centerOnScreen();
+                stage.show();
+            }
         } catch (Exception e) {
             System.err.println("Could not load registration page.");
             e.printStackTrace();
@@ -115,5 +131,4 @@ public class LoginController {
             System.err.println("Could not load main layout page.");
         }
     }
-
 }

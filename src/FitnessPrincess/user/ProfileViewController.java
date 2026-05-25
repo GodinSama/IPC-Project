@@ -191,7 +191,7 @@ public class ProfileViewController implements Initializable {
                 try {
                     SportActivityApp.getInstance().logout();
 
-                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml"));
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml"));
                     Parent root = loader.load();
 
                     Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
