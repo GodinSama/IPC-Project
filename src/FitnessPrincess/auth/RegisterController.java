@@ -14,19 +14,29 @@ import upv.ipc.sportlib.User;
 
 import java.time.LocalDate;
 import java.util.Objects;
+import javafx.scene.input.MouseEvent;
 
 public class RegisterController {
+    
+    
+    //private variables
+    private boolean togglepass;
+    
     @FXML
     private BorderPane rootPane;
     @FXML private TextField txtUsername;
-    @FXML private PasswordField txtPassword;
+    @FXML private TextField txtPassword;
     @FXML private TextField txtEmail;
     @FXML private DatePicker valueBirthdate;
-
-
     @FXML
+    private PasswordField txtPasswordHided;
+
+
     public void initialize() {
         rootPane.setUserData(this);
+        txtPassword.textProperty().bindBidirectional(txtPasswordHided.textProperty());
+        txtPassword.setVisible(false);
+        togglepass = false;
     }
 
     @FXML
@@ -88,6 +98,19 @@ public class RegisterController {
 
         } catch (Exception e) {
             System.err.println("Could not load registration page."); // ERROR PANEL
+        }
+    }
+
+    @FXML
+    private void passwordHide(MouseEvent event) {
+        if(togglepass){
+            txtPassword.setVisible(false);
+            txtPasswordHided.setVisible(true);
+            togglepass = false;
+        } else {
+            txtPassword.setVisible(true);
+            txtPasswordHided.setVisible(false);
+            togglepass = true;
         }
     }
 }

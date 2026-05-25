@@ -1,40 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.BorderPane?>
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 
-<BorderPane
-        fx:id="rootPane"
-        xmlns="http://javafx.com/javafx/21"
-        xmlns:fx="http://javafx.com/fxml/1"
-        fx:controller="FitnessPrincess.auth.LoginController"
-        stylesheets="@../../resources/estilos.css">
+<BorderPane fx:id="rootPane" stylesheets="@../../resources/estilos.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.auth.LoginController">
 
     <top>
         <!-- PlaceHolder -->
     </top>
 
     <center>
-        <VBox styleClass="auth-container" spacing="8" alignment="CENTER_LEFT">
+        <VBox alignment="CENTER_LEFT" spacing="8" styleClass="auth-container">
 
-            <Label text="Username"/>
-            <TextField fx:id="txtUsername" promptText="Enter Username" text="mateoesguay"/>
+            <Label text="Username" />
+            <TextField fx:id="txtUsername" promptText="Enter Username" text="mateoesguay" />
 
-            <Label text="Password"/>
-            <PasswordField fx:id="txtPassword" promptText="Enter Password" text="Mateoesguay-2007"/>
+            <Label text="Password" />
+         <StackPane>
+            <children>
+                  <PasswordField fx:id="txtPasswordHided" onAction="#handleLogin" promptText="Enter Password" text="Mateoesguay-2007" />
+               <TextField fx:id="txtPassword" onAction="#handleLogin" promptText="Enter Password" />
+               <Label onMouseClicked="#passwordHide" style="-fx-font-size: 15px;" styleClass="link-btn" text="👁">
+                  <StackPane.margin>
+                     <Insets left="280.0" />
+                  </StackPane.margin>
+               </Label>
+            </children>
+         </StackPane>
 
         </VBox>
     </center>
 
     <bottom>
-        <HBox styleClass="nav-bar" spacing="8" alignment="BOTTOM_RIGHT">
-            <Button text="Sign Up" styleClass="signup-btn" onAction="#handleSignUp"/>
-            <Button text="Login" styleClass="login-btn" onAction="#handleLogin"/>
+        <HBox alignment="BOTTOM_RIGHT" spacing="8" styleClass="nav-bar">
+            <Button onAction="#handleSignUp" styleClass="signup-btn" text="Sign Up" />
+            <Button onAction="#handleLogin" styleClass="login-btn" text="Login" />
 
         </HBox>
     </bottom>
