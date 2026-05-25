@@ -784,7 +784,7 @@
     -fx-font-weight:       bold;
     -fx-cursor:            hand;
     -fx-background-radius: 9 9 0 0;
-    -fx-border-radius:     8 8 0 0; /* Added to perfectly hug the background corners */
+    -fx-border-radius:     8 8 0 0; 
     -fx-padding:           6 24 6 24;
     -fx-border-color:      #a1a1a1;
     -fx-border-width:      2 2 0 2;
@@ -803,17 +803,14 @@
     -fx-translate-y:      2; /* Moves down to simulate a physical click */
 }
 
-/* ══════════════════════════════════════════════════════════════
-   SESSION HISTORY  —  PC layout
-   Append these rules to the bottom of estilos.css
-   ══════════════════════════════════════════════════════════════ */
+/* ── Session History ───────────────────────────────────────────── */
 
-/* ── Root panel ─────────────────────────────────────────────── */
+/*  Root panel  */
 .sh-root {
     -fx-background-color: -color-bg-secondary;
 }
 
-/* ── Top header bar ─────────────────────────────────────────── */
+/*  Top header bar  */
 .sh-header {
     -fx-background-color: -color-card-dark;
     -fx-padding:          18 24 18 24;
@@ -1030,4 +1027,139 @@
     -fx-text-fill:   -color-text-muted;
     -fx-font-size:   14px;
     -fx-font-family: 'Courier New', monospace;
+}
+
+/* ── Register screen ───────────────────────────────────────────── */
+.input-container-box {
+    -fx-background-color: #e8f5e9; 
+    -fx-border-color: #81c784;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 2 5 2 5;
+}
+
+.input-embedded {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8;
+    -fx-font-size: 13px;
+}
+.input-embedded:focused {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.signin-link-fat {
+    -fx-background-color: transparent;
+    -fx-text-fill: #4caf50; 
+    -fx-font-weight: 900;  
+    -fx-font-size: 14px;
+    -fx-padding: 0;
+    -fx-cursor: hand;
+}
+
+.next-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555555;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+}
+.next-btn:hover {
+    -fx-text-fill: #2e7d32;
+}
+
+/* ── DatePicker - DateBirth ───────────────────────────────────────────── */
+.input-embedded.date-picker {
+    -fx-background-color: transparent;
+    -fx-padding: 0; 
+}
+
+.input-embedded.date-picker > .text-field {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 8 8 8 0; 
+    -fx-font-size: 13px;
+}
+
+/* Erase the gray background */
+.input-embedded.date-picker > .arrow-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+
+/* Color of the calendar button */
+.input-embedded.date-picker > .arrow-button > .arrow {
+    -fx-background-color: #555555; 
+}
+
+.input-embedded.date-picker > .arrow-button:hover > .arrow {
+    -fx-background-color: #4caf50; 
+}
+
+/* ── Drop-Down Calendar ───────────────────────────────────────────── */
+.date-picker-popup {
+    -fx-background-color: white;
+    -fx-border-color: #81c784;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 5);
+}
+
+.date-picker-popup > .month-year-pane {
+    -fx-background-color: #e8f5e9; 
+    -fx-background-radius: 8 8 0 0;
+    -fx-padding: 10;
+}
+
+.date-picker-popup > .month-year-pane > .label {
+    -fx-text-fill: #2e7d32;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+}
+
+.date-picker-popup .left-button, 
+.date-picker-popup .right-button {
+    -fx-background-color: transparent;
+    -fx-cursor: hand;
+}
+.date-picker-popup .left-button:hover, 
+.date-picker-popup .right-button:hover {
+    -fx-background-color: #c8e6c9;
+    -fx-background-radius: 4;
+}
+.date-picker-popup .left-button > .left-arrow, 
+.date-picker-popup .right-button > .right-arrow {
+    -fx-background-color: #2e7d32;
+}
+
+.date-picker-popup .day-name-cell {
+    -fx-text-fill: #81c784;
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.date-picker-popup .day-cell {
+    -fx-background-color: white;
+    -fx-text-fill: #555555;
+    -fx-font-size: 13px;
+    -fx-padding: 5;
+    -fx-cursor: hand;
+}
+
+.date-picker-popup .day-cell:hover {
+    -fx-background-color: #e8f5e9;
+    -fx-background-radius: 5;
+}
+
+.date-picker-popup .day-cell:selected {
+    -fx-background-color: #4caf50;
+    -fx-text-fill: white;
+    -fx-background-radius: 5;
+    -fx-font-weight: bold;
+}
+
+.date-picker-popup .day-cell:today {
+    -fx-border-color: #4caf50;
+    -fx-border-radius: 5;
 }

@@ -1,23 +1,17 @@
-// used ai to solve my errors
 package FitnessPrincess.user;
 
 import java.io.File;
-import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Circle;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import javafx.scene.effect.DropShadow;
@@ -25,29 +19,26 @@ import javafx.scene.paint.Color;
 
 public class AvatarSelectorController implements Initializable {
 
-    @FXML
-    private Button btnClose;
-    @FXML
-    private StackPane btnAddAvatar;
-    @FXML
-    private Circle darleadd;
-    @FXML
-    private Button botonDone;
+    @FXML private Button btnClose;
+    @FXML private StackPane btnAddAvatar;
+    @FXML private Button botonDone;
 
-    @FXML
-    private ImageView avatar1;
-    @FXML
-    private ImageView avatar2;
-    @FXML
-    private ImageView avatar3;
-    @FXML
-    private ImageView avatar4;
-    @FXML
-    private ImageView avatar5;
+    @FXML private ImageView avatar1;
+    @FXML private ImageView avatar2;
+    @FXML private ImageView avatar3;
+    @FXML private ImageView avatar4;
+    @FXML private ImageView avatar5;
 
     private File avatarSeleccionado;
     private ImageView avatarMarcado;
     private final DropShadow efectoSeleccion = new DropShadow(25, Color.valueOf("#00d684"));
+
+    // Reference of the principal screen
+    private AvatarController parentController;
+
+    public void setParentController(AvatarController parentController) {
+        this.parentController = parentController;
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -65,57 +56,42 @@ public class AvatarSelectorController implements Initializable {
 
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Seleccionar nuevo Avatar");
+        // Only .jpg and .jpeg images
         fileChooser.getExtensionFilters().add(
-                new FileChooser.ExtensionFilter("Archivos de Imagen", "*.jpg", "*.jpeg", "*.png")
+                new FileChooser.ExtensionFilter("Archivos de Imagen JPG", "*.jpg", "*.jpeg")
         );
 
         File archivoElegido = fileChooser.showOpenDialog(stage);
 
         if (archivoElegido != null) {
             this.avatarSeleccionado = archivoElegido;
-            System.out.println("Archivo guardado con éxito: " + avatarSeleccionado.getAbsolutePath());
-            irAAvatarView(stage);
+            btnAddAvatar.setEffect(efectoSeleccion); 
         }
     }
 
     @FXML
     private void darledone(ActionEvent event) {
-        if (this.avatarSeleccionado != null) {
-            Stage stage = (Stage) botonDone.getScene().getWindow();
-            irAAvatarView(stage);
-        } else {
-            System.out.println("Por favor seleccione un avatar primero.");
+        // Selected photo is sent to the principal screen 
+        if (this.avatarSeleccionado != null && parentController != null) {
+            parentController.recibirNuevoAvatar(this.avatarSeleccionado);
         }
+        cerrarPopup();
     }
 
     @FXML
     private void darlex(ActionEvent event) {
-        Stage stage = (Stage) btnClose.getScene().getWindow();
-        irAAvatarView(stage);
+        cerrarPopup();
     }
 
-    private void irAAvatarView(Stage stage) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("AvatarView.fxml"));
-            Parent root = loader.load();
-
-            if (this.avatarSeleccionado != null) {
-                AvatarController avatarCtrl = loader.getController();
-                avatarCtrl.recibirNuevoAvatar(this.avatarSeleccionado);
-            }
-
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("No se ha podido cargar AvatarView.fxml");
-        }
+    private void cerrarPopup() {
+        Stage stage = (Stage) btnClose.getScene().getWindow();
+        stage.close();
     }
 
     @FXML
     private void seleccionarAvatarDefecto(MouseEvent event) {
+        btnAddAvatar.setEffect(null);
+
         if (avatarMarcado != null) {
             avatarMarcado.setEffect(null);
             avatarMarcado.setOpacity(1.0);
@@ -135,7 +111,6 @@ public class AvatarSelectorController implements Initializable {
                 } else {
                     this.avatarSeleccionado = new File(rutaImagen);
                 }
-                System.out.println("Avatar por defecto seleccionado: " + avatarSeleccionado.getName());
             }
         } catch (Exception e) {
             System.out.println("No se pudo convertir la imagen a File: " + e.getMessage());

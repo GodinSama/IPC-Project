@@ -1,4 +1,3 @@
-// used ai to solve my errors
 package FitnessPrincess.user;
 
 import java.io.File;
@@ -16,7 +15,6 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 import FitnessPrincess.app.MainLayoutController;
 import upv.ipc.sportlib.SportActivityApp;
@@ -24,23 +22,29 @@ import upv.ipc.sportlib.User;
 
 public class AvatarController implements Initializable {
 
-    @FXML
-    private ImageView avatarImageView;
-    @FXML
-    private HBox vboxmodify;
-    @FXML
-    private Button btnPrevious;
-    @FXML
-    private Button btnNext;
-    @FXML
-    private Button botonSkip;
+    @FXML private ImageView avatarImageView;
+    @FXML private Button btnPrevious;
+    @FXML private Button btnNext;
+    @FXML private Button botonSkip;
 
     private boolean vieneDeRegistro = false;
     private File avatarSeleccionado;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Initialize logic if needed
+        try {
+            User currentUser = SportActivityApp.getInstance().getCurrentUser();
+            
+            if (currentUser != null && currentUser.getAvatarPath() != null && !currentUser.getAvatarPath().isEmpty()) {
+                
+                File archivoFoto = new File(currentUser.getAvatarPath());
+                if (archivoFoto.exists()) {
+                    avatarImageView.setImage(new Image(archivoFoto.toURI().toString()));
+                }
+            }
+        } catch (Exception e) {
+            System.out.println("Usando avatar por defecto.");
+        }
     }
 
     public void recibirNuevoAvatar(File nuevaFoto) {
@@ -49,7 +53,6 @@ public class AvatarController implements Initializable {
             Image image = new Image(nuevaFoto.toURI().toString());
             avatarImageView.setImage(image);
 
-            // Update the global user immediately so other views catch it
             try {
                 User currentUser = SportActivityApp.getInstance().getCurrentUser();
                 if (currentUser != null) {
@@ -80,10 +83,24 @@ public class AvatarController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("AvatarSelector.fxml"));
             Parent root = loader.load();
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
+            AvatarSelectorController selectorCtrl = loader.getController();
+            selectorCtrl.setParentController(this); 
+
+            Stage mainWindow = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            
+            Stage popupStage = new Stage();
+            popupStage.initOwner(mainWindow);
+            popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
+            popupStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
+
+            Scene scene = new Scene(root, mainWindow.getWidth(), mainWindow.getHeight());
+            scene.setFill(javafx.scene.paint.Color.TRANSPARENT);
+
+            popupStage.setScene(scene);
+            popupStage.setX(mainWindow.getX());
+            popupStage.setY(mainWindow.getY());
+            
+            popupStage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -91,20 +108,32 @@ public class AvatarController implements Initializable {
         }
     }
 
+    // (<) returns to register 
+    @FXML
+    private void goBackToRegister(ActionEvent event) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/auth/RegisterView.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("No se ha podido cargar RegisterView.fxml");
+        }
+    }
+
+    // (>) / Skip go to Dashboard
     @FXML
     private void darleskip(ActionEvent event) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml"));
             Parent root = loader.load();
 
-            MainLayoutController mainCtrl = loader.getController();
-            if(mainCtrl != null) {
-                mainCtrl.showProfile();
-            }
-
             Stage stage = (Stage) botonSkip.getScene().getWindow();
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
+            stage.setScene(new Scene(root));
             stage.show();
 
         } catch (IOException e) {
