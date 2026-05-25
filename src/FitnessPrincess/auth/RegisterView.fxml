@@ -14,7 +14,12 @@
 <BorderPane fx:id="rootPane" stylesheets="@../../resources/estilos.css" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FitnessPrincess.auth.RegisterController">
 
     <top>
-        <!-- PlaceHolder -->
+        <HBox alignment="CENTER_LEFT">
+            <padding>
+                <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+            </padding>
+            <Button onAction="#handleBack" styleClass="back-btn" text="← Back" />
+        </HBox>
     </top>
 
     <center>
@@ -24,17 +29,18 @@
             <TextField fx:id="txtUsername" promptText="Enter Username" />
 
             <Label text="Password" />
-         <StackPane>
-            <children>
-               <PasswordField fx:id="txtPasswordHided" promptText="Enter Password" text="Mateoesguay-2007" />
-               <TextField fx:id="txtPassword" promptText="Enter Password" />
-               <Label onMouseClicked="#passwordHide" style="-fx-font-size: 15px;" styleClass="link-btn" text="👁">
-                  <StackPane.margin>
-                     <Insets left="280.0" />
-                  </StackPane.margin>
-               </Label>
-            </children>
-         </StackPane>
+
+            <StackPane>
+                <children>
+                    <PasswordField fx:id="txtPasswordHided" promptText="Enter Password" text="Mateoesguay-2007" />
+                    <TextField fx:id="txtPassword" promptText="Enter Password" />
+                    <Label onMouseClicked="#passwordHide" style="-fx-font-size: 15px;" styleClass="link-btn" text="👁">
+                        <StackPane.margin>
+                            <Insets left="280.0" />
+                        </StackPane.margin>
+                    </Label>
+                </children>
+            </StackPane>
 
             <Label text="Email" />
             <TextField fx:id="txtEmail" promptText="Enter Email" />

@@ -20,13 +20,12 @@ public class LoginController {
 
     //private variables
     private boolean togglepass;
-    
-    
+
+
     @FXML private BorderPane rootPane;
     @FXML private TextField txtUsername;
     @FXML private TextField txtPassword;
-    @FXML
-    private PasswordField txtPasswordHided;
+    @FXML private PasswordField txtPasswordHided;
 
     public void initialize() {
         rootPane.setUserData(this);
@@ -41,8 +40,6 @@ public class LoginController {
             // Log in logic
             String inUsername = txtUsername.getText();
             String inPassword = txtPassword.getText();
-            // System.out.println("USERNAME: " + inUsername);
-            // System.out.println("PASSWORD: " + inPassword);
 
             // Get the app instance
             SportActivityApp app = SportActivityApp.getInstance();
@@ -60,17 +57,17 @@ public class LoginController {
                 txtPassword.clear();
                 txtPasswordHided.clear();
 
-    
+
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("LOGIN ERROR");
-                alert.setHeaderText(null); 
+                alert.setHeaderText(null);
                 alert.setContentText("User or Password Invalid");
                 alert.showAndWait();
             }
 
         } catch (Exception e) {
-            
-            System.err.println("Could not load main application page.t"); 
+
+            System.err.println("Could not load main application page.t");
         }
     }
 
@@ -84,6 +81,17 @@ public class LoginController {
 
         } catch (Exception e) {
             System.err.println("Could not load registration page."); // ERROR PANEL
+        }
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml")));
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            System.err.println("Could not load main layout page.");
         }
     }
 

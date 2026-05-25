@@ -3,6 +3,9 @@
    All should inherit from this
    ============================================================ */
 
+/* ── The whole of this file has used AI to configure and improve designs  ── */
+/* ── With the prompts of "Improve my design" or "Apply this css file to my designs"  ── */
+
 /* ── Colour palette  ── */
 .root {
     -color-bg-primary:   #ffffff;
@@ -1027,4 +1030,39 @@
     -fx-text-fill:   -color-text-muted;
     -fx-font-size:   14px;
     -fx-font-family: 'Courier New', monospace;
+}
+/* Styling for the Sign In button */
+.nav-btn-login {
+    -fx-background-color: #f0c2cd;
+    /* Changed text color to a dark green/charcoal for high contrast against the light pink */
+    -fx-text-fill: #223326;
+    -fx-font-weight: bold;
+    -fx-padding: 8 16 8 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+}
+
+.nav-btn-login:hover {
+    -fx-background-color: #f1d3de;
+}
+
+/* Ensure disabled buttons look visibly "locked" or faded */
+.nav-btn:disabled, .tab-btn:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+.back-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #555555;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 5 10 5 10;
+}
+
+.back-btn:hover {
+    -fx-text-fill: #000000;
+    -fx-background-color: #e0e0e0;
+    -fx-background-radius: 5px;
 }

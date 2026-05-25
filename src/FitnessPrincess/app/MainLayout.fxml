@@ -19,19 +19,23 @@
 
             <Label text="🏃 Fitness" styleClass="nav-brand"/>
             <Label text="Princess" styleClass="nav-brand-2"/>
-            <Button fx:id="navDashboard" text="Dashboard" styleClass="nav-btn" onAction="#showDashboard"/>
-            <Button fx:id="navHistory" text="Session History" styleClass="nav-btn" onAction="#showSessionHistory"/>
-            <Button fx:id="navMaps" text="Manage Maps" styleClass="nav-btn" onAction="#showMapManagement"/>
+
+            <Button fx:id="navDashboard" text="Dashboard" styleClass="nav-btn" onAction="#showDashboard" disable="true"/>
+            <Button fx:id="navHistory" text="Session History" styleClass="nav-btn" onAction="#showSessionHistory" disable="true"/>
+            <Button fx:id="navMaps" text="Manage Maps" styleClass="nav-btn" onAction="#showMapManagement" disable="true"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <Label fx:id="lblUserNick" styleClass="nav-user" text=""/>
+            <Button fx:id="navLogin" text="Sign In" styleClass="nav-btn-login" onAction="#showLogin"/>
 
-            <Button fx:id="navProfile" onAction="#showProfile" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 0 10 0 5;">
-                <graphic>
-                    <Circle fx:id="navAvatarCircle" radius="16.0" fill="#e0e0e0" stroke="#cccccc" strokeWidth="1.0" />
-                </graphic>
-            </Button>
+            <HBox fx:id="profileContainer" alignment="CENTER" spacing="5" visible="false" managed="false">
+                <Label fx:id="lblUserNick" styleClass="nav-user" text=""/>
+                <Button fx:id="navProfile" onAction="#showProfile" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-padding: 0 10 0 5;">
+                    <graphic>
+                        <Circle fx:id="navAvatarCircle" radius="16.0" fill="#e0e0e0" stroke="#cccccc" strokeWidth="1.0" />
+                    </graphic>
+                </Button>
+            </HBox>
 
         </HBox>
     </top>
@@ -41,10 +45,10 @@
 
     <bottom>
         <HBox fx:id="mobileNav" styleClass="tab-bar" spacing="0" alignment="CENTER" managed="false" visible="false">
-            <Button fx:id="tabDashboard" text="D" styleClass="tab-btn" onAction="#showDashboard" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Button fx:id="tabProfile" text="P" styleClass="tab-btn" onAction="#showProfile" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Button fx:id="tabHistory" text="H" styleClass="tab-btn" onAction="#showSessionHistory" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
-            <Button fx:id="tabMaps" text="M" styleClass="tab-btn" onAction="#showMapManagement" HBox.hgrow="ALWAYS" maxWidth="Infinity"/>
+            <Button fx:id="tabDashboard" text="D" styleClass="tab-btn" onAction="#showDashboard" HBox.hgrow="ALWAYS" maxWidth="Infinity" disable="true"/>
+            <Button fx:id="tabProfile" text="P" styleClass="tab-btn" onAction="#showProfile" HBox.hgrow="ALWAYS" maxWidth="Infinity" disable="true"/>
+            <Button fx:id="tabHistory" text="H" styleClass="tab-btn" onAction="#showSessionHistory" HBox.hgrow="ALWAYS" maxWidth="Infinity" disable="true"/>
+            <Button fx:id="tabMaps" text="M" styleClass="tab-btn" onAction="#showMapManagement" HBox.hgrow="ALWAYS" maxWidth="Infinity" disable="true"/>
         </HBox>
     </bottom>
 

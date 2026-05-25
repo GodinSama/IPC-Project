@@ -17,20 +17,16 @@ import java.util.Objects;
 import javafx.scene.input.MouseEvent;
 
 public class RegisterController {
-    
-    
+
     //private variables
     private boolean togglepass;
-    
-    @FXML
-    private BorderPane rootPane;
+
+    @FXML private BorderPane rootPane;
     @FXML private TextField txtUsername;
     @FXML private TextField txtPassword;
     @FXML private TextField txtEmail;
     @FXML private DatePicker valueBirthdate;
-    @FXML
-    private PasswordField txtPasswordHided;
-
+    @FXML private PasswordField txtPasswordHided;
 
     public void initialize() {
         rootPane.setUserData(this);
@@ -82,7 +78,6 @@ public class RegisterController {
                 System.err.println("Registration failed.");
             }
 
-
         } catch (Exception e) {
             System.err.println("Could not load main application page."); // ERROR PANEL
         }
@@ -98,6 +93,17 @@ public class RegisterController {
 
         } catch (Exception e) {
             System.err.println("Could not load registration page."); // ERROR PANEL
+        }
+    }
+
+    @FXML
+    private void handleBack() {
+        try {
+            Stage stage = (Stage) rootPane.getScene().getWindow();
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml")));
+            stage.setScene(new Scene(root));
+        } catch (Exception e) {
+            System.err.println("Could not load main layout page.");
         }
     }
 
