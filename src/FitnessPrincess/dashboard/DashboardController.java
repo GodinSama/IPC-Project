@@ -24,10 +24,10 @@ import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.XYChart;
 import javafx.util.StringConverter;
 import upv.ipc.sportlib.*;
+import javafx.animation.PauseTransition;
 
 import java.io.File;
 import java.net.URL;
-import java.time.Duration;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -38,6 +38,7 @@ public class DashboardController implements Initializable {
     @FXML private VBox activitiesContainer;
     @FXML private TextField searchField;
     @FXML private Button deleteButton;
+    @FXML private Label selectionErrorLabel;
 
     // Map panel controls
     @FXML private ComboBox<MapRegion> mapSelector;
@@ -205,7 +206,11 @@ public class DashboardController implements Initializable {
             if (currentActivity != null && currentProjection != null) {
                 showAnnotationPopup(lastRightClickX, lastRightClickY);
             } else {
-                System.out.println("Select an activity first to add markers to it.");
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("No Activity Selected");
+                alert.setHeaderText("You have to select an activity");
+                alert.setContentText("Please select an activity from the list before adding annotations.");
+                alert.showAndWait();
             }
         });
 
@@ -542,11 +547,11 @@ public class DashboardController implements Initializable {
 
     // Opens a popup modal for creating map annotations
     private void showAnnotationPopup(double x, double y) {
+        
         try {
             javafx.stage.Stage mainWindow = (javafx.stage.Stage) mapScrollPane.getScene().getWindow();
 
             URL fxmlLocation = getClass().getResource("AddAnnotationView.fxml");
-
             javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(fxmlLocation);
             javafx.scene.Parent root = loader.load();
 
@@ -555,20 +560,52 @@ public class DashboardController implements Initializable {
             popupStage.initModality(javafx.stage.Modality.APPLICATION_MODAL);
             popupStage.initStyle(javafx.stage.StageStyle.TRANSPARENT);
 
+            @SuppressWarnings("unchecked")
+            ComboBox<AnnotationType> typeComboBox = (ComboBox<AnnotationType>) root.lookup("#typeComboBox");
             TextArea textArea = (TextArea) root.lookup("#annotationTextArea");
             ColorPicker colorPicker = (ColorPicker) root.lookup("#markerColorPicker");
+            
+            HBox strokeWidthContainer = (HBox) root.lookup("#strokeWidthContainer");
+            @SuppressWarnings("unchecked")
+            Spinner<Double> strokeWidthSpinner = (Spinner<Double>) root.lookup("#strokeWidthSpinner");
+            
             Button saveBtn = (Button) root.lookup("#saveAnnotationBtn");
             Button closeBtn = (Button) root.lookup("#closeAnnotationBtn");
+            Button cancelBtn = (Button) root.lookup("#cancelBtn");
 
-            if (closeBtn != null) {
-                closeBtn.setOnAction(e -> popupStage.close());
-            }
+            // Close buttons
+            if (closeBtn != null) closeBtn.setOnAction(e -> popupStage.close());
+            if (cancelBtn != null) cancelBtn.setOnAction(e -> popupStage.close());
 
             if (colorPicker != null) {
-                colorPicker.setValue(Color.web("#E74C3C"));
+                colorPicker.setValue(Color.web("#000000"));
             }
 
-            if (saveBtn != null && textArea != null && colorPicker != null) {
+            if (strokeWidthSpinner != null) {
+                SpinnerValueFactory<Double> valueFactory = new SpinnerValueFactory.DoubleSpinnerValueFactory(1.0, 10.0, 2.0, 0.5);
+                strokeWidthSpinner.setValueFactory(valueFactory);
+            }
+
+            if (typeComboBox != null) {
+                typeComboBox.getItems().setAll(AnnotationType.values()); // POINT, TEXT, CIRCLE, LINE
+                typeComboBox.setValue(AnnotationType.POINT);
+
+                typeComboBox.valueProperty().addListener((obs, oldVal, newVal) -> {
+                    if (strokeWidthContainer != null) {
+                        boolean showStroke = (newVal == AnnotationType.LINE || newVal == AnnotationType.CIRCLE);
+                        strokeWidthContainer.setVisible(showStroke);
+                        strokeWidthContainer.setManaged(showStroke);
+                    }
+                });
+
+                if (strokeWidthContainer != null) {
+                    strokeWidthContainer.setVisible(false);
+                    strokeWidthContainer.setManaged(false);
+                }
+            }
+
+            // Logic button Done
+            if (saveBtn != null && textArea != null && colorPicker != null && typeComboBox != null) {
                 saveBtn.setOnAction(e -> {
                     String text = textArea.getText();
                     if (text == null || text.trim().isEmpty()) {
@@ -581,7 +618,10 @@ public class DashboardController implements Initializable {
                             (int) (selectedColor.getGreen() * 255),
                             (int) (selectedColor.getBlue() * 255));
 
-                    createMarkerAt(x, y, text.trim(), hexColor);
+                    AnnotationType selectedType = typeComboBox.getValue();
+                    double strokeWidth = strokeWidthSpinner != null ? strokeWidthSpinner.getValue() : 2.0;
+
+                    createMarkerAt(x, y, text.trim(), hexColor, selectedType, strokeWidth);
                     popupStage.close();
                 });
             }
@@ -602,93 +642,148 @@ public class DashboardController implements Initializable {
     }
 
     // Converts canvas coords to geo points and registers annotation
-    private void createMarkerAt(double x, double y, String text, String hexColor) {
+    private void createMarkerAt(double x, double y, String text, String hexColor, AnnotationType type, double strokeWidth) {
         GeoPoint geoPoint = currentProjection.unproject(x, y);
 
-        Annotation ann = new Annotation(AnnotationType.POINT, text, hexColor, 2.0, List.of(geoPoint));
-        SportActivityApp app = SportActivityApp.getInstance();
-        Annotation savedAnn = app.addAnnotation(currentActivity, ann);
+        Annotation ann = new Annotation(type, text, hexColor, strokeWidth, List.of(geoPoint));
+        
+        try {
+            SportActivityApp app = SportActivityApp.getInstance();
+            app.addAnnotation(currentActivity, ann);
+        } catch (Exception e) {
+            System.err.println("Aviso: No se pudo guardar en la base de datos local.");
+        }
 
-        if (savedAnn != null) drawAnnotation(savedAnn);
+        drawAnnotation(ann);
     }
-
-    // Renders the annotation visually onto the map pane
+    
+    // Renders the annotation visually onto the map pane depending on its TYPE
     private void drawAnnotation(Annotation ann) {
-        if (ann.getType() == AnnotationType.POINT && !ann.getGeoPoints().isEmpty()) {
-            Point2D p = currentProjection.project(ann.getGeoPoints().get(0));
+        if (ann.getGeoPoints().isEmpty()) return;
 
-            Group markerGroup = new Group();
+        Group markerGroup = new Group();
+        Color annColor;
+        try {
+            annColor = Color.web(ann.getColor());
+        } catch (Exception e) {
+            annColor = Color.RED;
+        }
 
-            Circle marker = new Circle(p.getX(), p.getY(), 6);
-            try { marker.setFill(Color.web(ann.getColor())); }
-            catch (Exception e) { marker.setFill(Color.RED); }
+        Label finalTextLabel = null;
+        Point2D firstPoint = currentProjection.project(ann.getGeoPoints().get(0));
 
-            marker.setStroke(Color.WHITE);
-            marker.setStrokeWidth(2);
-            markerGroup.getChildren().add(marker);
+        // Drawing depending on the selection
+        switch (ann.getType()) {
+            case POINT:
+                Circle marker = new Circle(firstPoint.getX(), firstPoint.getY(), 6);
+                marker.setFill(annColor);
+                marker.setStroke(Color.WHITE);
+                marker.setStrokeWidth(2);
+                markerGroup.getChildren().add(marker);
 
-            Label textLabel = null;
-            if (ann.getText() != null && !ann.getText().trim().isEmpty() && !ann.getText().equals("New Marker")) {
-                textLabel = new Label(ann.getText());
-                textLabel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.85); -fx-padding: 3px 6px; -fx-background-radius: 4px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a; -fx-border-color: #cccccc; -fx-border-radius: 4px;");
-                textLabel.setLayoutX(p.getX() + 10);
-                textLabel.setLayoutY(p.getY() - 10);
-                textLabel.setVisible(false);
-                markerGroup.getChildren().add(textLabel);
-            }
+                if (ann.getText() != null && !ann.getText().trim().isEmpty() && !ann.getText().equals("Marker")) {
+                    finalTextLabel = new Label(ann.getText());
+                    finalTextLabel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9); -fx-padding: 3px 6px; -fx-background-radius: 4px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a; -fx-border-color: #cccccc; -fx-border-radius: 4px;");
+                    finalTextLabel.setLayoutX(firstPoint.getX() + 10);
+                    finalTextLabel.setLayoutY(firstPoint.getY() - 10);
+                    finalTextLabel.setVisible(false);
+                    markerGroup.getChildren().add(finalTextLabel);
+                }
+                break;
 
-            final Label finalTextLabel = textLabel;
+            case TEXT:
+                Label textMarker = new Label(ann.getText() != null && !ann.getText().isEmpty() ? ann.getText() : "Text");
+                textMarker.setStyle("-fx-font-weight: bold; -fx-font-size: 16px; -fx-text-fill: " + ann.getColor() + "; -fx-background-color: rgba(255,255,255,0.7); -fx-padding: 2px 6px; -fx-background-radius: 4px;");
+                textMarker.setLayoutX(firstPoint.getX());
+                textMarker.setLayoutY(firstPoint.getY());
+                markerGroup.getChildren().add(textMarker);
+                break;
 
-            // Context menu logic for annotation deletion
-            ContextMenu markerMenu = new ContextMenu();
-            MenuItem deleteItem = new MenuItem("🗑️ Delete Annotation");
-            deleteItem.setOnAction(actionEvent -> {
-                if (currentActivity != null) {
+            case CIRCLE:
+                Circle circle = new Circle(firstPoint.getX(), firstPoint.getY(), 30); 
+                circle.setFill(annColor.deriveColor(1, 1, 1, 0.3)); 
+                circle.setStroke(annColor);
+                circle.setStrokeWidth(ann.getStrokeWidth() > 0 ? ann.getStrokeWidth() : 2.0);
+                markerGroup.getChildren().add(circle);
+                
+                if (ann.getText() != null && !ann.getText().trim().isEmpty() && !ann.getText().equals("Marker")) {
+                    finalTextLabel = new Label(ann.getText());
+                    finalTextLabel.setStyle("-fx-background-color: rgba(255, 255, 255, 0.9); -fx-padding: 3px 6px; -fx-background-radius: 4px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;");
+                    finalTextLabel.setLayoutX(firstPoint.getX() + 35);
+                    finalTextLabel.setLayoutY(firstPoint.getY() - 10);
+                    finalTextLabel.setVisible(false);
+                    markerGroup.getChildren().add(finalTextLabel);
+                }
+                break;
+
+            case LINE:
+                Polyline line = new Polyline();
+                line.setStroke(annColor);
+                line.setStrokeWidth(ann.getStrokeWidth() > 0 ? ann.getStrokeWidth() : 2.0);
+                
+                if (ann.getGeoPoints().size() > 1) {
+                    for (GeoPoint gp : ann.getGeoPoints()) {
+                        Point2D pLine = currentProjection.project(gp);
+                        line.getPoints().addAll(pLine.getX(), pLine.getY());
+                    }
+                } else {
+                    Point2D p1 = currentProjection.project(ann.getGeoPoints().get(0));
+                    line.getPoints().addAll(p1.getX(), p1.getY(), p1.getX() + 60, p1.getY() + 60);
+                }
+                
+                markerGroup.getChildren().add(line);
+                break;
+        }
+
+        // Logic for erase
+        ContextMenu markerMenu = new ContextMenu();
+        MenuItem deleteItem = new MenuItem("🗑️ Delete Annotation");
+        deleteItem.setOnAction(actionEvent -> {
+            if (currentActivity != null) {
+                try {
                     try {
+                        SportActivityApp.class.getMethod("removeAnnotation", Activity.class, Annotation.class)
+                                .invoke(SportActivityApp.getInstance(), currentActivity, ann);
+                    } catch (NoSuchMethodException e1) {
                         try {
-                            SportActivityApp.class.getMethod("removeAnnotation", Activity.class, Annotation.class)
-                                    .invoke(SportActivityApp.getInstance(), currentActivity, ann);
-                        } catch (NoSuchMethodException e1) {
+                            SportActivityApp.class.getMethod("removeAnnotation", Annotation.class)
+                                    .invoke(SportActivityApp.getInstance(), ann);
+                        } catch (NoSuchMethodException e2) {
                             try {
-                                SportActivityApp.class.getMethod("removeAnnotation", Annotation.class)
-                                        .invoke(SportActivityApp.getInstance(), ann);
-                            } catch (NoSuchMethodException e2) {
-                                try {
-                                    Activity.class.getMethod("removeAnnotation", Annotation.class)
-                                            .invoke(currentActivity, ann);
-                                } catch (NoSuchMethodException e3) {
-                                    Activity.class.getMethod("deleteAnnotation", Annotation.class)
-                                            .invoke(currentActivity, ann);
-                                }
+                                Activity.class.getMethod("removeAnnotation", Annotation.class)
+                                        .invoke(currentActivity, ann);
+                            } catch (NoSuchMethodException e3) {
+                                Activity.class.getMethod("deleteAnnotation", Annotation.class)
+                                        .invoke(currentActivity, ann);
                             }
                         }
-                    } catch (Exception ex) {
-                        System.err.println("Notice: Marker removed from view, but library lacks an accessible model removal method.");
                     }
+                } catch (Exception ex) {
+                    System.err.println("Notice: Marker removed from view.");
                 }
-                mapPane.getChildren().remove(markerGroup);
-            });
-            markerMenu.getItems().add(deleteItem);
+            }
+            mapPane.getChildren().remove(markerGroup);
+        });
+        markerMenu.getItems().add(deleteItem);
 
-            markerGroup.setOnMousePressed(e -> {
-                if (e.getButton() == MouseButton.SECONDARY) {
-                    if (mapContextMenu != null) mapContextMenu.hide();
-                    if (currentActiveMarkerMenu != null) currentActiveMarkerMenu.hide();
+        Label toggleLabel = finalTextLabel; 
+        markerGroup.setOnMousePressed(e -> {
+            if (e.getButton() == MouseButton.SECONDARY) {
+                if (mapContextMenu != null) mapContextMenu.hide();
+                if (currentActiveMarkerMenu != null) currentActiveMarkerMenu.hide();
 
-                    markerMenu.show(markerGroup, e.getScreenX(), e.getScreenY());
-                    currentActiveMarkerMenu = markerMenu;
-                    e.consume();
-                } else if (e.getButton() == MouseButton.PRIMARY) {
-                    if (finalTextLabel != null) {
-                        finalTextLabel.setVisible(!finalTextLabel.isVisible());
-                    }
-                    e.consume();
+                markerMenu.show(markerGroup, e.getScreenX(), e.getScreenY());
+                currentActiveMarkerMenu = markerMenu;
+                e.consume();
+            } else if (e.getButton() == MouseButton.PRIMARY) {
+                if (toggleLabel != null) {
+                    toggleLabel.setVisible(!toggleLabel.isVisible());
                 }
-            });
-            // --------------------------------------------------------------
+                e.consume();
+            }
+        });
 
-            mapPane.getChildren().add(markerGroup);
-        }
+        mapPane.getChildren().add(markerGroup);
     }
 
     // Handles map zoom-in via UI button
@@ -785,7 +880,7 @@ public class DashboardController implements Initializable {
     }
 
     // Formats duration object into HH:mm:ss format
-    private String formatDuration(Duration d) {
+    private String formatDuration(java.time.Duration d) {
         if (d == null) return "00:00:00";
         long hours = d.toHours();
         long mins = d.toMinutesPart();

@@ -23,6 +23,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
+import javafx.scene.control.ButtonType;
 
 import upv.ipc.sportlib.SportActivityApp;
 import upv.ipc.sportlib.User;
@@ -180,22 +181,29 @@ public class ProfileViewController implements Initializable {
     // Log out the current user and return to the login screen
     @FXML
     private void darlesignout(ActionEvent event) {
-        try {
-            SportActivityApp.getInstance().logout();
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Sign Out");
+        alert.setHeaderText("Are you sure you want to sign out?");
+        alert.setContentText("You will be returned to the login screen.");
+    
+        alert.showAndWait().ifPresent(response -> {
+            if (response == ButtonType.OK) {
+                try {
+                    SportActivityApp.getInstance().logout();
 
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/app/MainLayout.fxml"));
-            Parent root = loader.load();
+                    FXMLLoader loader = new FXMLLoader(getClass().getResource("/FitnessPrincess/auth/LoginView.fxml"));
+                    Parent root = loader.load();
 
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+                    stage.setScene(new Scene(root));
+                    stage.show();
 
-            Scene scene = new Scene(root);
-            stage.setScene(scene);
-            stage.show();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            System.out.println("No se ha podido cargar la pantalla LoginView.fxml");
-        }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    System.out.println("No se ha podido cargar la pantalla LoginView.fxml");
+                }
+            }
+        });
     }
 
     // Toggle password text visibility
