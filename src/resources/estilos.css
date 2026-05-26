@@ -1069,6 +1069,19 @@
     -fx-text-fill: #2e7d32;
 }
 
+.next-btn-active {
+    -fx-background-color: #00c853;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 10 24 10 24;
+    -fx-cursor: hand;
+}
+
+.next-btn-active:hover {
+    -fx-background-color: #00a844;
+}
+
 /* ── DatePicker - DateBirth ───────────────────────────────────────────── */
 .input-embedded.date-picker {
     -fx-background-color: transparent;
@@ -1162,4 +1175,54 @@
 .date-picker-popup .day-cell:today {
     -fx-border-color: #4caf50;
     -fx-border-radius: 5;
+}
+
+/* ── Annotations ───────────────────────────────────────────── */
+.annotation-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #00d684;
+}
+
+.text-area:focused, .combo-box:focused, .spinner:focused, .color-picker:focused {
+    -fx-focus-color: #00d684;
+    -fx-faint-focus-color: rgba(0, 214, 132, 0.2);
+}
+
+.text-area .content {
+    -fx-background-color: transparent;
+}
+.text-area {
+    -fx-text-fill: #333333;
+    -fx-highlight-fill: #c8e6c9;
+    -fx-highlight-text-fill: #333333; 
+}
+.text-area:focused {
+    -fx-text-fill: #333333;
+}
+
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: transparent;
+}
+
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: #c8e6c9;
+    -fx-background-radius: 4;
+}
+
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-background-color: #555555;
+}
+
+.spinner .increment-arrow-button:hover .increment-arrow,
+.spinner .decrement-arrow-button:hover .decrement-arrow {
+    -fx-background-color: #2e7d32;
+}
+
+.combo-box-popup .list-view .list-cell:filled:selected {
+    -fx-background-color: #00d684;
+    -fx-text-fill: white;
 }
