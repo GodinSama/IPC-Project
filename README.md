@@ -23,6 +23,6 @@ Trying out the project is as easy as downloading the release and running it—no
 * Extract the entire folder to your computer.
 * Run the `.exe` file found inside.
 
-**Note:** Please do not edit, move, or delete any of the files or folders sitting next to the `.exe` (especially the `maps` folder or the `.dll` files).
+**Note:** Please do not edit, move, or delete any of the files or folders sitting next to the `.exe` (especially the `.dll` files).
   
   The program relies on them to run properly and will crash if they are separated!
